@@ -1,0 +1,1090 @@
+{
+  "meta": {
+    "schema_version": "1.0",
+    "project_name": "HyperloopBERT — Stage 2: Confirmatory Study (VanillaBERT vs LoopedBERT vs ALBERTLoopedBERT)",
+    "project_kind": "research",
+    "last_updated": "2026-05-24T00:00:00Z",
+    "updated_by": "copilot",
+    "languages": ["python"],
+    "primary_entry_points": [
+      "fn:Codes/Stage2/train_stage2.py:main",
+      "fn:Codes/Stage2/eval_bias_stage2.py:main",
+      "fn:Codes/Stage2/eval_glue_stage2.py:main",
+      "fn:Codes/Stage2/external_calibration_stage2.py:main",
+      "fn:Codes/Stage2/loop_trajectory_stage2.py:main",
+      "fn:Codes/Stage2/analyze_stage2.py:main"
+    ]
+  },
+
+  "layers": {
+    "ml_model": {
+      "description": "Pre-training of VanillaBERT, LoopedBERT, and ALBERTLoopedBERT via MLM (400M token budget); iso-loss band checkpointing; GLUE fine-tuning for utility verification.",
+      "root_paths": ["Codes/Stage2/train_stage2.py", "Codes/Stage2/eval_glue_stage2.py", "Codes/common/architectures.py", "Codes/common/attention.py", "Codes/common/iso_loss.py"],
+      "primary_language": "python",
+      "frameworks": ["pytorch", "transformers", "datasets"]
+    },
+    "research": {
+      "description": "Confirmatory bias evaluation using PLL and SS-PLL on Multi-CrowS-Pairs, Indian Bias, and WinoBias; external calibration on public checkpoints; loop trajectory mechanistic analysis; Holm-Bonferroni corrected go/no-go decision.",
+      "root_paths": ["Codes/Stage2/eval_bias_stage2.py", "Codes/Stage2/external_calibration_stage2.py", "Codes/Stage2/loop_trajectory_stage2.py", "Codes/Stage2/analyze_stage2.py"],
+      "primary_language": "python",
+      "frameworks": ["pandas", "scipy", "matplotlib", "seaborn"]
+    },
+    "shared": {
+      "description": "Cross-stage utilities: logging, statistics, plotting, bias scoring, CSV schemas, environment loading.",
+      "root_paths": ["Codes/common/"],
+      "primary_language": "python",
+      "frameworks": ["pytorch", "transformers", "pandas", "numpy", "scipy", "matplotlib", "seaborn"]
+    },
+    "config": {
+      "description": "Stage 2 hyper-parameters, directory paths, external model names, and GLUE task configuration.",
+      "root_paths": ["Codes/Stage2/config_stage2.py"],
+      "primary_language": "python",
+      "frameworks": []
+    },
+    "data_pipeline": {
+      "description": "JSONL streaming data generator (reused from Stage 1), GLUE task loaders via HuggingFace datasets.",
+      "root_paths": ["Codes/Stage2/train_stage2.py", "Codes/Stage2/eval_glue_stage2.py"],
+      "primary_language": "python",
+      "frameworks": ["transformers", "datasets"]
+    }
+  },
+
+  "files": {
+    "Codes/Stage2/config_stage2.py": {
+      "language": "python",
+      "layer": "config",
+      "purpose": "Defines all Stage 2 hyper-parameters: 400M token budget, 3-seed runs, GLUE tasks, external calibration models, iso-bands, and directory paths.",
+      "exports": [
+        "config:Codes/Stage2/config_stage2.py:STAGE",
+        "config:Codes/Stage2/config_stage2.py:ARCHITECTURES",
+        "config:Codes/Stage2/config_stage2.py:SIZES",
+        "config:Codes/Stage2/config_stage2.py:DEFAULT_SEEDS",
+        "config:Codes/Stage2/config_stage2.py:MAX_TOKENS",
+        "config:Codes/Stage2/config_stage2.py:GLUE_TASKS",
+        "config:Codes/Stage2/config_stage2.py:EXTERNAL_MODELS",
+        "config:Codes/Stage2/config_stage2.py:RESULTS_DIR",
+        "config:Codes/Stage2/config_stage2.py:MODELS_DIR"
+      ],
+      "imports_internal": [],
+      "imports_external": ["os"],
+      "tags": ["config", "hyperparams", "stage2"],
+      "loc": 46
+    },
+    "Codes/Stage2/train_stage2.py": {
+      "language": "python",
+      "layer": "ml_model",
+      "purpose": "MLM pre-training loop for Stage 2; extends Stage 1 to include ALBERTLoopedBERT, 3-seed runs, 400M token budget; reuses Stage 1 utility functions.",
+      "exports": [
+        "fn:Codes/Stage2/train_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/architectures.py",
+        "Codes/common/iso_loss.py",
+        "Codes/common/io_schemas.py",
+        "Codes/Stage2/config_stage2.py",
+        "Codes/Stage1/train_stage1.py"
+      ],
+      "imports_external": ["os", "sys", "json", "argparse", "random", "time", "datetime", "numpy", "pandas", "torch", "transformers"],
+      "tags": ["training", "mlm", "pre-training", "iso-loss", "stage2", "entry-point"],
+      "loc": 245
+    },
+    "Codes/Stage2/eval_bias_stage2.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Stage 2 bias evaluation extending Stage 1 with SS-PLL scoring, WinoBias occupational coreference evaluation, and enhanced category-level summary.",
+      "exports": [
+        "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset",
+        "fn:Codes/Stage2/eval_bias_stage2.py:compute_summary",
+        "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias",
+        "fn:Codes/Stage2/eval_bias_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/architectures.py",
+        "Codes/common/bias_metrics.py",
+        "Codes/common/io_schemas.py",
+        "Codes/common/stats_engine.py",
+        "Codes/Stage2/config_stage2.py",
+        "Codes/Stage1/eval_bias_stage1.py"
+      ],
+      "imports_external": ["os", "sys", "glob", "pandas", "torch", "datetime", "transformers", "argparse"],
+      "tags": ["bias-eval", "pll", "ss-pll", "winobias", "stage2", "entry-point"],
+      "loc": 326
+    },
+    "Codes/Stage2/eval_glue_stage2.py": {
+      "language": "python",
+      "layer": "ml_model",
+      "purpose": "Fine-tunes each Stage 2 snapshot on SST-2 and RTE via a SequenceClassificationModel wrapper; reports accuracy and F1 to verify utility is maintained.",
+      "exports": [
+        "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel",
+        "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue",
+        "fn:Codes/Stage2/eval_glue_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/architectures.py",
+        "Codes/common/io_schemas.py",
+        "Codes/Stage2/config_stage2.py",
+        "Codes/Stage1/eval_bias_stage1.py"
+      ],
+      "imports_external": ["os", "sys", "pandas", "torch", "torch.nn", "torch.optim", "torch.utils.data", "datetime", "transformers", "datasets", "tqdm", "argparse", "numpy", "sklearn"],
+      "tags": ["glue", "fine-tuning", "sst2", "rte", "utility", "stage2", "entry-point"],
+      "loc": 251
+    },
+    "Codes/Stage2/external_calibration_stage2.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Evaluates public HuggingFace models (bert-base-uncased, albert-base-v2, ModernBERT-base) on bias datasets to establish external calibration baselines.",
+      "exports": [
+        "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model",
+        "fn:Codes/Stage2/external_calibration_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/bias_metrics.py",
+        "Codes/common/io_schemas.py",
+        "Codes/common/stats_engine.py",
+        "Codes/Stage2/config_stage2.py"
+      ],
+      "imports_external": ["os", "sys", "pandas", "torch", "datetime", "transformers", "argparse"],
+      "tags": ["external-calibration", "bert-base", "albert", "modernbert", "bias", "stage2", "entry-point"],
+      "loc": 120
+    },
+    "Codes/Stage2/loop_trajectory_stage2.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Mechanistic analysis: extracts hidden representations at each loop boundary via forward hooks; classifies bias trajectory across depth as CONVERGENT, AMPLIFYING, or OSCILLATING.",
+      "exports": [
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/architectures.py",
+        "Codes/common/io_schemas.py",
+        "Codes/Stage2/config_stage2.py",
+        "Codes/Stage1/eval_bias_stage1.py"
+      ],
+      "imports_external": ["os", "sys", "pandas", "torch", "torch.nn.functional", "datetime", "transformers", "argparse"],
+      "tags": ["mechanistic", "loop-trajectory", "hidden-states", "forward-hooks", "stage2", "entry-point"],
+      "loc": 316
+    },
+    "Codes/Stage2/analyze_stage2.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Loads all Stage 2 results, applies Holm-Bonferroni correction to the confirmatory contrast family, runs PLL/SS-PLL agreement check, external calibration sanity check, and issues go/no-go decision.",
+      "exports": [
+        "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data",
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic",
+        "fn:Codes/Stage2/analyze_stage2.py:write_paper_outline",
+        "fn:Codes/Stage2/analyze_stage2.py:main"
+      ],
+      "imports_internal": [
+        "Codes/common/logging_setup.py",
+        "Codes/common/iso_loss.py",
+        "Codes/common/stats_engine.py",
+        "Codes/common/plotting.py",
+        "Codes/Stage1/analyze_stage1.py",
+        "Codes/Stage2/config_stage2.py"
+      ],
+      "imports_external": ["os", "sys", "pandas", "argparse", "datetime"],
+      "tags": ["analysis", "go-nogo", "holm-bonferroni", "calibration", "paper-outline", "stage2", "entry-point"],
+      "loc": 209
+    },
+    "Codes/common/architectures.py": {
+      "language": "python",
+      "layer": "ml_model",
+      "purpose": "Defines all five encoder architectures; Stage 2 additionally exercises ALBERTLoopedBERT and BertPooler for GLUE classification head.",
+      "exports": [
+        "class:Codes/common/architectures.py:BertEmbeddings",
+        "class:Codes/common/architectures.py:BertMLMHead",
+        "class:Codes/common/architectures.py:BertPooler",
+        "class:Codes/common/architectures.py:_BaseModel",
+        "class:Codes/common/architectures.py:VanillaBERT",
+        "class:Codes/common/architectures.py:LoopedBERT",
+        "class:Codes/common/architectures.py:ALBERTLoopedBERT",
+        "class:Codes/common/architectures.py:HyperloopBERT",
+        "class:Codes/common/architectures.py:EarlyMergeHyperloopBERT",
+        "fn:Codes/common/architectures.py:apply_mlm_mask",
+        "fn:Codes/common/architectures.py:get_model_info",
+        "fn:Codes/common/architectures.py:build_model"
+      ],
+      "imports_internal": ["Codes/common/attention.py"],
+      "imports_external": ["torch", "torch.nn", "logging", "math", "typing"],
+      "tags": ["model", "architecture", "bert", "looped", "albert", "hyperloop", "mlm", "shared"],
+      "loc": 1092
+    },
+    "Codes/common/attention.py": {
+      "language": "python",
+      "layer": "ml_model",
+      "purpose": "Custom bidirectional self-attention with FlashAttention-2 / SDPA / eager fallback chain.",
+      "exports": [
+        "fn:Codes/common/attention.py:set_attention_path_for_new_build",
+        "fn:Codes/common/attention.py:get_attention_path",
+        "class:Codes/common/attention.py:BidirectionalSelfAttention",
+        "class:Codes/common/attention.py:BertLayer"
+      ],
+      "imports_internal": [],
+      "imports_external": ["torch", "torch.nn", "logging", "math", "typing", "flash_attn"],
+      "tags": ["attention", "flash-attention", "sdpa", "bert-layer", "shared"],
+      "loc": 431
+    },
+    "Codes/common/bias_metrics.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "PLL, SS-PLL, and WinoBias scoring utilities; quality screen gate.",
+      "exports": [
+        "fn:Codes/common/bias_metrics.py:compute_pll",
+        "fn:Codes/common/bias_metrics.py:score_bias_pair",
+        "fn:Codes/common/bias_metrics.py:score_winobias",
+        "fn:Codes/common/bias_metrics.py:passes_quality_screen"
+      ],
+      "imports_internal": [],
+      "imports_external": ["torch", "torch.nn.functional", "typing", "sys"],
+      "tags": ["bias", "pll", "ss-pll", "winobias", "quality-screen", "shared"],
+      "loc": 250
+    },
+    "Codes/common/io_schemas.py": {
+      "language": "python",
+      "layer": "shared",
+      "purpose": "Single source of truth for all CSV column name lists used across stages; Stage 2 additionally uses WINOBIAS_SUMMARY_COLUMNS, GLUE_SUMMARY_COLUMNS, EXTERNAL_CALIBRATION_COLUMNS, and BIAS_TRAJECTORY_COLUMNS.",
+      "exports": [
+        "type:Codes/common/io_schemas.py:IDENTITY_COLUMNS",
+        "type:Codes/common/io_schemas.py:MLM_SUMMARY_COLUMNS",
+        "type:Codes/common/io_schemas.py:BIAS_EXAMPLE_COLUMNS",
+        "type:Codes/common/io_schemas.py:BIAS_SUMMARY_BASE_COLUMNS",
+        "type:Codes/common/io_schemas.py:WINOBIAS_SUMMARY_COLUMNS",
+        "type:Codes/common/io_schemas.py:GLUE_SUMMARY_COLUMNS",
+        "type:Codes/common/io_schemas.py:EXTERNAL_CALIBRATION_COLUMNS",
+        "type:Codes/common/io_schemas.py:BIAS_TRAJECTORY_COLUMNS",
+        "fn:Codes/common/io_schemas.py:validate_df_columns",
+        "fn:Codes/common/io_schemas.py:make_empty_df"
+      ],
+      "imports_internal": [],
+      "imports_external": ["logging", "typing", "pandas"],
+      "tags": ["schema", "csv", "columns", "shared"],
+      "loc": 299
+    },
+    "Codes/common/iso_loss.py": {
+      "language": "python",
+      "layer": "ml_model",
+      "purpose": "IsoBandTracker and compute_primary_band; same role as Stage 1 but applied to 3-seed runs with 400M budget.",
+      "exports": [
+        "class:Codes/common/iso_loss.py:IsoBandTracker",
+        "fn:Codes/common/iso_loss.py:compute_primary_band"
+      ],
+      "imports_internal": [],
+      "imports_external": ["os", "shutil", "typing", "logging"],
+      "tags": ["iso-loss", "checkpointing", "band", "compute-matched", "shared"],
+      "loc": 145
+    },
+    "Codes/common/logging_setup.py": {
+      "language": "python",
+      "layer": "shared",
+      "purpose": "Rotating-file + console logging; used by every Stage 2 script.",
+      "exports": ["fn:Codes/common/logging_setup.py:setup_logging"],
+      "imports_internal": [],
+      "imports_external": ["logging", "os", "logging.handlers"],
+      "tags": ["logging", "shared"],
+      "loc": 73
+    },
+    "Codes/common/env_loader.py": {
+      "language": "python",
+      "layer": "config",
+      "purpose": "API key loading with alias mapping and round-robin rotation; used during training for HuggingFace dataset access.",
+      "exports": [
+        "class:Codes/common/env_loader.py:EnvLoader",
+        "config:Codes/common/env_loader.py:env_loader"
+      ],
+      "imports_internal": [],
+      "imports_external": ["logging", "os", "pathlib", "typing"],
+      "tags": ["env", "api-keys", "secrets", "round-robin", "shared"],
+      "loc": 261
+    },
+    "Codes/common/stats_engine.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Statistical utilities; Stage 2 introduces Holm-Bonferroni correction on the confirmatory contrast family.",
+      "exports": [
+        "fn:Codes/common/stats_engine.py:bootstrap_ci",
+        "fn:Codes/common/stats_engine.py:paired_permutation_test",
+        "fn:Codes/common/stats_engine.py:holm_bonferroni_correction",
+        "fn:Codes/common/stats_engine.py:cohens_d"
+      ],
+      "imports_internal": [],
+      "imports_external": ["numpy", "scipy.stats", "typing"],
+      "tags": ["statistics", "bootstrap", "permutation-test", "effect-size", "holm", "shared"],
+      "loc": 148
+    },
+    "Codes/common/plotting.py": {
+      "language": "python",
+      "layer": "research",
+      "purpose": "Standardised plotting; Stage 2 additionally uses plot_loop_trajectory for mechanistic visualisations and plot_pareto_front for GLUE vs bias trade-off.",
+      "exports": [
+        "fn:Codes/common/plotting.py:setup_plot_style",
+        "fn:Codes/common/plotting.py:plot_iso_loss_bias",
+        "fn:Codes/common/plotting.py:plot_token_budget_bias",
+        "fn:Codes/common/plotting.py:plot_loop_trajectory",
+        "fn:Codes/common/plotting.py:plot_pareto_front"
+      ],
+      "imports_internal": [],
+      "imports_external": ["os", "matplotlib", "seaborn", "pandas", "numpy"],
+      "tags": ["plotting", "visualization", "figures", "shared"],
+      "loc": 252
+    }
+  },
+
+  "symbols": {
+    "fn:Codes/Stage2/train_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/train_stage2.py",
+      "lines": [35, 245],
+      "layer": "ml_model",
+      "purpose": "Orchestrates Stage 2 pre-training over VanillaBERT, LoopedBERT, and ALBERTLoopedBERT × {small, base} × 3 seeds with 400M token budget; reuses Stage 1 utility functions via direct import.",
+      "tags": ["entry-point", "training", "orchestration", "stage2"],
+      "semantic_signature": "stage2-three-architecture-mlm-pretraining-orchestrator",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage1/train_stage1.py:seed_everything",
+        "fn:Codes/Stage1/train_stage1.py:data_generator",
+        "fn:Codes/Stage1/train_stage1.py:prepare_validation_set",
+        "fn:Codes/Stage1/train_stage1.py:evaluate",
+        "fn:Codes/Stage1/train_stage1.py:save_mlm_summary",
+        "fn:Codes/Stage1/train_stage1.py:get_lr_schedule",
+        "fn:Codes/common/architectures.py:build_model",
+        "fn:Codes/common/architectures.py:get_model_info",
+        "fn:Codes/common/architectures.py:apply_mlm_mask",
+        "fn:Codes/common/architectures.py:get_attention_path",
+        "class:Codes/common/iso_loss.py:IsoBandTracker"
+      ],
+      "side_effects": ["writes file", "reads file", "reads env"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset": {
+      "kind": "function",
+      "name": "process_dataset",
+      "file": "Codes/Stage2/eval_bias_stage2.py",
+      "lines": [22, 98],
+      "layer": "research",
+      "purpose": "Scores each stereotype/anti-stereotype pair using PLL and SS-PLL; writes incremental progress CSV; extends Stage 1 version by enabling compute_ss=True.",
+      "tags": ["bias-eval", "pll", "ss-pll", "incremental-write", "resumable"],
+      "semantic_signature": "bias-dataset-pll-ss-pll-scorer-with-incremental-csv",
+      "signature": "process_dataset(df, dataset_name: str, model, tokenizer, device: str, meta: dict, model_info: dict, out_progress_path: str) -> pd.DataFrame",
+      "params": [
+        {"name": "df", "type": "pd.DataFrame", "doc": "Bias dataset with stereo and anti columns."},
+        {"name": "dataset_name", "type": "str", "doc": "Dataset identifier."},
+        {"name": "model", "type": "nn.Module", "doc": "Loaded encoder snapshot."},
+        {"name": "tokenizer", "type": "PreTrainedTokenizerFast", "doc": "Tokeniser."},
+        {"name": "device", "type": "str", "doc": "Device string."},
+        {"name": "meta", "type": "dict", "doc": "Snapshot metadata."},
+        {"name": "model_info", "type": "dict", "doc": "Model introspection dict."},
+        {"name": "out_progress_path", "type": "str", "doc": "Progress CSV path for incremental writes."}
+      ],
+      "returns": {"type": "pd.DataFrame", "doc": "Per-row bias scores including SS-PLL."},
+      "calls": ["fn:Codes/common/bias_metrics.py:score_bias_pair"],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/eval_bias_stage2.py:compute_summary": {
+      "kind": "function",
+      "name": "compute_summary",
+      "file": "Codes/Stage2/eval_bias_stage2.py",
+      "lines": [99, 152],
+      "layer": "research",
+      "purpose": "Aggregates per-row PLL and SS-PLL bias scores into category-level and overall summary; appends to bias summary CSV.",
+      "tags": ["bias-summary", "aggregation", "ss-pll", "csv"],
+      "semantic_signature": "bias-scores-pll-ss-pll-category-aggregation-writer",
+      "signature": "compute_summary(df: pd.DataFrame, meta: dict, model_info: dict, summary_path: str) -> None",
+      "params": [
+        {"name": "df", "type": "pd.DataFrame", "doc": "Per-row bias scores."},
+        {"name": "meta", "type": "dict", "doc": "Snapshot metadata."},
+        {"name": "model_info", "type": "dict", "doc": "Model introspection dict."},
+        {"name": "summary_path", "type": "str", "doc": "Output CSV path."}
+      ],
+      "returns": {"type": "None", "doc": ""},
+      "calls": ["fn:Codes/common/stats_engine.py:bootstrap_ci"],
+      "side_effects": ["writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias": {
+      "kind": "function",
+      "name": "eval_winobias",
+      "file": "Codes/Stage2/eval_bias_stage2.py",
+      "lines": [153, 212],
+      "layer": "research",
+      "purpose": "Evaluates a model snapshot on the WinoBias occupational coreference bias benchmark (Type 1 and Type 2); writes results to winobias_summary.csv.",
+      "tags": ["winobias", "coreference", "occupational-bias", "stage2"],
+      "semantic_signature": "winobias-occupational-coreference-bias-evaluator",
+      "signature": "eval_winobias(model, tokenizer, device: str, winobias_dir: str, meta: dict, model_info: dict, summary_path: str) -> None",
+      "params": [
+        {"name": "model", "type": "nn.Module", "doc": "Loaded encoder snapshot."},
+        {"name": "tokenizer", "type": "PreTrainedTokenizerFast", "doc": "Tokeniser."},
+        {"name": "device", "type": "str", "doc": "Device string."},
+        {"name": "winobias_dir", "type": "str", "doc": "Directory containing WinoBias sentence files."},
+        {"name": "meta", "type": "dict", "doc": "Snapshot metadata."},
+        {"name": "model_info", "type": "dict", "doc": "Model introspection dict."},
+        {"name": "summary_path", "type": "str", "doc": "Output CSV path."}
+      ],
+      "returns": {"type": "None", "doc": ""},
+      "calls": ["fn:Codes/common/bias_metrics.py:score_winobias"],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/eval_bias_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/eval_bias_stage2.py",
+      "lines": [213, 326],
+      "layer": "research",
+      "purpose": "Orchestrates Stage 2 bias evaluation: discovers snapshots, screens quality, runs SS-PLL bias scoring on Multi-CrowS-Pairs and Indian Bias, runs WinoBias, writes all result CSVs.",
+      "tags": ["entry-point", "bias-eval", "orchestration", "stage2"],
+      "semantic_signature": "stage2-bias-evaluation-ss-pll-winobias-orchestrator",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage1/eval_bias_stage1.py:extract_model_metadata",
+        "fn:Codes/Stage1/eval_bias_stage1.py:get_snapshot_mlm_quality",
+        "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset",
+        "fn:Codes/Stage2/eval_bias_stage2.py:compute_summary",
+        "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias",
+        "fn:Codes/common/architectures.py:build_model",
+        "fn:Codes/common/architectures.py:get_model_info",
+        "fn:Codes/common/bias_metrics.py:passes_quality_screen"
+      ],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel": {
+      "kind": "class",
+      "name": "SequenceClassificationModel",
+      "file": "Codes/Stage2/eval_glue_stage2.py",
+      "lines": [30, 55],
+      "layer": "ml_model",
+      "purpose": "Wraps a pre-trained encoder with a BertPooler and linear classification head for GLUE sequence classification fine-tuning.",
+      "tags": ["classification", "glue", "fine-tuning", "stage2"],
+      "semantic_signature": "encoder-pooler-linear-sequence-classifier-wrapper",
+      "bases": ["torch.nn.Module"],
+      "responsibilities": [
+        "Accept pre-trained encoder snapshot as backbone",
+        "Pool [CLS] representation via BertPooler",
+        "Apply dropout and linear classifier",
+        "Support binary and multi-class GLUE tasks"
+      ],
+      "methods": [
+        "method:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel.forward"
+      ],
+      "fields": [
+        {"name": "encoder", "type": "nn.Module", "visibility": "public"},
+        {"name": "pooler", "type": "BertPooler", "visibility": "public"},
+        {"name": "dropout", "type": "nn.Dropout", "visibility": "public"},
+        {"name": "classifier", "type": "nn.Linear", "visibility": "public"}
+      ]
+    },
+    "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue": {
+      "kind": "function",
+      "name": "train_and_eval_glue",
+      "file": "Codes/Stage2/eval_glue_stage2.py",
+      "lines": [57, 200],
+      "layer": "ml_model",
+      "purpose": "Loads a model snapshot, fine-tunes it on the specified GLUE task for 3 epochs, evaluates on the validation split, and returns accuracy and F1 metrics.",
+      "tags": ["glue", "fine-tuning", "evaluation", "sst2", "rte"],
+      "semantic_signature": "glue-task-finetuning-accuracy-f1-evaluator",
+      "signature": "train_and_eval_glue(model_path: str, meta: dict, model_info: dict, task: str, tokenizer, device: str) -> dict",
+      "params": [
+        {"name": "model_path", "type": "str", "doc": "Path to pytorch_model.bin snapshot."},
+        {"name": "meta", "type": "dict", "doc": "Snapshot metadata."},
+        {"name": "model_info", "type": "dict", "doc": "Model introspection dict."},
+        {"name": "task", "type": "str", "doc": "GLUE task name (sst2, rte)."},
+        {"name": "tokenizer", "type": "PreTrainedTokenizerFast", "doc": "Tokeniser."},
+        {"name": "device", "type": "str", "doc": "Device string."}
+      ],
+      "returns": {"type": "dict", "doc": "Dict with Accuracy and F1."},
+      "calls": [
+        "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel",
+        "fn:Codes/common/architectures.py:build_model",
+        "class:Codes/common/architectures.py:BertPooler"
+      ],
+      "side_effects": ["reads file", "http call"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/eval_glue_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/eval_glue_stage2.py",
+      "lines": [201, 251],
+      "layer": "ml_model",
+      "purpose": "Discovers Stage 2 iso-band snapshots, runs GLUE fine-tuning on each, and writes results to glue/summary_table.csv.",
+      "tags": ["entry-point", "glue", "orchestration", "stage2"],
+      "semantic_signature": "stage2-glue-finetuning-evaluation-orchestrator",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue",
+        "fn:Codes/Stage1/eval_bias_stage1.py:extract_model_metadata",
+        "fn:Codes/Stage1/eval_bias_stage1.py:get_snapshot_mlm_quality",
+        "fn:Codes/common/bias_metrics.py:passes_quality_screen"
+      ],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model": {
+      "kind": "function",
+      "name": "eval_external_model",
+      "file": "Codes/Stage2/external_calibration_stage2.py",
+      "lines": [21, 90],
+      "layer": "research",
+      "purpose": "Downloads and evaluates a public HuggingFace MLM model on all bias datasets; writes per-model stereotype preference rates to external_calibration.csv.",
+      "tags": ["external-calibration", "hf-model", "bias-eval", "stage2"],
+      "semantic_signature": "external-hf-model-bias-calibration-evaluator",
+      "signature": "eval_external_model(model_name: str, datasets: dict, device: str, out_path: str) -> None",
+      "params": [
+        {"name": "model_name", "type": "str", "doc": "HuggingFace model identifier."},
+        {"name": "datasets", "type": "dict", "doc": "Map of dataset_name → DataFrame."},
+        {"name": "device", "type": "str", "doc": "Device string."},
+        {"name": "out_path", "type": "str", "doc": "Output CSV path."}
+      ],
+      "returns": {"type": "None", "doc": ""},
+      "calls": ["fn:Codes/common/bias_metrics.py:score_bias_pair"],
+      "side_effects": ["http call", "reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/external_calibration_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/external_calibration_stage2.py",
+      "lines": [91, 120],
+      "layer": "research",
+      "purpose": "Runs external calibration on bert-base-uncased, albert-base-v2, and ModernBERT-base; writes results to external_calibration.csv.",
+      "tags": ["entry-point", "external-calibration", "stage2"],
+      "semantic_signature": "stage2-external-calibration-pipeline-runner",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": ["fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model"],
+      "side_effects": ["reads file", "writes file", "http call"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations": {
+      "kind": "function",
+      "name": "extract_intermediate_representations",
+      "file": "Codes/Stage2/loop_trajectory_stage2.py",
+      "lines": [20, 86],
+      "layer": "research",
+      "purpose": "Registers PyTorch forward hooks on architecture-specific layers to capture hidden states at each loop boundary (depths 3, 6, 9, 12 for Vanilla; after each middle loop for Looped/ALBERT).",
+      "tags": ["mechanistic", "forward-hooks", "hidden-states", "loop-boundary"],
+      "semantic_signature": "architecture-aware-loop-boundary-hidden-state-extractor",
+      "signature": "extract_intermediate_representations(model, input_ids: torch.Tensor, attention_mask: torch.Tensor, architecture: str) -> dict",
+      "params": [
+        {"name": "model", "type": "nn.Module", "doc": "Loaded encoder snapshot."},
+        {"name": "input_ids", "type": "torch.Tensor", "doc": "Tokenised input."},
+        {"name": "attention_mask", "type": "torch.Tensor", "doc": "Attention mask."},
+        {"name": "architecture", "type": "str", "doc": "Architecture name to select correct hook targets."}
+      ],
+      "returns": {"type": "dict", "doc": "Map of effective_depth → hidden_state tensor."},
+      "calls": [],
+      "side_effects": ["pure"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory": {
+      "kind": "function",
+      "name": "classify_trajectory",
+      "file": "Codes/Stage2/loop_trajectory_stage2.py",
+      "lines": [87, 103],
+      "layer": "research",
+      "purpose": "Classifies a sequence of per-depth bias preference rates as CONVERGENT, AMPLIFYING, or OSCILLATING based on the sign pattern of successive differences.",
+      "tags": ["trajectory", "classification", "bias-dynamics"],
+      "semantic_signature": "bias-preference-trajectory-convergent-amplifying-oscillating-classifier",
+      "signature": "classify_trajectory(rates: list) -> str",
+      "params": [{"name": "rates", "type": "list", "doc": "Ordered bias preference rates by depth."}],
+      "returns": {"type": "str", "doc": "'CONVERGENT', 'AMPLIFYING', or 'OSCILLATING'."},
+      "calls": [],
+      "side_effects": ["pure"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis": {
+      "kind": "function",
+      "name": "run_trajectory_analysis",
+      "file": "Codes/Stage2/loop_trajectory_stage2.py",
+      "lines": [104, 251],
+      "layer": "research",
+      "purpose": "For each bias sentence pair, extracts per-depth hidden states, computes depth-wise stereotype preference, classifies trajectory, and writes results to loop_trajectory.csv.",
+      "tags": ["mechanistic", "loop-trajectory", "depth-wise-bias"],
+      "semantic_signature": "bias-depth-trajectory-analysis-csv-writer",
+      "signature": "run_trajectory_analysis(model, tokenizer, df: pd.DataFrame, device: str, meta: dict, out_path: str) -> None",
+      "params": [
+        {"name": "model", "type": "nn.Module", "doc": "Loaded encoder snapshot."},
+        {"name": "tokenizer", "type": "PreTrainedTokenizerFast", "doc": "Tokeniser."},
+        {"name": "df", "type": "pd.DataFrame", "doc": "Bias dataset."},
+        {"name": "device", "type": "str", "doc": "Device string."},
+        {"name": "meta", "type": "dict", "doc": "Snapshot metadata."},
+        {"name": "out_path", "type": "str", "doc": "Output CSV path."}
+      ],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory",
+        "fn:Codes/common/bias_metrics.py:score_bias_pair"
+      ],
+      "side_effects": ["writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/loop_trajectory_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/loop_trajectory_stage2.py",
+      "lines": [252, 316],
+      "layer": "research",
+      "purpose": "Discovers Stage 2 snapshots, runs loop trajectory analysis on Multi-CrowS-Pairs, and saves trajectory CSV and figures.",
+      "tags": ["entry-point", "mechanistic", "loop-trajectory", "stage2"],
+      "semantic_signature": "stage2-loop-trajectory-mechanistic-analysis-orchestrator",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis",
+        "fn:Codes/Stage1/eval_bias_stage1.py:extract_model_metadata",
+        "fn:Codes/common/architectures.py:build_model",
+        "fn:Codes/common/plotting.py:plot_loop_trajectory"
+      ],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data": {
+      "kind": "function",
+      "name": "load_stage2_data",
+      "file": "Codes/Stage2/analyze_stage2.py",
+      "lines": [18, 32],
+      "layer": "research",
+      "purpose": "Loads all Stage 2 result CSVs: MLM summary, bias summaries, WinoBias summary, GLUE summary, external calibration, and loop trajectory.",
+      "tags": ["data-loading", "results", "csv"],
+      "semantic_signature": "stage2-all-results-csv-loader",
+      "signature": "load_stage2_data(results_dir: str) -> Tuple",
+      "params": [{"name": "results_dir", "type": "str", "doc": "Stage 2 results directory."}],
+      "returns": {"type": "Tuple", "doc": "(mlm_df, bias_df, indian_df, wino_df, glue_df, calib_df, traj_df)"},
+      "calls": ["fn:Codes/Stage1/analyze_stage1.py:load_data"],
+      "side_effects": ["reads file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/analyze_stage2.py:decision_logic": {
+      "kind": "function",
+      "name": "decision_logic",
+      "file": "Codes/Stage2/analyze_stage2.py",
+      "lines": [33, 85],
+      "layer": "research",
+      "purpose": "Applies Stage 2 go/no-go criteria: requires Vanilla > Looped AND Vanilla > ALBERT with Holm significance, PLL/SS-PLL agreement, and sane external calibration.",
+      "tags": ["go-nogo", "decision", "holm-bonferroni", "calibration"],
+      "semantic_signature": "stage2-confirmatory-gonogo-multicriterion-decision",
+      "signature": "decision_logic(contrasts: list, calib_df: pd.DataFrame, bias_df: pd.DataFrame) -> str",
+      "params": [
+        {"name": "contrasts", "type": "list", "doc": "List of contrast result dicts."},
+        {"name": "calib_df", "type": "pd.DataFrame", "doc": "External calibration results."},
+        {"name": "bias_df", "type": "pd.DataFrame", "doc": "Bias summary DataFrame."}
+      ],
+      "returns": {"type": "str", "doc": "'GO', 'PAUSE (...)', or 'NO-GO (...)'"},
+      "calls": [],
+      "side_effects": ["pure"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/analyze_stage2.py:write_paper_outline": {
+      "kind": "function",
+      "name": "write_paper_outline",
+      "file": "Codes/Stage2/analyze_stage2.py",
+      "lines": [86, 124],
+      "layer": "research",
+      "purpose": "Writes Stage 2 paper outline Markdown with Holm-corrected contrast table and go/no-go verdict.",
+      "tags": ["paper-outline", "reporting", "markdown"],
+      "semantic_signature": "stage2-paper-outline-holm-corrected-writer",
+      "signature": "write_paper_outline(results_dir: str, contrasts: list, decision: str, calib_df: pd.DataFrame) -> None",
+      "params": [
+        {"name": "results_dir", "type": "str", "doc": "Stage 2 results directory."},
+        {"name": "contrasts", "type": "list", "doc": "Holm-corrected contrast result list."},
+        {"name": "decision", "type": "str", "doc": "Go/no-go verdict string."},
+        {"name": "calib_df", "type": "pd.DataFrame", "doc": "External calibration results."}
+      ],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [],
+      "side_effects": ["writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+    "fn:Codes/Stage2/analyze_stage2.py:main": {
+      "kind": "function",
+      "name": "main",
+      "file": "Codes/Stage2/analyze_stage2.py",
+      "lines": [125, 209],
+      "layer": "research",
+      "purpose": "Orchestrates Stage 2 analysis: loads results, computes primary bands, runs Holm-corrected confirmatory contrasts, runs go/no-go decision, and saves stats, figures, and paper outline.",
+      "tags": ["entry-point", "analysis", "orchestration", "stage2"],
+      "semantic_signature": "stage2-confirmatory-analysis-holm-gonogo-orchestrator",
+      "signature": "main() -> None",
+      "params": [],
+      "returns": {"type": "None", "doc": ""},
+      "calls": [
+        "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data",
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic",
+        "fn:Codes/Stage2/analyze_stage2.py:write_paper_outline",
+        "fn:Codes/Stage1/analyze_stage1.py:compute_contrast",
+        "fn:Codes/common/iso_loss.py:compute_primary_band",
+        "fn:Codes/common/stats_engine.py:holm_bonferroni_correction",
+        "fn:Codes/common/plotting.py:plot_iso_loss_bias",
+        "fn:Codes/common/plotting.py:plot_loop_trajectory",
+        "fn:Codes/common/plotting.py:plot_pareto_front"
+      ],
+      "side_effects": ["reads file", "writes file"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "class:Codes/common/architectures.py:ALBERTLoopedBERT": {
+      "kind": "class",
+      "name": "ALBERTLoopedBERT",
+      "file": "Codes/common/architectures.py",
+      "lines": [661, 779],
+      "layer": "ml_model",
+      "purpose": "Single shared BertLayer applied 12 times; isolates cross-layer weight sharing from embedding compression to test the SCH directly; unique=1, effective_depth=12.",
+      "tags": ["model", "albert", "shared-weights", "sch", "stage2"],
+      "semantic_signature": "albert-single-shared-layer-12x-looped-encoder",
+      "bases": ["class:Codes/common/architectures.py:_BaseModel"],
+      "responsibilities": [
+        "Minimum unique-parameter encoder (unique=1) at effective depth 12",
+        "Isolates cross-layer weight sharing from LoopedBERT structural constraint",
+        "Confirmatory control for Stage 2 SCH attribution",
+        "Expose mlm_logits and last_hidden_state"
+      ],
+      "methods": ["method:Codes/common/architectures.py:ALBERTLoopedBERT.forward"],
+      "fields": [
+        {"name": "embeddings", "type": "BertEmbeddings", "visibility": "public"},
+        {"name": "shared_layer", "type": "BertLayer", "visibility": "public"},
+        {"name": "num_loops", "type": "int", "visibility": "public"},
+        {"name": "mlm_head", "type": "BertMLMHead", "visibility": "public"}
+      ]
+    },
+    "class:Codes/common/architectures.py:BertPooler": {
+      "kind": "class",
+      "name": "BertPooler",
+      "file": "Codes/common/architectures.py",
+      "lines": [223, 253],
+      "layer": "ml_model",
+      "purpose": "Linear projection + tanh activation on the [CLS] token; standard pooler used by SequenceClassificationModel for GLUE fine-tuning.",
+      "tags": ["pooler", "cls", "glue", "shared"],
+      "semantic_signature": "cls-token-linear-tanh-pooler",
+      "bases": ["torch.nn.Module"],
+      "responsibilities": [
+        "Extract [CLS] representation from last_hidden_state",
+        "Apply dense projection and tanh to produce pooled output",
+        "Serve as fixed interface for classification heads"
+      ],
+      "methods": ["method:Codes/common/architectures.py:BertPooler.forward"],
+      "fields": [
+        {"name": "dense", "type": "nn.Linear", "visibility": "public"}
+      ]
+    },
+    "fn:Codes/common/bias_metrics.py:score_winobias": {
+      "kind": "function",
+      "name": "score_winobias",
+      "file": "Codes/common/bias_metrics.py",
+      "lines": [228, 262],
+      "layer": "research",
+      "purpose": "Evaluates a model on WinoBias occupational coreference pairs (pro/anti stereotyped) by computing PLL differences; returns aggregate occupational bias score.",
+      "tags": ["winobias", "coreference", "pll", "shared"],
+      "semantic_signature": "winobias-occupational-pll-coreference-scorer",
+      "signature": "score_winobias(model, tokenizer, pro_sentences: List[Tuple[str, int]], anti_sentences: List[Tuple[str, int]], device: str) -> Dict",
+      "params": [
+        {"name": "model", "type": "nn.Module", "doc": "Encoder with MLM head."},
+        {"name": "tokenizer", "type": "PreTrainedTokenizerFast", "doc": "Tokeniser."},
+        {"name": "pro_sentences", "type": "List[Tuple]", "doc": "Pro-stereotyped sentences with reference indices."},
+        {"name": "anti_sentences", "type": "List[Tuple]", "doc": "Anti-stereotyped sentences with reference indices."},
+        {"name": "device", "type": "str", "doc": "Device string."}
+      ],
+      "returns": {"type": "Dict", "doc": "WinoBias occupational bias scores."},
+      "calls": ["fn:Codes/common/bias_metrics.py:compute_pll"],
+      "side_effects": ["pure"],
+      "async": false,
+      "visibility": "public"
+    },
+
+    "dataset:data/datasets_eval/winobias:WinoBias": {
+      "kind": "dataset",
+      "name": "WinoBias",
+      "file": "data/datasets_eval/winobias/",
+      "lines": [1, 1],
+      "layer": "research",
+      "purpose": "WinoBias Type 1 and Type 2 occupational coreference pairs for gender-occupational bias measurement via PLL.",
+      "tags": ["bias-dataset", "winobias", "occupational", "gender", "eval"],
+      "semantic_signature": "winobias-gender-occupational-coreference-benchmark",
+      "source": "hf://Debk/WinoBias",
+      "size": "~800 pairs",
+      "splits": ["test"],
+      "license": "MIT"
+    },
+    "dataset:data/datasets_eval/multicrows:MultiCrowsPairsEnglish": {
+      "kind": "dataset",
+      "name": "MultiCrowsPairsEnglish",
+      "file": "data/datasets_eval/multicrows/crows_pair_english.csv",
+      "lines": [1, 1],
+      "layer": "research",
+      "purpose": "English stereotypical/anti-stereotypical sentence pairs across 9 bias categories for PLL/SS-PLL evaluation.",
+      "tags": ["bias-dataset", "multicrows", "english", "eval"],
+      "semantic_signature": "english-crows-pairs-9category-bias-benchmark",
+      "source": "hf://Debk/Multi-CrowS-Pairs",
+      "size": "~1500 pairs",
+      "splits": ["test"],
+      "license": "CC-BY-SA 4.0"
+    }
+  },
+
+  "relationships": [
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:seed_everything", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:data_generator", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:prepare_validation_set", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:evaluate", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:save_mlm_summary", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/Stage1/train_stage1.py:get_lr_schedule", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/common/architectures.py:build_model", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/common/architectures.py:get_model_info", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "fn:Codes/common/architectures.py:apply_mlm_mask", "type": "calls"},
+    {"from": "fn:Codes/Stage2/train_stage2.py:main", "to": "class:Codes/common/iso_loss.py:IsoBandTracker", "type": "instantiates"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/Stage1/eval_bias_stage1.py:extract_model_metadata", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/Stage1/eval_bias_stage1.py:get_snapshot_mlm_quality", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/Stage2/eval_bias_stage2.py:compute_summary", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/common/architectures.py:build_model", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "fn:Codes/common/bias_metrics.py:passes_quality_screen", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset", "to": "fn:Codes/common/bias_metrics.py:score_bias_pair", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias", "to": "fn:Codes/common/bias_metrics.py:score_winobias", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_glue_stage2.py:main", "to": "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue", "to": "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel", "type": "instantiates"},
+    {"from": "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue", "to": "fn:Codes/common/architectures.py:build_model", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_glue_stage2.py:main", "to": "fn:Codes/Stage1/eval_bias_stage1.py:extract_model_metadata", "type": "calls"},
+    {"from": "fn:Codes/Stage2/external_calibration_stage2.py:main", "to": "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model", "type": "calls"},
+    {"from": "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model", "to": "fn:Codes/common/bias_metrics.py:score_bias_pair", "type": "calls"},
+    {"from": "fn:Codes/Stage2/loop_trajectory_stage2.py:main", "to": "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis", "type": "calls"},
+    {"from": "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis", "to": "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations", "type": "calls"},
+    {"from": "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis", "to": "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory", "type": "calls"},
+    {"from": "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis", "to": "fn:Codes/common/bias_metrics.py:score_bias_pair", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/Stage2/analyze_stage2.py:decision_logic", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/Stage2/analyze_stage2.py:write_paper_outline", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/Stage1/analyze_stage1.py:compute_contrast", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/common/iso_loss.py:compute_primary_band", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/common/stats_engine.py:holm_bonferroni_correction", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/common/plotting.py:plot_loop_trajectory", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:main", "to": "fn:Codes/common/plotting.py:plot_pareto_front", "type": "calls"},
+    {"from": "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data", "to": "fn:Codes/Stage1/analyze_stage1.py:load_data", "type": "calls"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "dataset:data/datasets_eval/multicrows:MultiCrowsPairsEnglish", "type": "consumes"},
+    {"from": "fn:Codes/Stage2/eval_bias_stage2.py:main", "to": "dataset:data/datasets_eval/winobias:WinoBias", "type": "consumes"},
+    {"from": "class:Codes/common/architectures.py:ALBERTLoopedBERT", "to": "class:Codes/common/architectures.py:_BaseModel", "type": "inherits"},
+    {"from": "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel", "to": "class:Codes/common/architectures.py:BertPooler", "type": "instantiates"}
+  ],
+
+  "indexes": {
+    "by_layer": {
+      "ml_model": [
+        "fn:Codes/Stage2/train_stage2.py:main",
+        "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel",
+        "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue",
+        "fn:Codes/Stage2/eval_glue_stage2.py:main",
+        "class:Codes/common/architectures.py:VanillaBERT",
+        "class:Codes/common/architectures.py:LoopedBERT",
+        "class:Codes/common/architectures.py:ALBERTLoopedBERT",
+        "class:Codes/common/architectures.py:BertPooler",
+        "fn:Codes/common/architectures.py:build_model",
+        "fn:Codes/common/architectures.py:get_model_info",
+        "fn:Codes/common/architectures.py:apply_mlm_mask",
+        "class:Codes/common/iso_loss.py:IsoBandTracker",
+        "fn:Codes/common/iso_loss.py:compute_primary_band"
+      ],
+      "research": [
+        "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset",
+        "fn:Codes/Stage2/eval_bias_stage2.py:compute_summary",
+        "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias",
+        "fn:Codes/Stage2/eval_bias_stage2.py:main",
+        "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model",
+        "fn:Codes/Stage2/external_calibration_stage2.py:main",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:main",
+        "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data",
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic",
+        "fn:Codes/Stage2/analyze_stage2.py:write_paper_outline",
+        "fn:Codes/Stage2/analyze_stage2.py:main",
+        "fn:Codes/common/bias_metrics.py:compute_pll",
+        "fn:Codes/common/bias_metrics.py:score_bias_pair",
+        "fn:Codes/common/bias_metrics.py:score_winobias",
+        "fn:Codes/common/bias_metrics.py:passes_quality_screen",
+        "fn:Codes/common/stats_engine.py:bootstrap_ci",
+        "fn:Codes/common/stats_engine.py:paired_permutation_test",
+        "fn:Codes/common/stats_engine.py:holm_bonferroni_correction",
+        "fn:Codes/common/stats_engine.py:cohens_d",
+        "fn:Codes/common/plotting.py:plot_iso_loss_bias",
+        "fn:Codes/common/plotting.py:plot_loop_trajectory",
+        "fn:Codes/common/plotting.py:plot_pareto_front",
+        "dataset:data/datasets_eval/multicrows:MultiCrowsPairsEnglish",
+        "dataset:data/datasets_eval/winobias:WinoBias"
+      ],
+      "data_pipeline": [
+        "fn:Codes/Stage1/train_stage1.py:data_generator",
+        "fn:Codes/Stage1/train_stage1.py:prepare_validation_set"
+      ],
+      "config": [
+        "config:Codes/Stage2/config_stage2.py:STAGE",
+        "config:Codes/Stage2/config_stage2.py:ARCHITECTURES",
+        "config:Codes/Stage2/config_stage2.py:GLUE_TASKS",
+        "config:Codes/Stage2/config_stage2.py:EXTERNAL_MODELS",
+        "config:Codes/Stage2/config_stage2.py:MAX_TOKENS"
+      ],
+      "shared": [
+        "fn:Codes/common/logging_setup.py:setup_logging",
+        "class:Codes/common/env_loader.py:EnvLoader",
+        "type:Codes/common/io_schemas.py:WINOBIAS_SUMMARY_COLUMNS",
+        "type:Codes/common/io_schemas.py:GLUE_SUMMARY_COLUMNS",
+        "type:Codes/common/io_schemas.py:EXTERNAL_CALIBRATION_COLUMNS",
+        "type:Codes/common/io_schemas.py:BIAS_TRAJECTORY_COLUMNS"
+      ]
+    },
+    "by_tag": {
+      "entry-point": [
+        "fn:Codes/Stage2/train_stage2.py:main",
+        "fn:Codes/Stage2/eval_bias_stage2.py:main",
+        "fn:Codes/Stage2/eval_glue_stage2.py:main",
+        "fn:Codes/Stage2/external_calibration_stage2.py:main",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:main",
+        "fn:Codes/Stage2/analyze_stage2.py:main"
+      ],
+      "go-nogo": [
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic",
+        "fn:Codes/Stage2/analyze_stage2.py:main"
+      ],
+      "holm-bonferroni": [
+        "fn:Codes/common/stats_engine.py:holm_bonferroni_correction",
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic",
+        "fn:Codes/Stage2/analyze_stage2.py:main"
+      ],
+      "mechanistic": [
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis",
+        "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory"
+      ],
+      "external-calibration": [
+        "fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model",
+        "fn:Codes/Stage2/external_calibration_stage2.py:main",
+        "fn:Codes/Stage2/analyze_stage2.py:decision_logic"
+      ],
+      "glue": [
+        "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel",
+        "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue",
+        "fn:Codes/Stage2/eval_glue_stage2.py:main"
+      ],
+      "ss-pll": [
+        "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset",
+        "fn:Codes/common/bias_metrics.py:score_bias_pair"
+      ],
+      "winobias": [
+        "fn:Codes/Stage2/eval_bias_stage2.py:eval_winobias",
+        "fn:Codes/common/bias_metrics.py:score_winobias",
+        "dataset:data/datasets_eval/winobias:WinoBias"
+      ]
+    },
+    "by_semantic_signature": {
+      "stage2-three-architecture-mlm-pretraining-orchestrator": ["fn:Codes/Stage2/train_stage2.py:main"],
+      "stage2-bias-evaluation-ss-pll-winobias-orchestrator": ["fn:Codes/Stage2/eval_bias_stage2.py:main"],
+      "stage2-glue-finetuning-evaluation-orchestrator": ["fn:Codes/Stage2/eval_glue_stage2.py:main"],
+      "stage2-confirmatory-gonogo-multicriterion-decision": ["fn:Codes/Stage2/analyze_stage2.py:decision_logic"],
+      "stage2-confirmatory-analysis-holm-gonogo-orchestrator": ["fn:Codes/Stage2/analyze_stage2.py:main"],
+      "architecture-aware-loop-boundary-hidden-state-extractor": ["fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations"],
+      "bias-preference-trajectory-convergent-amplifying-oscillating-classifier": ["fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory"],
+      "external-hf-model-bias-calibration-evaluator": ["fn:Codes/Stage2/external_calibration_stage2.py:eval_external_model"],
+      "encoder-pooler-linear-sequence-classifier-wrapper": ["class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel"],
+      "albert-single-shared-layer-12x-looped-encoder": ["class:Codes/common/architectures.py:ALBERTLoopedBERT"]
+    },
+    "entry_points": [
+      "fn:Codes/Stage2/train_stage2.py:main",
+      "fn:Codes/Stage2/eval_bias_stage2.py:main",
+      "fn:Codes/Stage2/eval_glue_stage2.py:main",
+      "fn:Codes/Stage2/external_calibration_stage2.py:main",
+      "fn:Codes/Stage2/loop_trajectory_stage2.py:main",
+      "fn:Codes/Stage2/analyze_stage2.py:main"
+    ],
+    "cross_layer_paths": [
+      {
+        "name": "Stage 2 full pipeline: train → bias eval → GLUE → calibrate → trajectory → analyze",
+        "path": [
+          "fn:Codes/Stage2/train_stage2.py:main",
+          "class:Codes/common/iso_loss.py:IsoBandTracker",
+          "fn:Codes/Stage2/eval_bias_stage2.py:main",
+          "fn:Codes/Stage2/eval_glue_stage2.py:main",
+          "fn:Codes/Stage2/external_calibration_stage2.py:main",
+          "fn:Codes/Stage2/loop_trajectory_stage2.py:main",
+          "fn:Codes/Stage2/analyze_stage2.py:main",
+          "fn:Codes/Stage2/analyze_stage2.py:decision_logic"
+        ]
+      },
+      {
+        "name": "Mechanistic: extract hidden states → classify trajectory → analysis",
+        "path": [
+          "fn:Codes/Stage2/loop_trajectory_stage2.py:extract_intermediate_representations",
+          "fn:Codes/Stage2/loop_trajectory_stage2.py:classify_trajectory",
+          "fn:Codes/Stage2/loop_trajectory_stage2.py:run_trajectory_analysis",
+          "fn:Codes/common/plotting.py:plot_loop_trajectory"
+        ]
+      },
+      {
+        "name": "GLUE utility: snapshot → fine-tune → accuracy",
+        "path": [
+          "fn:Codes/common/architectures.py:build_model",
+          "class:Codes/Stage2/eval_glue_stage2.py:SequenceClassificationModel",
+          "fn:Codes/Stage2/eval_glue_stage2.py:train_and_eval_glue",
+          "fn:Codes/common/plotting.py:plot_pareto_front"
+        ]
+      }
+    ],
+    "potential_duplicates": [
+      {
+        "symbols": [
+          "fn:Codes/Stage2/eval_bias_stage2.py:process_dataset",
+          "fn:Codes/Stage1/eval_bias_stage1.py:process_dataset"
+        ],
+        "reason": "Nearly identical structure; Stage 2 enables SS-PLL (compute_ss=True) and writes SS-PLL columns.",
+        "suggested_action": "Merge into common/bias_metrics.py with a compute_ss parameter."
+      },
+      {
+        "symbols": [
+          "fn:Codes/Stage2/analyze_stage2.py:load_stage2_data",
+          "fn:Codes/Stage1/analyze_stage1.py:load_data"
+        ],
+        "reason": "Stage 2 extends Stage 1 data loading by adding WinoBias, GLUE, calibration, and trajectory CSVs.",
+        "suggested_action": "No merge needed; composition pattern is correct."
+      }
+    ]
+  }
+}
