@@ -45,8 +45,9 @@ def build_run_list(seeds_to_run):
                     'num_streams': cfg.DEFAULT_NUM_STREAMS if 'Hyperloop' in arch else None,
                     'merge_at': None,
                     'max_tokens': cfg.MAX_TOKENS,
-                    # Primary runs get the seq=256 adaptation tail (spec 2.2).
-                    'seq_tail': True,
+                    # Primary runs get the seq=256 adaptation tail (spec 2.2),
+                    # unless disabled for budget reasons (config ENABLE_SEQ_TAIL).
+                    'seq_tail': getattr(cfg, 'ENABLE_SEQ_TAIL', True),
                 })
 
     # Stream-count ablation arms (n=1, n=2) train at the SAME token budget as
