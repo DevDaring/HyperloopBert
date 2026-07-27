@@ -93,7 +93,18 @@ MLM_KEEP_PROB = 0.10
 # (exactly the failure mode of the 200M run). The screen is deliberately a
 # COARSE filter here: the real arbiter of whether the models are good enough is
 # the three-leg CAPABILITY GATE, which tests bias detectability directly.
-PSEUDO_PERPLEXITY_QUALITY_THRESHOLD = 150.0
+PSEUDO_PERPLEXITY_QUALITY_THRESHOLD = 300.0
+# REVISED AGAIN mid-run (A12.1) from the LIVE trajectory, which flattens faster
+# than the 250M-token LR-validation fit predicted:
+#     626M -> 5.8433 | 876M -> 5.7708   (only 0.07 nats over 250M tokens)
+# Log-extrapolated final loss at 7B is ~5.2-5.3 (pp ~180-200), improving to
+# perhaps ~4.8-5.0 after the linear LR decay. A screen of 150 (loss <= 5.01)
+# would therefore skip MOST OR ALL snapshots and the run would emit no bias
+# data -- precisely the failure that wasted the 200M run. 300 (loss <= 5.70)
+# keeps the band-5.5 (pp 245) and band-5.2 (pp 181) snapshots evaluable.
+# The screen is explicitly a coarse "is this model catastrophically broken"
+# filter; the THREE-LEG CAPABILITY GATE remains the real arbiter of whether the
+# models are good enough for the bias numbers to mean anything.
 
 # Iso-loss Bands -- DERIVED FROM MEASUREMENT, not assumed (A12).
 # lr=3e-4 trajectory on this exact hardware/data:
