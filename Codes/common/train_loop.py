@@ -192,6 +192,61 @@ def data_generator(filepath: str, tokenizer, seq_length: int, batch_size: int,
                         doc_cursor[0] = doc_idx
 
 
+def memmap_generator(bin_path: str, seq_length: int, batch_size: int,
+                     skip_blocks: int = 0, block_cursor: Optional[List[int]] = None,
+                     loop: bool = True):
+    """
+    Yield batches from a pre-tokenized .bin produced by
+    Dataset/pretokenize_corpus.py -- a flat uint16 array of fixed-size
+    [CLS] ... [SEP] padded blocks with semantics identical to data_generator,
+    but with ZERO tokenisation at train time.
+
+    On-the-fly tokenisation measured ~4% model-FLOPs utilisation on an L4 (the
+    single-threaded tokenizer starves the GPU); reading pre-tokenized blocks
+    removes that bottleneck entirely.
+
+    skip_blocks / block_cursor mirror the skip_docs / doc_cursor resume
+    contract of data_generator. loop=True wraps around so a token budget larger
+    than the corpus is served as multiple epochs (standard for BERT, which
+    trained ~40 epochs).
+    """
+    arr = np.memmap(bin_path, dtype=np.uint16, mode='r')
+    n_blocks = arr.shape[0] // seq_length
+    arr = arr[:n_blocks * seq_length].reshape(n_blocks, seq_length)
+
+    i = skip_blocks % n_blocks if n_blocks else 0
+    while True:
+        end = min(i + batch_size, n_blocks)
+        batch = np.asarray(arr[i:end], dtype=np.int64)
+        if batch.shape[0] > 0:
+            yield torch.from_numpy(batch)
+            if block_cursor is not None:
+                block_cursor[0] = end
+        i = end
+        if i >= n_blocks:
+            if not loop:
+                return
+            i = 0
+
+
+def resolve_train_source(train_file: str, seq_length: int, logger=None):
+    """
+    Prefer the pre-tokenized binary when present (much faster), else fall back
+    to on-the-fly tokenisation. Returns (kind, path) with kind in {'bin','jsonl'}.
+    """
+    candidate = os.path.join(os.path.dirname(train_file), f"train_{seq_length}.bin")
+    if os.path.exists(candidate):
+        if logger:
+            logger.info(f"Using PRE-TOKENIZED corpus: {candidate}")
+        return 'bin', candidate
+    if logger:
+        logger.warning(
+            f"No pre-tokenized corpus at {candidate}; falling back to on-the-fly "
+            f"tokenisation (measured ~4% MFU -- run Dataset/pretokenize_corpus.py "
+            f"to get ~8x throughput).")
+    return 'jsonl', train_file
+
+
 def prepare_validation_set(val_filepath: str, tokenizer, seq_length: int,
                            max_samples: int, mlm_probability: float = 0.15,
                            mask_prob: float = 0.80, random_prob: float = 0.10,
@@ -449,8 +504,18 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
     last_val_loss: Optional[float] = None
 
     model.train()
-    gen = data_generator(train_file, tokenizer, seq_length, micro_batch_size,
-                         skip_docs=skip_docs, doc_cursor=doc_cursor)
+    # Prefer the pre-tokenized memmap corpus when available (identical sequence
+    # semantics, ~8x throughput -- see Dataset/pretokenize_corpus.py).
+    _src_kind, _src_path = resolve_train_source(train_file, seq_length, logger)
+
+    def _make_gen(skip):
+        if _src_kind == 'bin':
+            return memmap_generator(_src_path, seq_length, micro_batch_size,
+                                    skip_blocks=skip, block_cursor=doc_cursor)
+        return data_generator(_src_path, tokenizer, seq_length, micro_batch_size,
+                              skip_docs=skip, doc_cursor=doc_cursor)
+
+    gen = _make_gen(skip_docs)
     start_time = time.time()
     start_tokens = tokens_processed
 
@@ -504,9 +569,7 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
                 micro_batch_size //= 2
                 accum_steps = max(1, cfg.EFFECTIVE_BATCH_SIZE // micro_batch_size)
                 logger.warning(f"OOM. Halved micro-batch size to {micro_batch_size}.")
-                gen = data_generator(train_file, tokenizer, seq_length,
-                                     micro_batch_size, skip_docs=doc_cursor[0],
-                                     doc_cursor=doc_cursor)
+                gen = _make_gen(doc_cursor[0])
                 continue
             logger.error("OOM even at minimum micro-batch size!")
             raise
