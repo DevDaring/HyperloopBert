@@ -68,12 +68,18 @@ SECRET_RE='(^|/)\.env(\.|$)|\.pem$|\.key$|(^|/)secrets?/|id_rsa|credentials?\.js
 
 push_once() {
   # Stage code (gitignore keeps data/models/checkpoints/.env out), then FORCE
-  # results + figures which are gitignored for local hygiene.
+  # results + figures which are gitignored for local hygiene. dry_run/ output
+  # (Dry_Run harness sandbox) is deliberately EXCLUDED: it's QA scaffolding,
+  # not experiment results, and must never mix into the real results history.
   git add -A
-  [ -d Codes/results ] && git add -f Codes/results 2>/dev/null || true
-  [ -d Codes/figures ] && git add -f Codes/figures 2>/dev/null || true
-  [ -d results ]       && git add -f results 2>/dev/null || true
-  [ -d figures ]       && git add -f figures 2>/dev/null || true
+  for base in Codes/results Codes/figures results figures; do
+    [ -d "$base" ] || continue
+    for sub in "$base"/*/; do
+      name="$(basename "$sub")"
+      [ "$name" = "dry_run" ] && continue
+      git add -f "$sub" 2>/dev/null || true
+    done
+  done
 
   # Abort if any secret-like path is staged.
   local staged

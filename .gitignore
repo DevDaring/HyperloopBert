@@ -48,3 +48,7 @@ logs/
 .idea/
 *.swp
 *.swo
+
+# Dry-run QA sandbox (never mix into real results history)
+**/dry_run/
+Codes/Dry_Run/dry_run_report.json
