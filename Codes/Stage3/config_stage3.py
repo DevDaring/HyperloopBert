@@ -113,7 +113,17 @@ PSEUDO_PERPLEXITY_QUALITY_THRESHOLD = 300.0
 # the curve is fitted. Bands are set ABOVE that prediction so that EVERY
 # architecture actually crosses a COMMON band -- the iso-loss protocol is
 # meaningless if the arms never meet at one.
-DEFAULT_ISO_BANDS = [5.5, 5.2, 4.9, 4.6]
+DEFAULT_ISO_BANDS = [5.0, 4.0, 3.4, 3.0, 2.7, 2.4, 2.2]
+# REVISED AGAIN (A12.2) -- the model BROKE THROUGH the unigram plateau far
+# earlier than either extrapolation predicted:
+#     876M -> 5.771 (pp 320) | 1502M -> 2.997 (pp 20.0) | 1627M -> 2.587 (pp 13.3)
+# The previous bands [5.5, 5.2, 4.9, 4.6] were ALL crossed by ~1.5B of a 7B
+# budget, which would have pinned the pre-registered iso-loss comparison to
+# early, low-quality checkpoints (pp ~100) instead of the final models -- and
+# bias detectability rises sharply with quality (see the A11.4 feasibility
+# curve). These bands span the range the models actually traverse, so
+# compute_primary_band can select a DEEP common band where all four
+# architectures are at genuinely comparable, high quality.
 
 # Iso-loss matching tolerance for contrasts (nats); gaps above this are flagged
 ISO_LOSS_TOLERANCE = 0.05
