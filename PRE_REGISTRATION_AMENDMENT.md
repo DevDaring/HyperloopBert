@@ -177,6 +177,137 @@ schema `HYPERCONNECTION_STATS_COLUMNS` in `common/io_schemas.py`.
 
 ---
 
+## A11. Empirical calibration episode: learning rate, token budget, and the
+##      iso-loss bands (MATERIAL — changes registered hyperparameters)
+
+This section documents a full pre-run calibration episode carried out on
+2026-07-27 on an NVIDIA L4. It changes two registered hyperparameters and
+invalidates the registered token budget. Everything here is evidence-driven and
+every claim below is backed by a logged experiment; the raw logs are archived in
+`results/pilot/`.
+
+### A11.1 The registered learning rate collapses the model
+
+The first full Stage 1 run was launched with the registered
+`LEARNING_RATE = 5e-4`. After **47M tokens** the model had learned the unigram
+distribution and nothing else:
+
+- validation loss pinned at the unigram-entropy plateau (~7.2) and *rising*
+  (7.2042 → 7.1875 → 7.2589);
+- the model emitted an **identical** distribution for every input
+  (cosine similarity between three unrelated contexts = **1.0000**, i.e. LESS
+  context-sensitive than random initialisation at 0.9865);
+- top predictions were pure function-word frequencies (`the . , of and to a in`).
+
+Ruled out by direct test, not assumption: MLM masking was correct (14.8%
+supervised / 11.6% `[MASK]` / 86.9% unchanged), and FlashAttention numerics
+matched the eager reference to 7.9e-3 at real token positions (an apparent 1.40
+discrepancy was located entirely at PADDED positions, which the loss ignores).
+
+**Cause: the LR is far too high for a post-norm BERT at an 8192-token effective
+batch — roughly 80x more aggressive per token than the original BERT recipe.**
+
+A 5-configuration sweep (6M tokens each, seed 42, identical data order)
+isolated it. Validation loss is uninformative this early (every config sits at
+the unigram floor); **context sensitivity is the discriminating metric**:
+
+| config | end loss | ctx_cos | reading |
+|---|---|---|---|
+| lr=5e-4 batch=64 (REGISTERED) | 7.20 | **1.0000** | context ignored |
+| **lr=1e-4 batch=64** | 7.20 | **0.9103** | **learning context** |
+| lr=3e-5 batch=64 | 7.58 | 0.9953 | too slow |
+| lr=5e-4 batch=256 | 7.20 | 1.0000 | batch is not the lever |
+| lr=2e-4 batch=256 | 7.23 | 1.0000 | still too high |
+
+**AMENDMENT: `LEARNING_RATE` is changed from 5e-4 to 1e-4.** A 30M-token
+confirmation run reproduced steady improvement (ctx_cos 0.9993 → 0.9390 while
+loss fell 9.605 → 6.961), confirming the fix.
+
+### A11.2 The registered token budget cannot reach the registered iso-loss bands
+
+With the corrected LR, the measured loss curve decays approximately
+logarithmically: a 4x token increase (7.5M → 30M) bought only 0.36 nats.
+Extrapolated to the registered `MAX_TOKENS = 200M`, the predicted loss is
+**~6.4–6.5 (pseudo-perplexity ~600–650)**.
+
+The registered protocol requires:
+- iso-loss bands `[4.0, 3.7, 3.4, 3.1]` — **never crossed**, so **zero** iso-band
+  snapshots would be written;
+- quality screen PP <= 60 (loss <= 4.09) — **every** snapshot skipped.
+
+**A Stage 1 run at the registered budget would therefore complete "successfully"
+and produce no data at all.** This is a calibration error in the registered
+design, independent of the learning rate: the bands are appropriate to a
+multi-billion-token budget, not 200M.
+
+### A11.3 Pilot study: the capability gate fails at this budget
+
+A pre-registered-style pilot trained the Stage 1 contrast pair (VanillaBERT vs
+LoopedBERT, `tiny`, lr=1e-4, 100M tokens each) and applied the real capability
+gate and primary test:
+
+| | val loss | PP | mask acc | ctx_cos |
+|---|---|---|---|---|
+| VanillaBERT | 6.766 | 867.9 | 0.066 | 0.880 |
+| LoopedBERT | 6.769 | 870.3 | 0.068 | 0.866 |
+
+- **Capability gate (leg 2): FAIL.** Vanilla stereotype preference
+  **0.4525, 95% CI [0.4050, 0.5025]** — the CI includes chance, so there is no
+  statistically detectable baseline bias to reduce.
+- **Signal: absent.** Vanilla and Looped preference rates were identical
+  (0.4525 vs 0.4525); item-level delta = -0.0051 [-0.0150, +0.0054],
+  p = 0.8345, d = -0.048, n = 400. This is noise, **not** evidence against SCH.
+
+### A11.4 The instrument is sound; the models were undertrained
+
+To distinguish "our metric is broken" from "our models are too weak", the same
+FP32 PLL scorer was applied to properly-trained public models on the same 400
+pairs:
+
+| model | geometry | preference | 95% CI | detectable |
+|---|---|---|---|---|
+| google/bert_uncased_L-2_H-128 | 4.4M | 0.5825 | [0.5349, 0.6350] | YES |
+| google/bert_uncased_L-4_H-256 | 11.3M (our `tiny` width) | 0.5875 | [0.5375, 0.6400] | YES |
+| google/bert_uncased_L-8_H-512 | 41.4M | 0.5500 | [0.5000, 0.6000] | borderline (n=400) |
+| bert-base-uncased | 110M | 0.5975 | [0.5500, 0.6425] | YES |
+| **ours (H=256, L=12, 100M tokens)** | 17.6M | **0.4525** | [0.4050, 0.5025] | **NO** |
+
+**A 4.4M-parameter model — smaller than our `tiny` — shows detectable
+stereotype bias when adequately trained.** Therefore model capacity is NOT the
+limiting factor and the measurement instrument is valid; the binding constraint
+is the **token budget**. This is the decisive justification for re-running at a
+substantially larger budget rather than abandoning the design or reporting a
+spurious null.
+
+### A11.5 Consequent amendments
+
+1. **`LEARNING_RATE`: 5e-4 -> 1e-4** (A11.1).
+2. **Token budget: raised by ~1-2 orders of magnitude.** The registered 200M is
+   demonstrably insufficient for the capability gate to pass.
+3. **Iso-loss bands: to be re-derived from a measured trajectory** at the new
+   budget rather than assumed, so that all architectures actually cross a common
+   band (the iso-loss protocol is meaningless otherwise).
+4. **Data pipeline: corpus pre-tokenised to a memory-mapped binary**
+   (`Dataset/pretokenize_corpus.py`). The on-the-fly tokenizer was measured at
+   ~4% model-FLOPs utilisation (2.4 of ~60 TFLOPS on an L4). The pre-tokenised
+   path was verified to emit **byte-identical** sequences to the original
+   `data_generator`, so this is a pure throughput change with no effect on the
+   science.
+5. **A null result at an inadequate budget will NOT be reported as evidence
+   about SCH.** Per A11.3/A11.4 such a null reflects undertrained models, and
+   the capability gate correctly refuses to interpret it. This is recorded here
+   so the distinction cannot be blurred after the fact.
+
+### A11.6 What this episode demonstrates about the protocol
+
+The pre-registered capability gate did exactly what it was designed to do: it
+refused to convert an undertrained model into a publishable bias claim. The
+pilot cost ~1.5 GPU-hours and prevented a ~28 GPU-hour run whose output would
+have been uninterpretable. This is reportable as a methods contribution in its
+own right.
+
+---
+
 ## A10. Construct scoping against difference awareness (NEW — framing, no code change)
 
 **What changed.** The paper now states explicitly *which kind* of fairness construct
