@@ -1,0 +1,2 @@
+Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Band,Snapshot_Path,Validation_Loss_At_Snapshot,Crossed_At_Step,Timestamp
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,5.5,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_5p50,5.434473340264682,21000,2026-07-27T18:19:09.738800Z
