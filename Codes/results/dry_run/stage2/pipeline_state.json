@@ -1,6 +1,0 @@
-{
-  "VanillaBERT_tiny_seed42": true,
-  "LoopedBERT_tiny_seed42": true,
-  "ALBERTLoopedBERT_tiny_seed42": true,
-  "VanillaBERT6_tiny_seed42": true
-}

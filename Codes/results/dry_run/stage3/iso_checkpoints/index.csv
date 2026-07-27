@@ -1,5 +1,0 @@
-Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Band,Snapshot_Path,Validation_Loss_At_Snapshot,Crossed_At_Step,Timestamp
-stage3,HyperloopBERT,tiny,256,42,14950459,14950459,12,0.5,10.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_tiny_seed42_streams4/band_10p00,9.779398556127983,5,2026-07-27T10:41:39.555431Z
-stage3,EarlyMergeHyperloopBERT,tiny,256,42,14950459,14950459,12,0.5,10.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/EarlyMergeHyperloopBERT_tiny_seed42_streams4/band_10p00,9.785562974511931,5,2026-07-27T10:41:43.307492Z
-stage3,HyperloopBERT,base,768,42,77027899,77027899,12,0.5,10.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_10p00,8.893064287893168,5,2026-07-27T10:41:50.502768Z
-stage3,HyperloopBERT,base,768,42,77027899,77027899,12,0.5,9.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_9p00,8.893064287893168,5,2026-07-27T10:41:50.506294Z

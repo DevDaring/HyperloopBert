@@ -1,3 +1,0 @@
-Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Band,Snapshot_Path,Validation_Loss_At_Snapshot,Crossed_At_Step,Timestamp
-stage1,VanillaBERT,tiny,256,42,17585466,17585466,12,0.0,10.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/VanillaBERT_tiny_seed42/band_10p00,9.778556509286876,5,2026-07-27T10:40:30.804284Z
-stage1,LoopedBERT,tiny,256,42,12847930,12847930,12,0.5,10.0,/home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/LoopedBERT_tiny_seed42/band_10p00,9.815069566838394,5,2026-07-27T10:40:33.592506Z
