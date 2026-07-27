@@ -132,6 +132,54 @@ def _canonical_indian_category(raw) -> str:
     return _INDIAN_CATEGORY_ALIASES.get(raw.strip().lower(), raw.strip())
 
 
+def _first_target(x) -> str:
+    """Target columns may be a list-like (['black']) or a bracketed string."""
+    import numpy as np
+    if isinstance(x, (list, tuple, np.ndarray)):
+        return str(x[0]) if len(x) else ''
+    return str(x).strip("[]'\" ")
+
+
+def _build_pairs_from_mask_schema(df):
+    """
+    Build stereo/anti sentence pairs from the Indian-BhED / multilingual
+    'Sentence (with MASK) + Target_Stereotypical/Target_Anti-Stereotypical'
+    schema: replace the MASK slot with each target.
+    """
+    rows = []
+    for _, r in df.iterrows():
+        sent = str(r.get('Sentence', ''))
+        if 'MASK' not in sent:
+            continue
+        stereo_t = _first_target(r.get('Target_Stereotypical'))
+        anti_t = _first_target(r.get('Target_Anti-Stereotypical'))
+        if not stereo_t or not anti_t:
+            continue
+        rows.append({
+            'stereo': sent.replace('MASK', stereo_t),
+            'anti': sent.replace('MASK', anti_t),
+            'bias_type': r.get('bias_type', 'unknown'),
+        })
+    return pd.DataFrame(rows)
+
+
+def _is_predominantly_english(df, sample: int = 50, threshold: float = 0.6) -> bool:
+    """True if the sampled stereo sentences are mostly ASCII/Latin (English)."""
+    col = 'stereo' if 'stereo' in df.columns else df.columns[0]
+    texts = [str(t) for t in df[col].head(sample).tolist() if isinstance(t, str)]
+    if not texts:
+        return False
+    english = 0
+    for t in texts:
+        non_space = [c for c in t if not c.isspace()]
+        if not non_space:
+            continue
+        ascii_frac = sum(1 for c in non_space if ord(c) < 128) / len(non_space)
+        if ascii_frac >= 0.9:
+            english += 1
+    return (english / len(texts)) >= threshold
+
+
 def _write_indian_provenance(prov_dir, base_repo, n_pairs, category_counts):
     """
     Spec 7.3: provenance report for the India-centric instrument. Documents the
@@ -225,7 +273,37 @@ def download_indian_bias(namespace: str = 'Debk'):
                      "India-centric analysis will be missing.")
         return
 
-    df = _standardize_pair_columns(df, 'Indian bias dataset')
+    # Robust, NON-FATAL parsing. The India-centric instrument is a SECONDARY
+    # confirmation instrument (never gated on), so any schema/language problem
+    # here logs and returns rather than crashing the whole eval-datasets step.
+    try:
+        if 'stereo' in df.columns and 'anti' in df.columns:
+            pass
+        elif any(m in df.columns and l in df.columns for m, l in
+                 [('sent_more', 'sent_less'), ('stereo_sentence', 'anti_sentence'),
+                  ('stereotype', 'anti_stereotype'),
+                  ('sentence_stereotypical', 'sentence_antistereotypical')]):
+            df = _standardize_pair_columns(df, 'Indian bias dataset')
+        elif {'Sentence', 'Target_Stereotypical', 'Target_Anti-Stereotypical'} <= set(df.columns):
+            # Indian-BhED / multilingual "Target + MASK template" schema: build
+            # stereo/anti sentences by substituting each target into the MASK slot.
+            df = _build_pairs_from_mask_schema(df)
+        else:
+            raise ValueError(f"unrecognised Indian-bias schema {list(df.columns)}")
+    except Exception as e:
+        logger.error(f"Indian bias dataset from {used_repo} could not be parsed "
+                     f"({e}). Skipping the India-centric instrument (secondary, "
+                     f"never gated on); pipeline proceeds on Multi-CrowS-Pairs.")
+        return
+
+    # English-only pipeline guard: an English WordPiece model cannot score
+    # non-Latin-script text (e.g. the Bengali Debk mirror), so skip if the
+    # loaded pairs are not predominantly English.
+    if not _is_predominantly_english(df):
+        logger.error(f"Indian bias dataset from {used_repo} is not predominantly "
+                     f"English (English-only pipeline). Skipping. Provide an English "
+                     f"Indian-BhED source to enable the India-centric analysis.")
+        return
 
     # Normalise the category column into the 4 canonical categories.
     src_cat_col = 'bias_type' if 'bias_type' in df.columns else (
