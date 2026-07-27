@@ -1,0 +1,2 @@
+Model_Name,Dataset,Category,Overall_Stereotype_Preference_Rate,Shared_Token_Preference_Rate,Macro_Average_Preference_Rate,Mean_Effect_Size,Scored_Row_Count,Failed_Row_Count,External_Calibration,Timestamp
+prajjwal1/bert-tiny,multicrows,ALL,0.5954907161803713,0.568,0.5998091291230834,0.05300750178672223,1508,0,True,2026-07-27T10:41:11.933867Z

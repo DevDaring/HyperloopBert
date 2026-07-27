@@ -1,0 +1,7 @@
+{
+  "HyperloopBERT_tiny_seed42_streams4": true,
+  "HyperloopBERT_tiny_seed42_streams4_seq256": true,
+  "EarlyMergeHyperloopBERT_tiny_seed42_streams4": true,
+  "EarlyMergeHyperloopBERT_tiny_seed42_streams4_seq256": true,
+  "HyperloopBERT_base_seed42_streams2": true
+}

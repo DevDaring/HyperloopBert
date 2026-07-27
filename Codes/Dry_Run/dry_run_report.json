@@ -1,0 +1,38 @@
+{
+  "stage": "dataset",
+  "timestamp": "2026-07-27T09:34:07.900570Z",
+  "junctions": {
+    "env": {
+      "status": "PASS",
+      "providers": {
+        "hf": true,
+        "gemini": true,
+        "deepseek": true,
+        "mistral": true,
+        "openrouter": true
+      }
+    },
+    "hf_slices": {
+      "status": "FAIL",
+      "checks": {
+        "fineweb_edu": "PASS",
+        "multicrows": "FAIL (Dataset 'HuggingFaceM4/Multi-lingual-crows-pairs' doesn't exist on the Hub. If the repo is private or gated, make sure to log in with `huggingface-cli login`.)",
+        "winobias": "PASS"
+      }
+    },
+    "integrity_smoke": {
+      "status": "PASS",
+      "summary": {
+        "corrupt_files": 1,
+        "total_quarantined": 1,
+        "duplicate_files": 1,
+        "total_duplicates_removed": 1,
+        "manifest_ok": true
+      }
+    },
+    "tokenizer": {
+      "status": "SKIP (tokenizer not trained yet)"
+    }
+  },
+  "overall": "FAIL"
+}
