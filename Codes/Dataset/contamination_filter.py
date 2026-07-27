@@ -6,6 +6,15 @@ from typing import Set, List, Dict
 from tqdm import tqdm
 import pandas as pd
 
+# Aho-Corasick for O(document length) multi-substring matching. Without it the
+# short-phrase check is O(docs x phrases) -- ~13 docs/s on 36k phrases, i.e.
+# ~20h for a 1M-doc corpus. With it, the whole corpus filters in minutes.
+try:
+    import ahocorasick
+    _AHOCORASICK_AVAILABLE = True
+except ImportError:
+    _AHOCORASICK_AVAILABLE = False
+
 # Add parent dir to path to import common
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from common.logging_setup import setup_logging
@@ -117,22 +126,44 @@ def filter_training_data(input_path: str, output_path: str, eval_ngrams: Set[str
     flagged_examples = []
     
     logger.info(f"Filtering {input_path} to {output_path}...")
-    
+
+    # Build an Aho-Corasick automaton over the short phrases once (O(doc length)
+    # matching per document instead of O(phrases)). Falls back to the slow
+    # substring scan only if pyahocorasick is unavailable (logged loudly).
+    automaton = None
+    if short_phrases and _AHOCORASICK_AVAILABLE:
+        automaton = ahocorasick.Automaton()
+        for phrase in short_phrases:
+            if phrase:
+                automaton.add_word(phrase, phrase)
+        automaton.make_automaton()
+        logger.info(f"Aho-Corasick automaton built over {len(short_phrases)} short phrases.")
+    elif short_phrases and not _AHOCORASICK_AVAILABLE:
+        logger.warning("pyahocorasick not installed; short-phrase matching will be "
+                       "O(docs x phrases) and MUCH slower. `pip install pyahocorasick`.")
+
     with open(input_path, 'r', encoding='utf-8') as f_in, \
          open(output_path, 'w', encoding='utf-8') as f_out:
-         
+
         for line in tqdm(f_in, desc="Filtering Contamination"):
             total_docs += 1
             try:
                 obj = json.loads(line)
                 text = obj.get('text', '')
-                
+
                 doc_ngrams = extract_ngrams(text, n)
                 overlap = doc_ngrams.intersection(eval_ngrams)
 
                 if not overlap and short_phrases:
                     text_lower = text.lower()
-                    hits = [p for p in short_phrases if p in text_lower]
+                    if automaton is not None:
+                        hits = []
+                        for _, phrase in automaton.iter(text_lower):
+                            hits.append(phrase)
+                            if len(hits) >= 3:
+                                break
+                    else:
+                        hits = [p for p in short_phrases if p in text_lower]
                     if hits:
                         overlap = set(hits[:3])
 
