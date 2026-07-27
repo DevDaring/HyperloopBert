@@ -6,8 +6,17 @@ All five model architectures for the HyperloopBERT research pipeline.
 All are encoder-only, bidirectional, GELU, absolute position embeddings,
 MLM objective (15% masking: 80% [MASK] / 10% random / 10% original).
 All are compute-matched at effective depth 12 (12 transformer-layer
-applications per forward pass); they differ only in the number of
-*unique* weight sets they hold.
+applications per forward pass). Vanilla/Looped/ALBERT differ only in the
+number of *unique* transformer-layer weight sets they hold. HyperloopBERT
+additionally carries hyper-connection parameters (per-loop depth/width
+projections + CWSA head, ~2 * num_loops * num_streams * hidden^2) on top of
+LoopedBERT -- a capacity gap that must be DISCLOSED as a limitation in the
+paper. Note the stream-count ablation is conservative in this respect: extra
+parameters grow with n, i.e. AGAINST the predicted bias-reduction direction.
+VanillaBERT accepts num_layers (registry alias 'VanillaBERT6' = 6 layers) as
+a parameter-matched-to-LoopedBERT control for the "looped is just smaller"
+objection; it is NOT compute-matched (effective depth 6) and is analysed as
+an exploratory arm only.
 
 Architecture summary:
   VanillaBERT          12 independent BertLayer instances
@@ -28,13 +37,15 @@ Architecture summary:
 # CITATION: Saunshi, N. et al. (2025). Reasoning with Latent Thoughts:
 #           On the Power of Looped Transformers. arXiv.
 #           [memorization-reasoning tradeoff = SCH basis]
-# CITATION: Bae, J. et al. (2025). Looped encoder adaptation. [LoopedBERT]
+# CITATION: Bae, S. et al. (2025). Mixture-of-Recursions. arXiv:2507.10524. [LoopedBERT positioning]
+# CITATION: Geiping, J. et al. (2025). Huginn recurrent-depth. arXiv:2502.05171. [recurrent-depth pretraining]
 # CITATION: Zeitoun, A., Torroba-Hennigen, L., & Kim, Y. (2026).
 #           Hyperloop Transformers. arXiv:2604.21254. MIT.
 #           [HyperloopBERT base; ours = first controlled encoder-only adaptation + CWSA]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.
-#           [SCH counter-evidence: similar per-parameter memorization in looped models;
-#           address head-on in paper, do not refute a priori]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support: looped gains from knowledge MANIPULATION, not storage; per-parameter
+#           memorization preserved -- SCH is a claim about TOTAL capacity at matched quality.
+#           arXiv:2603.08391 is Frey et al. 2026, NOT Zhu -- prior attribution was an error.]
 # DATASET WARNING: Models trained here may encode stereotypical content by design
 #           for fairness research. Research/fairness-audit use only.
 
@@ -59,10 +70,16 @@ logger = logging.getLogger(__name__)
 
 VOCAB_SIZE: int = 30522
 MAX_POSITION_EMBEDDINGS: int = 512
+# Special-token ids of the PROJECT tokenizer (Dataset/train_tokenizer.py trains
+# with special_tokens=["[PAD]","[UNK]","[CLS]","[SEP]","[MASK]"] -> ids 0..4).
+# These are FALLBACKS ONLY: the tokenizer-based apply_mlm_mask convention reads
+# the ids from the tokenizer itself. (The bert-base-uncased values 101/102 that
+# previously stood here would have exempted two random wordpieces from masking
+# while masking [CLS]/[SEP] when the legacy tensor convention was used.)
 PAD_TOKEN_ID: int = 0
-MASK_TOKEN_ID: int = 4       # [MASK] is index 4 in the standard BERT vocab
-CLS_TOKEN_ID: int = 101
-SEP_TOKEN_ID: int = 102
+CLS_TOKEN_ID: int = 2
+SEP_TOKEN_ID: int = 3
+MASK_TOKEN_ID: int = 4
 
 SIZE_PRESETS: Dict[str, Dict[str, int]] = {
     "tiny": {
@@ -265,6 +282,7 @@ def apply_mlm_mask(
     pad_token_id: int = PAD_TOKEN_ID,
     cls_token_id: int = CLS_TOKEN_ID,
     sep_token_id: int = SEP_TOKEN_ID,
+    generator: Optional[torch.Generator] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Apply BERT-style MLM masking.
@@ -313,6 +331,16 @@ def apply_mlm_mask(
         _cls_token_id = tokenizer.cls_token_id if tokenizer.cls_token_id is not None else CLS_TOKEN_ID
         _sep_token_id = tokenizer.sep_token_id if tokenizer.sep_token_id is not None else SEP_TOKEN_ID
 
+    # keep_prob is the residual (1 - mask_prob - random_prob); validate rather
+    # than silently ignoring a caller who passes inconsistent probabilities.
+    expected_keep = 1.0 - mask_replace_prob - random_replace_prob
+    if abs(keep_prob - expected_keep) > 1e-6:
+        raise ValueError(
+            f"apply_mlm_mask: keep_prob={keep_prob} inconsistent with "
+            f"mask_prob={mask_replace_prob} + random_prob={random_replace_prob} "
+            f"(expected keep_prob={expected_keep})."
+        )
+
     labels = input_ids.clone()
 
     # Build a probability matrix; zero out special tokens and padding
@@ -328,12 +356,16 @@ def apply_mlm_mask(
     prob_matrix.masked_fill_(special_tokens_mask, 0.0)
 
     # Which positions are masked?
-    masked_positions = torch.bernoulli(prob_matrix).bool()
+    # An explicit generator makes the masking reproducible independently of the
+    # global RNG state (used for the FIXED validation masking so every model
+    # and seed is validated on the identical masked set).
+    masked_positions = torch.bernoulli(prob_matrix, generator=generator).bool()
     labels[~masked_positions] = -100  # only compute loss on masked positions
 
     # mask_replace_prob -> [MASK]
     replace_with_mask = torch.bernoulli(
-        torch.full(input_ids.shape, mask_replace_prob, device=input_ids.device)
+        torch.full(input_ids.shape, mask_replace_prob, device=input_ids.device),
+        generator=generator,
     ).bool() & masked_positions
     input_ids = input_ids.clone()
     input_ids[replace_with_mask] = _mask_token_id
@@ -342,7 +374,8 @@ def apply_mlm_mask(
     remaining = masked_positions & ~replace_with_mask
     remaining_random_prob = random_replace_prob / (1.0 - mask_replace_prob) if (1.0 - mask_replace_prob) > 0 else 0.5
     replace_with_random = torch.bernoulli(
-        torch.full(input_ids.shape, remaining_random_prob, device=input_ids.device)
+        torch.full(input_ids.shape, remaining_random_prob, device=input_ids.device),
+        generator=generator,
     ).bool() & remaining
     random_tokens = torch.randint(
         low=5,  # skip special tokens at indices 0-4
@@ -350,6 +383,7 @@ def apply_mlm_mask(
         size=input_ids.shape,
         dtype=input_ids.dtype,
         device=input_ids.device,
+        generator=generator,
     )
     input_ids[replace_with_random] = random_tokens[replace_with_random]
 
@@ -480,7 +514,7 @@ class VanillaBERT(_BaseModel):
         max_position_embeddings: int = MAX_POSITION_EMBEDDINGS,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
+        num_layers: int = 12,
     ) -> None:
         super().__init__()
         if size not in SIZE_PRESETS:
@@ -490,6 +524,12 @@ class VanillaBERT(_BaseModel):
         num_heads = preset["num_attention_heads"]
         intermediate = preset["intermediate_size"]
         self.vocab_size = vocab_size
+
+        # num_layers != 12 gives the parameter-matched (NOT compute-matched)
+        # Vanilla control; instance attrs shadow the class-level defaults.
+        self.effective_depth = num_layers
+        self.unique_layers = num_layers
+        self.shared_ratio = 0.0
 
         self.embeddings = BertEmbeddings(
             vocab_size=vocab_size,
@@ -505,9 +545,8 @@ class VanillaBERT(_BaseModel):
                 intermediate_size=intermediate,
                 dropout=dropout,
                 attention_probs_dropout_prob=attention_probs_dropout_prob,
-                use_bf16=use_bf16,
             )
-            for _ in range(12)
+            for _ in range(num_layers)
         ])
 
         self.pooler = BertPooler(self.hidden_size)
@@ -552,10 +591,10 @@ class VanillaBERT(_BaseModel):
 # CITATION: Saunshi, N. et al. (2025). Reasoning with Latent Thoughts:
 #           On the Power of Looped Transformers. arXiv.
 #           [memorization-reasoning tradeoff is the SCH theoretical basis]
-# CITATION: Bae, J. et al. (2025). Looped encoder adaptation. [LoopedBERT design]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.
-#           [counter-evidence: similar per-parameter memorization in looped models;
-#           addressed head-on in the paper, not refuted a priori]
+# CITATION: Bae, S. et al. (2025). Mixture-of-Recursions. arXiv:2507.10524. [LoopedBERT design/positioning]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support: manipulation not storage; per-parameter memorization preserved.
+#           arXiv:2603.08391 is Frey et al. 2026, not Zhu -- prior attribution corrected.]
 
 class LoopedBERT(_BaseModel):
     """
@@ -593,7 +632,6 @@ class LoopedBERT(_BaseModel):
         max_position_embeddings: int = MAX_POSITION_EMBEDDINGS,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
         if size not in SIZE_PRESETS:
@@ -617,7 +655,6 @@ class LoopedBERT(_BaseModel):
             intermediate_size=intermediate,
             dropout=dropout,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
-            use_bf16=use_bf16,
         )
 
         # begin: 2 independent layers
@@ -730,7 +767,6 @@ class ALBERTLoopedBERT(_BaseModel):
         max_position_embeddings: int = MAX_POSITION_EMBEDDINGS,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
         if size not in SIZE_PRESETS:
@@ -755,7 +791,6 @@ class ALBERTLoopedBERT(_BaseModel):
             intermediate_size=intermediate,
             dropout=dropout,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
-            use_bf16=use_bf16,
         )
 
         # Loop-index embeddings: one per loop (12 iterations)
@@ -812,9 +847,9 @@ class ALBERTLoopedBERT(_BaseModel):
 #           adaptation + CLS-Weighted Stream Aggregation (CWSA)]
 # CITATION: Saunshi, N. et al. (2025). Reasoning with Latent Thoughts:
 #           On the Power of Looped Transformers. arXiv.  [SCH / loop basis]
-# CITATION: Bae, J. et al. (2025). Looped encoder adaptation.  [LoopedBERT basis]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.
-#           [SCH counter-evidence; addressed head-on in the paper]
+# CITATION: Bae, S. et al. (2025). Mixture-of-Recursions. arXiv:2507.10524.  [LoopedBERT basis/positioning]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support; arXiv:2603.08391 is Frey et al. 2026, not Zhu -- prior attribution corrected.]
 
 class HyperloopBERT(_BaseModel):
     """
@@ -828,6 +863,10 @@ class HyperloopBERT(_BaseModel):
 
     Unique layers = 6.  Effective depth = 2 + 2*4 + 2 = 12.
     Shared_Ratio = 0.5.
+
+    NOTE: num_streams=1 keeps the (1*hidden -> hidden) projections, so it is
+    an APPROXIMATE collapse to LoopedBERT, not an architectural identity.
+    The n=1 ~= Looped sanity check must be stated with that caveat.
 
     Stream processing (per loop iteration):
         1. depth_proj  : linear(num_streams * hidden_size -> hidden_size)
@@ -843,7 +882,7 @@ class HyperloopBERT(_BaseModel):
         [CLS] representation.  The final hidden state is the weighted sum of
         streams, using these CLS-derived weights.
 
-        For each stream s:  score_s = sigmoid(cls_weight_linear(stream_s[:, 0, :]))
+        For each stream s:  score_s = cls_weight_linear(stream_s[:, 0, :])
         Weights are softmax-normalised across streams.
         Final hidden state: sum_s (weight_s * stream_s)
 
@@ -876,7 +915,6 @@ class HyperloopBERT(_BaseModel):
         num_streams: int = 4,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
         if size not in SIZE_PRESETS:
@@ -903,7 +941,6 @@ class HyperloopBERT(_BaseModel):
             intermediate_size=intermediate,
             dropout=dropout,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
-            use_bf16=use_bf16,
         )
 
         # begin: 2 independent layers
@@ -952,16 +989,36 @@ class HyperloopBERT(_BaseModel):
 
     def _init_hyperconnection_weights(self) -> None:
         """
-        Initialise depth/width projections so that at construction, the
-        model behaves approximately like LoopedBERT (identity flow through
-        streams).  Specifically: depth_proj is initialised to average the
-        streams (1/num_streams), width_proj to replicate output to all streams.
+        Initialise depth/width projections so that at construction the model
+        approximates LoopedBERT-like signal flow through the streams:
+
+        - depth_proj  = [I/n | I/n | ... | I/n] + eps
+          (the block input is the MEAN of the streams, i.e. the begin-block
+          output at initialisation, instead of a random projection that would
+          destroy the signal entering the shared middle block)
+        - width_proj  = [I; I; ...; I] + eps
+          (the block output is replicated residually into every stream)
+        - eps ~ N(0, 0.01) breaks the permutation symmetry between streams;
+          with an exactly symmetric init all streams would receive identical
+          gradients and remain identical forever, silently collapsing the
+          multi-stream architecture to a single stream.
         """
+        h = self.hidden_size
+        n = self.num_streams
+        eye = torch.eye(h)
         for depth_proj in self.depth_projs:
-            nn.init.normal_(depth_proj.weight, mean=0.0, std=0.02)
+            # weight shape: (h, n*h) -- horizontal stack of I/n blocks
+            with torch.no_grad():
+                base = torch.cat([eye / n for _ in range(n)], dim=1)
+                depth_proj.weight.copy_(base + torch.randn_like(depth_proj.weight) * 0.01)
             nn.init.zeros_(depth_proj.bias)
         for width_proj in self.width_projs:
-            nn.init.normal_(width_proj.weight, mean=0.0, std=0.02)
+            # weight shape: (n*h, h) -- vertical stack of I blocks, scaled by 0.5
+            # so the residual stream norm does not grow unbounded across the
+            # 4 loop iterations at initialisation.
+            with torch.no_grad():
+                base = torch.cat([eye * 0.5 for _ in range(n)], dim=0)
+                width_proj.weight.copy_(base + torch.randn_like(width_proj.weight) * 0.01)
             nn.init.zeros_(width_proj.bias)
         nn.init.normal_(self.cwsa_linear.weight, mean=0.0, std=0.02)
         nn.init.zeros_(self.cwsa_linear.bias)
@@ -1127,7 +1184,6 @@ class EarlyMergeHyperloopBERT(_BaseModel):
         merge_at: int = 2,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
         if size not in SIZE_PRESETS:
@@ -1156,7 +1212,6 @@ class EarlyMergeHyperloopBERT(_BaseModel):
             intermediate_size=intermediate,
             dropout=dropout,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
-            use_bf16=use_bf16,
         )
 
         self.begin_layers = nn.ModuleList([BertLayer(**layer_kwargs) for _ in range(2)])
@@ -1179,12 +1234,9 @@ class EarlyMergeHyperloopBERT(_BaseModel):
         # CWSA for the merge point (and end)
         self.cwsa_linear = nn.Linear(self.hidden_size, 1, bias=True)
 
-        # Initialise projections
-        for proj in list(self.depth_projs) + list(self.width_projs):
-            nn.init.normal_(proj.weight, mean=0.0, std=0.02)
-            nn.init.zeros_(proj.bias)
-        nn.init.normal_(self.cwsa_linear.weight, mean=0.0, std=0.02)
-        nn.init.zeros_(self.cwsa_linear.bias)
+        # Initialise projections (same identity-preserving scheme as HyperloopBERT
+        # so the early-merge intervention differs ONLY in the merge point)
+        HyperloopBERT._init_hyperconnection_weights(self)
 
         self.pooler = BertPooler(self.hidden_size)
         self.mlm_head = BertMLMHead(self.hidden_size, vocab_size)
@@ -1309,8 +1361,16 @@ class EarlyMergeHyperloopBERT(_BaseModel):
 # Factory function
 # ---------------------------------------------------------------------------
 
-_ARCHITECTURE_MAP: Dict[str, type] = {
+def _vanilla6(size: str = "base", **kwargs: Any) -> "VanillaBERT":
+    """Parameter-matched-to-LoopedBERT Vanilla control (6 unique layers,
+    effective depth 6 -- parameter-matched, NOT compute-matched)."""
+    kwargs.pop("num_layers", None)
+    return VanillaBERT(size=size, num_layers=6, **kwargs)
+
+
+_ARCHITECTURE_MAP: Dict[str, Any] = {
     "VanillaBERT": VanillaBERT,
+    "VanillaBERT6": _vanilla6,
     "LoopedBERT": LoopedBERT,
     "ALBERTLoopedBERT": ALBERTLoopedBERT,
     "HyperloopBERT": HyperloopBERT,
@@ -1335,7 +1395,7 @@ def build_model(
         One of 'tiny', 'small', 'base'.
     **kwargs :
         Additional keyword arguments passed to the model constructor
-        (e.g. num_streams, merge_at, dropout, use_bf16).
+        (e.g. num_streams, merge_at, dropout).
 
     Returns
     -------

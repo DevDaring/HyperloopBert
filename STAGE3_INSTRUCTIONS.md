@@ -275,7 +275,10 @@ as the next action; do not perform it here.
 # CITATION: Zeitoun, A., Torroba-Hennigen, L., & Kim, Y. (2026). Hyperloop Transformers.
 #           arXiv:2604.21254. MIT.   [Hyperloop base; ours = first encoder-only adaptation + CWSA]
 # CITATION: Saunshi, N. et al. (2025). On the Power of Looped Transformers. arXiv. [SCH basis]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.  [SCH counter-evidence; address in discussion]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support: manipulation not storage. arXiv:2603.08391 is Frey 2026, not Zhu.]
+# CITATION: Zhu, D. et al. (2025). Hyper-Connections. ICLR 2025; Xie, Z. et al. (2025). MHC. arXiv:2512.24880.
+#           [hyper-connection basis + stability check reported in stream_analysis_stage3.py]
 # CITATION: Nadeem, M. et al. (2021). StereoSet. ACL.  [appendix only]
 # CKA reference: Kornblith, S. et al. (2019). Similarity of Neural Network Representations
 #               Revisited (CKA). ICML.

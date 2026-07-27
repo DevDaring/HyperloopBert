@@ -11,34 +11,50 @@ import argparse
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from common.logging_setup import setup_logging
 from common.architectures import build_model, get_model_info
-from common.bias_metrics import score_bias_pair, score_winobias, passes_quality_screen
+from common.bias_metrics import score_bias_pair, score_winobias_masked_pronoun, passes_quality_screen
 from common.io_schemas import BIAS_EXAMPLE_COLUMNS, BIAS_SUMMARY_BASE_COLUMNS, WINOBIAS_SUMMARY_COLUMNS
 from common.stats_engine import bootstrap_ci
 import Stage2.config_stage2 as cfg
-from Stage1.eval_bias_stage1 import extract_model_metadata, get_snapshot_mlm_quality
+from Stage1.eval_bias_stage1 import (
+    extract_model_metadata,
+    get_snapshot_mlm_quality,
+    get_snapshot_validation_loss,
+)
 
 logger = setup_logging('eval_bias_stage2')
 
 def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info, out_progress_path):
     """Score a dataset and save progress (includes SS-PLL)."""
+    missing = [c for c in ('stereo', 'anti') if c not in df.columns]
+    if missing:
+        raise ValueError(
+            f"Dataset '{dataset_name}' is missing required column(s) {missing}. "
+            f"Available columns: {list(df.columns)}. Re-run Dataset/download_eval_datasets.py."
+        )
     results = []
-    
-    start_idx = 0
+
+    # Resume: retry previously-FAILED rows (null Effect_Size) instead of
+    # freezing them behind a max(Row_Index) cursor. Only successfully-scored
+    # rows are treated as complete.
+    completed = set()
     if os.path.exists(out_progress_path):
         try:
             existing_df = pd.read_csv(out_progress_path)
             if not existing_df.empty and 'Row_Index' in existing_df.columns:
-                start_idx = existing_df['Row_Index'].max() + 1
-                logger.info(f"Resuming {dataset_name} from index {start_idx}")
+                done = existing_df.dropna(subset=['Effect_Size'])
+                completed = set(done['Row_Index'].astype(int).tolist())
+                n_failed = int(existing_df['Row_Index'].nunique() - len(completed))
+                logger.info(f"Resuming {dataset_name}: {len(completed)} rows already "
+                            f"scored; {n_failed} unscored/failed rows will be retried.")
         except Exception:
             pass
-            
+
     batch_results = []
-    
+
     for idx, row in df.iterrows():
-        if idx < start_idx:
+        if idx in completed:
             continue
-            
+
         stereo = row['stereo']
         anti = row['anti']
         category = row.get('bias_type', row.get('category', 'unknown'))
@@ -58,7 +74,7 @@ def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info
             'SS_PLL_AntiStereotypical': scores['SS_PLL_AntiStereotypical'],
             'Effect_Size': scores['Effect_Size'],
             'Stereotype_Preferred': scores['Stereotype_Preferred'],
-            'Stage': cfg.STAGE,
+            'Stage': meta.get('Stage', cfg.STAGE),
             'Architecture': meta['Architecture'],
             'Model_Size': meta['Model_Size'],
             'Hidden_Size': model_info['Hidden_Size'],
@@ -71,7 +87,7 @@ def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info
             'Band': meta['Band'],
             'Token_Marker': meta['Token_Marker'],
             'External_Calibration': False,
-            'Needs_Review': False,
+            'Needs_Review': scores['PLL_Stereotypical'] is None or scores['PLL_AntiStereotypical'] is None,
             'Timestamp': datetime.utcnow().isoformat() + 'Z'
         }
         
@@ -102,10 +118,21 @@ def compute_summary(df, meta, model_info, summary_path):
         return
         
     dataset = df['Dataset'].iloc[0]
+
+    # Keep the last occurrence per row: a retried row is appended after its
+    # earlier failed attempt, so dedup keeps failed/scored counts exact.
+    if 'Row_Index' in df.columns:
+        df = df.drop_duplicates(subset=['Row_Index'], keep='last')
+
     valid_df = df.dropna(subset=['Effect_Size', 'Stereotype_Preferred'])
+    failed_count = int(len(df) - len(valid_df))
+    tied_count = int((valid_df['Effect_Size'] == 0).sum())
+    if failed_count:
+        logger.warning(f"{dataset}: {failed_count} of {len(df)} pairs FAILED scoring "
+                       f"(Needs_Review) and are excluded from the denominators.")
     if valid_df.empty:
         return
-        
+
     overall_pref = valid_df['Stereotype_Preferred'].mean()
     mean_effect = valid_df['Effect_Size'].mean()
     _, ci_low, ci_high = bootstrap_ci(valid_df['Effect_Size'].tolist(), seed=meta['Seed'])
@@ -123,7 +150,7 @@ def compute_summary(df, meta, model_info, summary_path):
             ss_agreement = (pll_pref == ss_pref).mean()
     
     summary_row = {
-        'Stage': cfg.STAGE,
+        'Stage': meta.get('Stage', cfg.STAGE),
         'Architecture': meta['Architecture'],
         'Model_Size': meta['Model_Size'],
         'Hidden_Size': model_info['Hidden_Size'],
@@ -134,12 +161,18 @@ def compute_summary(df, meta, model_info, summary_path):
         'Shared_Ratio': model_info['Shared_Ratio'],
         'Band': meta['Band'],
         'Token_Marker': meta['Token_Marker'],
+        'Validation_Loss': meta.get('Validation_Loss'),
+        'Stream_Count': meta.get('Stream_Count'),
+        'Merge_At': meta.get('Merge_At'),
         'Overall_Stereotype_Preference_Rate': overall_pref,
         'Macro_Average_Preference_Rate': macro_pref,
         'Mean_Effect_Size': mean_effect,
         'Bootstrap_CI_Low': ci_low,
         'Bootstrap_CI_High': ci_high,
         'PLL_SS_PLL_Agreement': ss_agreement,
+        'Scored_Row_Count': int(len(valid_df)),
+        'Failed_Row_Count': failed_count,
+        'Tied_Pair_Count': tied_count,
         'Timestamp': datetime.utcnow().isoformat() + 'Z'
     }
     
@@ -151,44 +184,42 @@ def compute_summary(df, meta, model_info, summary_path):
     df_sum.to_csv(summary_path, mode=mode, header=header, index=False)
 
 def eval_winobias(model, tokenizer, device, winobias_dir, meta, model_info, summary_path):
-    """Evaluate WinoBias and save summary."""
+    """
+    Evaluate WinoBias type-1 pro/anti splits with the masked-pronoun protocol
+    (Kurita et al. 2019): mask the gold pronoun, compare probability mass of
+    same-gender vs opposite-gender pronouns. Accuracy on the pro split minus
+    accuracy on the anti split is the stereotype gap.
+
+    Expects preprocessed CSVs with 'sentence' and 'pronoun' columns, produced
+    by Dataset/download_eval_datasets.py.
+    """
     pro_path1 = os.path.join(winobias_dir, 'winobias_type1_pro.csv')
     anti_path1 = os.path.join(winobias_dir, 'winobias_type1_anti.csv')
-    
+
     if not (os.path.exists(pro_path1) and os.path.exists(anti_path1)):
         logger.warning(f"WinoBias data missing in {winobias_dir}")
         return
-        
+
     pro_df = pd.read_csv(pro_path1)
     anti_df = pd.read_csv(anti_path1)
-    
-    # We expect WinoBias CSVs to have columns that allow us to formulate two options.
-    # WinoBias HuggingFace dataset gives: document, tokens, coreference_clusters
-    # For a simple PLL evaluation, we might need a specific prompt template, 
-    # but score_winobias expects [(opt1, opt2), ...].
-    # Assuming standard preprocessing to yield (correct_sentence, incorrect_sentence)
-    # If the CSV doesn't have these, we'd need to generate them. For this pipeline,
-    # we assume the CSV has 'correct_sentence' and 'incorrect_sentence'.
-    
-    pro_sentences = []
-    if 'correct_sentence' in pro_df.columns and 'incorrect_sentence' in pro_df.columns:
-        for _, row in pro_df.iterrows():
-            pro_sentences.append(((row['correct_sentence'], row['incorrect_sentence']), 0))
-            
-    anti_sentences = []
-    if 'correct_sentence' in anti_df.columns and 'incorrect_sentence' in anti_df.columns:
-        for _, row in anti_df.iterrows():
-            anti_sentences.append(((row['correct_sentence'], row['incorrect_sentence']), 0))
-            
-    if not pro_sentences or not anti_sentences:
-        logger.warning("WinoBias CSV format not recognized for simple PLL eval. Skipping.")
+
+    for name, df in (('pro', pro_df), ('anti', anti_df)):
+        if 'sentence' not in df.columns or 'pronoun' not in df.columns:
+            logger.warning(
+                f"WinoBias {name} CSV lacks 'sentence'/'pronoun' columns "
+                f"(found {list(df.columns)}). Re-run Dataset/download_eval_datasets.py. Skipping.")
+            return
+
+    logger.info("Scoring WinoBias (masked-pronoun protocol)...")
+    pro_acc = score_winobias_masked_pronoun(model, tokenizer, pro_df, device)
+    anti_acc = score_winobias_masked_pronoun(model, tokenizer, anti_df, device)
+
+    if pro_acc is None or anti_acc is None:
+        logger.warning("WinoBias scoring produced no valid items. Skipping summary row.")
         return
-        
-    logger.info("Scoring WinoBias...")
-    scores = score_winobias(model, tokenizer, pro_sentences, anti_sentences, device)
-    
+
     res_row = {
-        'Stage': cfg.STAGE,
+        'Stage': meta.get('Stage', cfg.STAGE),
         'Architecture': meta['Architecture'],
         'Model_Size': meta['Model_Size'],
         'Hidden_Size': model_info['Hidden_Size'],
@@ -197,14 +228,21 @@ def eval_winobias(model, tokenizer, device, winobias_dir, meta, model_info, summ
         'Total_Parameters': model_info['Total_Parameters'],
         'Effective_Depth': model_info['Effective_Depth'],
         'Shared_Ratio': model_info['Shared_Ratio'],
-        'Pro_Stereotype_Accuracy': scores['Pro_Stereotype_Accuracy'],
-        'Anti_Stereotype_Accuracy': scores['Anti_Stereotype_Accuracy'],
-        'Pro_Anti_Gap': scores['Pro_Anti_Gap'],
+        'Band': meta['Band'],
+        'Token_Marker': meta['Token_Marker'],
+        'Stream_Count': meta.get('Stream_Count'),
+        'Pro_Stereotype_Accuracy': pro_acc,
+        'Anti_Stereotype_Accuracy': anti_acc,
+        'Pro_Anti_Gap': pro_acc - anti_acc,
         'Timestamp': datetime.utcnow().isoformat() + 'Z'
     }
-    
-    df_sum = pd.DataFrame([res_row])[WINOBIAS_SUMMARY_COLUMNS]
-    
+
+    df_sum = pd.DataFrame([res_row])
+    for col in WINOBIAS_SUMMARY_COLUMNS:
+        if col not in df_sum.columns:
+            df_sum[col] = None
+    df_sum = df_sum[WINOBIAS_SUMMARY_COLUMNS]
+
     os.makedirs(os.path.dirname(summary_path), exist_ok=True)
     mode = 'a' if os.path.exists(summary_path) else 'w'
     header = not os.path.exists(summary_path)
@@ -269,8 +307,10 @@ def main():
             logger.info(f"Skipping {cp_dir} - failed quality screen (PP={pp})")
             continue
             
-        meta['Validation_Loss'] = None 
-        
+        meta['Validation_Loss'] = get_snapshot_validation_loss(
+            results_dir, meta['Architecture'], meta['Model_Size'],
+            meta['Seed'], meta['Band'], meta['Token_Marker'])
+
         logger.info(f"Evaluating model: {cp_dir}")
         
         model = build_model(meta['Architecture'], meta['Model_Size'])
@@ -291,7 +331,8 @@ def main():
             out_progress_path = os.path.join(results_dir, 'bias', prog_filename)
             summary_path = os.path.join(results_dir, 'bias', f"{ds_name}_summary.csv")
             
-            if args.resume and os.path.exists(summary_path):
+            # Unconditional dedup: never append duplicate summary rows on re-run
+            if os.path.exists(summary_path):
                 sum_df = pd.read_csv(summary_path)
                 mask = (sum_df['Architecture'] == meta['Architecture']) & \
                        (sum_df['Model_Size'] == meta['Model_Size']) & \
@@ -300,7 +341,7 @@ def main():
                     mask = mask & (sum_df['Band'] == meta['Band'])
                 else:
                     mask = mask & (sum_df['Token_Marker'] == meta['Token_Marker'])
-                    
+
                 if not sum_df[mask].empty:
                     logger.info(f"Skipping {ds_name} for {prog_filename} - summary already exists.")
                     continue
@@ -313,13 +354,18 @@ def main():
             
         # WinoBias
         wino_sum_path = os.path.join(results_dir, 'bias', 'winobias_summary.csv')
-        # Skip logic
+        # Skip logic: keyed on the full snapshot identity including Band/Marker
         skip_wino = False
-        if args.resume and os.path.exists(wino_sum_path):
+        if os.path.exists(wino_sum_path):
             sum_df = pd.read_csv(wino_sum_path)
             mask = (sum_df['Architecture'] == meta['Architecture']) & \
                    (sum_df['Model_Size'] == meta['Model_Size']) & \
                    (sum_df['Seed'] == meta['Seed'])
+            if 'Band' in sum_df.columns:
+                if meta['Band'] is not None:
+                    mask = mask & (sum_df['Band'] == meta['Band'])
+                elif 'Token_Marker' in sum_df.columns:
+                    mask = mask & (sum_df['Token_Marker'] == meta['Token_Marker'])
             if not sum_df[mask].empty:
                 skip_wino = True
                 

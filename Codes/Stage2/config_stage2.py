@@ -2,9 +2,14 @@ import os
 
 # Stage 2 Configuration
 STAGE = 'stage2'
+# VanillaBERT6 = 6-layer Vanilla, parameter-matched to LoopedBERT's unique
+# parameter count (NOT compute-matched). Exploratory control for the
+# "looped is just a smaller model" objection; excluded from the confirmatory
+# family and from primary-band computation.
 ARCHITECTURES = ['VanillaBERT', 'LoopedBERT', 'ALBERTLoopedBERT']
+EXPLORATORY_ARCHITECTURES = ['VanillaBERT6']
 SIZES = ['small', 'base']  # base-ish primary + small scale check
-DEFAULT_SEEDS = [42, 43, 44]  # 3-5 seeds
+DEFAULT_SEEDS = [42, 43, 44, 45, 46]  # supports --seeds up to 5
 
 MAX_TOKENS = 400_000_000  # 400M token budget for Stage 2
 TOKEN_MARKERS = [100_000_000, 200_000_000, 400_000_000]
@@ -47,8 +52,25 @@ GLUE_LR = 2e-5
 GLUE_EPOCHS = 3
 GLUE_BATCH_SIZE = 32
 
-# External calibration models
-EXTERNAL_MODELS = ['bert-base-uncased', 'albert-base-v2', 'answerdotai/ModernBERT-base']
+# External calibration models.
+# roberta-base replaces answerdotai/ModernBERT-base: ModernBERT requires
+# transformers >= 4.48 (project pin: 4.46.0) and would silently vanish from
+# the calibration evidence; roberta-base loads under the pin and has a
+# published CrowS-Pairs score (Nangia et al. 2020) to calibrate against.
+EXTERNAL_MODELS = ['bert-base-uncased', 'albert-base-v2', 'roberta-base']
+
+# Iso-loss matching tolerance for contrasts: pairs whose actual validation
+# losses differ by more than this (in nats) are flagged in the analysis
+# output. Reported, not silently dropped.
+ISO_LOSS_TOLERANCE = 0.05
+
+# Adaptive validation cadence near an uncrossed band (bounds band overshoot)
+VAL_FINE_EVERY_STEPS = 500
+VAL_FINE_MARGIN = 0.15
+
+# GLUE quality screen (spec 9.1): configs with GLUE average below this are
+# flagged and excluded from confirmatory contrasts.
+GLUE_QUALITY_SCREEN = 55.0
 
 # Directories (relative to project root)
 RESULTS_DIR = 'results/stage2'

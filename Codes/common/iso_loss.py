@@ -36,7 +36,8 @@ class IsoBandTracker:
         """
         Linearly interpolate the exact step where the band was crossed.
         """
-        if prev_loss == curr_loss:
+        import math
+        if prev_loss == curr_loss or math.isinf(prev_loss):
             return curr_step
             
         fraction = (prev_loss - band) / (prev_loss - curr_loss)
@@ -50,12 +51,13 @@ class IsoBandTracker:
         Returns a list of bands that were just crossed.
         """
         crossed_now = []
-        
+
         if not self.history:
-            self.history.append((step, val_loss))
-            return crossed_now
-            
-        prev_step, prev_loss = self.history[-1]
+            # Treat the pre-training state as loss = +inf so a first validation
+            # that is already below a band still fires the snapshot.
+            prev_step, prev_loss = step, float('inf')
+        else:
+            prev_step, prev_loss = self.history[-1]
         self.history.append((step, val_loss))
         
         for band in self.target_bands:
@@ -83,6 +85,21 @@ class IsoBandTracker:
                     
         return crossed_now
         
+    def state_dict(self) -> Dict:
+        """Serialisable tracker state for mid-run checkpointing."""
+        return {
+            'crossed_bands': {str(band): crossed for band, crossed in self.crossed_bands.items()},
+            'history': list(self.history),
+        }
+
+    def load_state_dict(self, state: Dict) -> None:
+        """Restore tracker state saved by state_dict() (resume support)."""
+        for band_str, crossed in state.get('crossed_bands', {}).items():
+            band = float(band_str)
+            if band in self.crossed_bands:
+                self.crossed_bands[band] = bool(crossed)
+        self.history = [tuple(item) for item in state.get('history', [])]
+
     def get_crossed_bands(self) -> List[float]:
         """Return list of bands that have been crossed."""
         return [band for band, crossed in self.crossed_bands.items() if crossed]
@@ -92,43 +109,71 @@ class IsoBandTracker:
         return [band for band, crossed in self.crossed_bands.items() if not crossed]
 
 
-def compute_primary_band(mlm_summary_df, architecture_list: List[str], size: str) -> Optional[float]:
+def compute_primary_band(mlm_summary_df, architecture_list: List[str], size: str,
+                         default_stream_count: int = 4,
+                         logger_obj=None) -> Optional[float]:
     """
     Determine the primary comparison band for a given model size.
-    The primary band is the lowest (deepest) validation loss band that ALL
-    architectures in the architecture_list have successfully crossed for this size.
+
+    The primary band is the lowest (deepest) validation-loss band that EVERY
+    architecture crossed for EVERY seed that all architectures share. Pooling
+    crossings across seeds (the previous behaviour) could select a band where
+    no single seed had full architecture coverage, silently degrading the
+    paired contrast to n=1.
+
+    Ablation rows (Merge_At set, or Stream_Count set and != default) are
+    excluded so stream-count / early-merge arms cannot influence the primary
+    band.
     """
     if mlm_summary_df is None or mlm_summary_df.empty:
         return None
-        
-    # Filter for the specific size
+
     df_size = mlm_summary_df[mlm_summary_df['Model_Size'] == size]
     if df_size.empty:
         return None
-        
-    arch_bands = {}
+
+    # Exclude ablation identities from primary-band computation
+    if 'Merge_At' in df_size.columns:
+        df_size = df_size[df_size['Merge_At'].isna()]
+    if 'Stream_Count' in df_size.columns:
+        df_size = df_size[df_size['Stream_Count'].isna() |
+                          (df_size['Stream_Count'] == default_stream_count)]
+
+    # Seeds present for every architecture
+    seed_sets = []
     for arch in architecture_list:
         arch_df = df_size[df_size['Architecture'] == arch]
-        # Get unique bands crossed by this architecture (ignore 'None' or empty)
-        bands = arch_df['Band'].dropna().unique()
-        # Convert to float and filter out any token markers like '50M'
-        float_bands = []
-        for b in bands:
-            try:
-                float_bands.append(float(b))
-            except ValueError:
-                pass
-        arch_bands[arch] = set(float_bands)
-        
-    # Find the intersection of bands crossed by ALL architectures
-    if not arch_bands:
+        seed_sets.append(set(arch_df['Seed'].dropna().unique()))
+    if not seed_sets:
         return None
-        
-    common_bands = set.intersection(*arch_bands.values())
-    
+    common_seeds = set.intersection(*seed_sets)
+    if not common_seeds:
+        if logger_obj:
+            logger_obj.warning(f"compute_primary_band({size}): no seed shared by "
+                               f"all architectures {architecture_list}.")
+        return None
+
+    # Bands crossed by every (architecture, seed) combination
+    per_combo_bands = []
+    for arch in architecture_list:
+        for seed in common_seeds:
+            combo = df_size[(df_size['Architecture'] == arch) & (df_size['Seed'] == seed)]
+            bands = set()
+            for b in combo['Band'].dropna().unique():
+                try:
+                    bands.add(float(b))
+                except (TypeError, ValueError):
+                    pass
+            per_combo_bands.append(bands)
+
+    common_bands = set.intersection(*per_combo_bands) if per_combo_bands else set()
     if not common_bands:
+        if logger_obj:
+            logger_obj.warning(f"compute_primary_band({size}): no band crossed by "
+                               f"every (architecture, seed); walk the band list "
+                               f"shallower or extend training.")
         return None
-        
+
     # The primary band is the lowest loss (minimum value)
     return min(common_bands)
 

@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import logging
@@ -19,7 +19,23 @@ def download_fineweb_edu(output_path: str, target_docs: int = 5_000_000):
     plenty for our max 500M token Stage 3 budget.
     """
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
+
+    # RERUN-LEAKAGE GUARD: once the validation split has been carved out of
+    # train_raw.jsonl, re-downloading would silently re-include the validation
+    # documents in training (the carve step refuses to re-run because
+    # validation.jsonl exists). Hard-stop instead of corrupting the split.
+    val_path = os.path.join(os.path.dirname(output_path), 'validation.jsonl')
+    if os.path.exists(output_path) and os.path.exists(val_path):
+        logger.error(
+            f"{output_path} already exists AND the validation split has been "
+            f"carved out. Re-downloading would re-include validation documents "
+            f"in training (leakage). If you truly intend to rebuild the corpus, "
+            f"delete BOTH {output_path} and {val_path} first.")
+        raise SystemExit(1)
+    if os.path.exists(output_path):
+        logger.info(f"{output_path} already exists; skipping download.")
+        return
+
     hf_token = env_loader.get('HF_KEY')
     if not hf_token:
         logger.warning("HF_KEY not found in environment. Attempting download without authentication.")
@@ -54,7 +70,7 @@ def download_fineweb_edu(output_path: str, target_docs: int = 5_000_000):
     logger.info(f"Successfully downloaded {docs_written} documents.")
     
 if __name__ == "__main__":
-    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     OUTPUT_PATH = os.path.join(DATA_DIR, 'fineweb-edu', 'train_raw.jsonl')
     
     # 5M docs * ~500 tokens/doc = ~2.5B tokens

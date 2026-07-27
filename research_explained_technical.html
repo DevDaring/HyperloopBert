@@ -240,7 +240,7 @@
         <tr><td>ALBERT-Looped</td><td>1 shared layer applied &times;12</td><td>1</td><td>no embedding factorisation</td></tr>
         <tr><td>Hyperloop-BERT</td><td>looped core + 4 parallel streams</td><td>6</td><td>hyper-connections + CWSA</td></tr>
       </table></div>
-      <p class="mini">References: Devlin 2019 (Vanilla); Saunshi 2025 &amp; Bae 2025 (Looped); Lan 2020 (ALBERT); Zeitoun et al. 2026, arXiv:2604.21254 (Hyperloop, encoder adaptation + CWSA is ours).</p>
+      <p class="mini">References: Devlin 2019 (Vanilla); Saunshi 2025 &amp; Bae et al. 2025, arXiv:2507.10524 (Looped / Mixture-of-Recursions); Geiping et al. 2025, arXiv:2502.05171 (Huginn, recurrent-depth pretraining); Lan 2020 (ALBERT); Zeitoun et al. 2026, arXiv:2604.21254 (Hyperloop, encoder adaptation + CWSA is ours).</p>
     </div>
   </section>
 
@@ -257,7 +257,7 @@
       <div class="ex"><span class="label">Example B</span><p>Learning the <b>principle</b> rather than memorising the <b>answer key</b>.</p></div>
     </div>
     <div class="box tech"><span class="label">Under the hood &middot; the hypothesis</span>
-      <p>This is the <b>Stereotype Consolidation Hypothesis (SCH)</b>: weight-sharing induces a memorisation&ndash;reasoning trade-off (Saunshi et al., 2025) that suppresses encoding of stereotypical associations. It is treated as an <b>open question</b> &mdash; published counter-evidence exists (Zhu et al., 2025, arXiv:2603.08391, reporting similar per-parameter memorisation in looped models) and is addressed directly rather than dismissed.</p>
+      <p>This is the <b>Stereotype Consolidation Hypothesis (SCH)</b>: weight-sharing induces a memorisation&ndash;reasoning trade-off (Saunshi et al., 2025) that suppresses encoding of stereotypical associations. It is treated as an <b>open question</b>, sharpened by the 2025&ndash;2026 looped-LM literature: Ouro (Zhu et al., 2025, arXiv:2510.25741) shows looped gains come from knowledge <em>manipulation</em>, not increased storage, and Frey et al. (2026, arXiv:2603.08391) find looping aids manipulation while <em>per-parameter</em> memorisation is preserved. SCH is therefore stated precisely as a claim about <b>total</b> stereotype-storage capacity at matched quality (not per-parameter memorisation), with a stated failure mode: high-frequency corpus stereotypes will still leak in. Consistent with this mechanistic picture, stereotypes localise to small neuron subsets in BERT (Voria et al., 2026, arXiv:2601.05663).</p>
     </div>
   </section>
 
@@ -274,7 +274,7 @@
       <div class="ex"><span class="label">Example B</span><p>Comparing students only <b>after equal study hours</b>.</p></div>
     </div>
     <div class="box tech"><span class="label">Under the hood &middot; iso-loss matching</span>
-      <p>&ldquo;Equal skill&rdquo; = <b>matched validation loss (iso-loss / iso-perplexity)</b>. During training, whenever a model first crosses a target validation-loss band (adaptively chosen, e.g. <code>4.0 / 3.7 / 3.4 / 3.1</code> for small models), a checkpoint is saved and bias is measured there. Bias is compared <b>band-by-band</b>, never at a fixed token count. A quality screen also drops any snapshot with <b>pseudo-perplexity &gt; 60</b> (a model that has learned nothing cannot show meaningful bias). This single control is the spine of the whole program.</p>
+      <p>&ldquo;Equal skill&rdquo; = <b>matched validation loss (iso-loss / iso-perplexity)</b>. During training, whenever a model first crosses a target validation-loss band (adaptively chosen, e.g. <code>4.0 / 3.7 / 3.4 / 3.1</code> for small models), a checkpoint is saved and bias is measured there. Bias is compared <b>band-by-band</b>, never at a fixed token count. Three hardening details make the matching auditable: (i) validation runs on a <b>fine cadence (every 500 steps)</b> once a model is within 0.15 nat of the next band, bounding overshoot; (ii) every crossing is registered with its <b>actual loss</b> in <code>iso_checkpoints/index.csv</code>; (iii) every contrast reports the per-seed <b>loss gap</b> and flags gaps above a 0.05-nat tolerance. Validation itself uses a <b>fixed masked set</b> (one dedicated RNG seed), so every architecture and seed is scored on identical masked tokens. A quality screen also drops any snapshot with <b>pseudo-perplexity &gt; 60</b>. This single control is the spine of the whole program.</p>
     </div>
   </section>
 
@@ -382,7 +382,7 @@
       <div class="ex"><span class="label">Example B</span><p>A founder <b>killing a product</b> after a flopped prototype.</p></div>
     </div>
     <div class="box tech"><span class="label">Under the hood &middot; the decision rule</span>
-      <p>Each stage&rsquo;s analysis script prints a verdict from explicit thresholds on the <b>primary instrument</b> (Multi-CrowS-Pairs, PLL, iso-loss matched). Stage 1: <code>GO / EXTEND-SEEDS / NO-GO</code> on a per-size preference-rate gap. Stage 2: <code>GO / PAUSE / NO-GO</code> on monotonicity + Holm-corrected significance + PLL&ndash;SS-PLL agreement. Stage 3: <code>GO-PUBLISH-FULL / GO-PUBLISH-NULL / INVESTIGATE</code>.</p>
+      <p>Each stage&rsquo;s analysis script prints a verdict from explicit thresholds on the <b>primary instrument</b> (Multi-CrowS-Pairs, PLL, iso-loss matched). The gating test everywhere is the <b>item-level paired permutation</b> (sentence pairs are the resampling unit), which has real power at 3 seeds; seed-level tests are robustness only. A <b>capability gate</b> runs first: VanillaBERT must show statistically detectable baseline bias (CI above chance) before any contrast is interpreted &mdash; an undertrained model cannot be shown to &ldquo;reduce&rdquo; stereotypes it never learned. Stage 1: <code>GO / EXTEND-SEEDS / NO-GO / CAPABILITY-FAIL</code>. Stage 2: <code>GO / PAUSE / NO-GO</code> on sharing-spectrum direction + Holm-corrected significance + SS-PLL direction agreement + calibration anchors. Stage 3: <code>GO / PUBLISH-NULL / INVESTIGATE</code>, including the stream-count monotonicity check and the n=1&nbsp;&asymp;&nbsp;Looped sanity check; the stream-disagreement correlation is corroborating only and never licenses the word &ldquo;causal&rdquo;.</p>
     </div>
   </section>
 
@@ -421,12 +421,13 @@
     <div class="tbl-wrap"><table class="in-tech">
       <tr><th>Model</th><th>Unique blocks</th><th>Stage 1</th><th>Stage 2</th><th>Stage 3</th><th>Reference</th></tr>
       <tr><td>Vanilla-BERT</td><td>12</td><td>yes</td><td>yes</td><td>yes</td><td>Devlin 2019</td></tr>
-      <tr><td>Looped-BERT</td><td>6</td><td>yes</td><td>yes</td><td>yes</td><td>Saunshi 2025; Bae 2025</td></tr>
+      <tr><td>Looped-BERT</td><td>6</td><td>yes</td><td>yes</td><td>yes</td><td>Saunshi 2025; Bae et al. 2025 (arXiv:2507.10524)</td></tr>
       <tr><td>ALBERT-Looped</td><td>1</td><td>&ndash;</td><td>yes</td><td>yes</td><td>Lan 2020</td></tr>
       <tr><td>Hyperloop-BERT + CWSA</td><td>6</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>Zeitoun 2026</td></tr>
-      <tr><td>Stream ablation n=1/2/4</td><td>6</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>this work</td></tr>
-      <tr><td>Early-Merge Hyperloop</td><td>6</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>this work</td></tr>
-      <tr><td>Public models (calibration)</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>yes</td><td>BERT / ALBERT / ModernBERT</td></tr>
+      <tr><td>Stream ablation n=1/2/4 (equal token budgets)</td><td>6</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>this work</td></tr>
+      <tr><td>Early-Merge Hyperloop (eval-time OOD intervention on trained n=4 weights; never trained)</td><td>6</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>this work</td></tr>
+      <tr><td>Vanilla-6 (parameter-matched to Looped; exploratory control)</td><td>6</td><td>&ndash;</td><td>yes</td><td>&ndash;</td><td>this work</td></tr>
+      <tr><td>Public models (calibration)</td><td>&ndash;</td><td>&ndash;</td><td>yes</td><td>yes</td><td>BERT / ALBERT / RoBERTa</td></tr>
     </table></div>
   </div>
 
@@ -452,7 +453,7 @@
       <tr><td>SS-PLL</td><td>bias on shared words only (surface-form control)</td><td>validity check</td><td>2, 3</td></tr>
       <tr><td>Validation loss / iso-loss band</td><td>model skill, for fair matching</td><td>control</td><td>all</td></tr>
       <tr><td>Pseudo-perplexity</td><td>overall language skill (&gt;60 excluded)</td><td>quality screen</td><td>all</td></tr>
-      <tr><td>WinoBias Pro/Anti + gap</td><td>gendered coreference bias</td><td>second instrument</td><td>2, 3</td></tr>
+      <tr><td>WinoBias Pro/Anti + gap</td><td>masked-pronoun gender-stereotype consistency (Kurita-style; not coreference accuracy)</td><td>second instrument</td><td>2, 3</td></tr>
       <tr><td>GLUE accuracy / F1</td><td>downstream usefulness</td><td>utility / Pareto</td><td>2, 3</td></tr>
       <tr><td>CKA</td><td>similarity of internal representations across loops</td><td>mechanistic</td><td>3</td></tr>
       <tr><td>Stream disagreement &harr; bias (r)</td><td>do diverse streams relate to lower bias</td><td>mechanistic</td><td>3</td></tr>
@@ -471,11 +472,28 @@
 
   <div class="box tech"><span class="label">Table 6 &middot; Statistics and seeds</span>
     <ul>
+      <li><b>Primary test: item-level paired permutation</b> (10,000 sign-flips) &mdash; the resampling unit is the <b>sentence pair</b> (n&nbsp;&asymp;&nbsp;1,500 on Multi-CrowS-Pairs), with per-item effect-size deltas averaged across seeds first. This is what gives real statistical power at 3 seeds: seed-level resampling has a floor of p&nbsp;=&nbsp;1/2<sup>n_seeds</sup> (0.125 at 3 seeds) and can never clear 0.05.</li>
+      <li><b>Seed-level paired permutation</b> retained as a robustness check only &mdash; never gates a decision.</li>
+      <li><b>Phipson&ndash;Smyth +1 correction</b> on all permutation p-values (p is never exactly zero).</li>
       <li><b>Bootstrap confidence intervals</b> (2000 resamples, 95%) on every reported rate.</li>
-      <li><b>Paired permutation test</b> (10,000 permutations) for key contrasts.</li>
-      <li><b>Holm-Bonferroni</b> multiple-comparison correction applied to a small pre-declared <b>confirmatory family</b> only; all other results labelled <b>exploratory</b>.</li>
-      <li><b>Cohen&rsquo;s d</b> for effect sizes; Pearson and Spearman for mechanistic correlations.</li>
-      <li><b>Seeds:</b> 1 to decide go/no-go; 2&ndash;3 (Stage 1) or 3&ndash;5 (Stages 2&ndash;3) to publish.</li>
+      <li><b>Holm-Bonferroni</b> applied to the small pre-declared <b>confirmatory family</b> only; everything else labelled <b>exploratory</b>.</li>
+      <li><b>Cohen&rsquo;s d</b> for effect sizes; <b>signed</b> Pearson and Spearman for mechanistic correlations (direction matters; correlation never labelled causal).</li>
+      <li><b>Failure accounting:</b> every unscoreable pair is counted (<code>Failed_Row_Count</code>), tied pairs reported separately (<code>Tied_Pair_Count</code>) &mdash; denominators are never silently shrunk.</li>
+      <li><b>Seeds:</b> 1 to decide go/no-go; 3 (Stage 1) or 3&ndash;5 (Stages 2&ndash;3) to publish.</li>
+    </ul>
+  </div>
+
+  <div class="box tech"><span class="label">Table 7 &middot; Methodology hardening (implementation audit, July 2026)</span>
+    <ul>
+      <li><b>Fixed validation masking:</b> one dedicated RNG seed masks the validation set once; every architecture, size and seed is scored on the identical masked tokens, removing masking noise from the iso-loss control.</li>
+      <li><b>Iso-loss auditing:</b> fine validation cadence near bands, per-crossing loss registry (<code>iso_checkpoints/index.csv</code>), per-contrast loss-gap tolerance checks.</li>
+      <li><b>Capability gate:</b> baseline bias on Vanilla must be statistically detectable before any contrast is interpreted.</li>
+      <li><b>Parameter-matched control:</b> a 6-layer Vanilla (same unique parameter count as Looped) answers the &ldquo;looped is just a smaller model&rdquo; objection; exploratory, not confirmatory.</li>
+      <li><b>Equal-budget stream ablation:</b> n = 1/2/4 all trained at the same token budget &mdash; only stream count varies.</li>
+      <li><b>Early merge as intervention:</b> trained 4-stream weights executed with early merging at eval time (merge_at 1/2/3); out-of-distribution, corroborating only.</li>
+      <li><b>Decontamination coverage:</b> 8-gram screening plus whole-phrase substring matching for eval sentences shorter than 8 words, and GLUE task text screened out of the training corpus.</li>
+      <li><b>Capacity disclosure:</b> Hyperloop carries extra hyper-connection parameters vs Looped; disclosed as a limitation, and the stream ablation is conservative with respect to it (more streams = more parameters, working against the predicted direction).</li>
+      <li><b>Resumability:</b> full mid-run checkpointing (model, optimiser, scheduler, RNG, band tracker, data cursor) every 2000 steps; unattended multi-day runs lose nothing.</li>
     </ul>
   </div>
 

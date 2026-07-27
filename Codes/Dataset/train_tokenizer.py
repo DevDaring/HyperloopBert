@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import logging
@@ -91,7 +91,7 @@ def train_wordpiece_tokenizer(train_file_path: str, output_dir: str, vocab_size:
     logger.info(f"Tokenizer trained and saved to {output_dir}")
 
 if __name__ == "__main__":
-    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     TRAIN_PATH = os.path.join(DATA_DIR, 'fineweb-edu', 'train_raw.jsonl')
     OUT_DIR = os.path.join(DATA_DIR, 'tokenizer')
     

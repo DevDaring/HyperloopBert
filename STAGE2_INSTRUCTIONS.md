@@ -246,5 +246,6 @@ journal SCIE without the explicit Clarivate confirmation.
 # CITATION: Zhao, J. et al. (2018). Gender Bias in Coreference Resolution (WinoBias). NAACL.
 # CITATION: Blodgett, S.L. et al. (2021). Stereotyping Norwegian Salmon. ACL. [SS-PLL motivation]
 # CITATION: Nadeem, M. et al. (2021). StereoSet. ACL.           [appendix only, if used]
-# (Stage 1 citations for Devlin, Saunshi, Bae, Zhu, Nangia, Khandelwal still apply.)
+# (Stage 1 citations for Devlin, Saunshi, Bae [arXiv:2507.10524], Geiping [arXiv:2502.05171],
+#  Zhu/Ouro [arXiv:2510.25741], Frey [arXiv:2603.08391], Nangia, Khandelwal still apply.)
 ```

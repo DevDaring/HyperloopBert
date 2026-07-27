@@ -11,6 +11,7 @@ import argparse
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from common.logging_setup import setup_logging
 from common.architectures import build_model, get_model_info
+from common.attention import force_full_precision_attention
 from common.io_schemas import BIAS_TRAJECTORY_COLUMNS
 import Stage2.config_stage2 as cfg
 from Stage1.eval_bias_stage1 import extract_model_metadata
@@ -19,70 +20,147 @@ logger = setup_logging('loop_trajectory_stage2')
 
 def extract_intermediate_representations(model, input_ids, attention_mask, architecture):
     """
-    Run forward pass and extract hidden states at each loop boundary.
-    For VanillaBERT, we sample at equivalent depths (3, 6, 9, 12).
-    For LoopedBERT/ALBERT, we sample after each loop iteration.
+    Run ONE forward pass and capture hidden states at matched effective depths.
+
+    Depth convention (effective layer applications, comparable across models):
+      VanillaBERT       : after layers 3, 6, 9, 12  (encoder is an nn.ModuleList)
+      LoopedBERT        : after begin (2), each loop iteration (4, 6, 8, 10),
+                          and the end block (12)
+      ALBERTLoopedBERT  : after each of the 12 shared-layer applications
+      HyperloopBERT     : after begin (2), each loop's shared block (4,6,8,10),
+                          and the end block (12) -- block output is the
+                          stream-mixed representation
+
+    Since shared modules fire multiple times per forward, hooks use a call
+    counter that is reset before the forward pass.
     """
-    reps = {} # {depth: tensor}
-    
-    # We use a hook-based approach. We register hooks on the specific layers we want.
+    reps = {}  # {depth: tensor (batch, seq, hidden)}
     handles = []
-    
+
+    def _out(output):
+        t = output[0] if isinstance(output, tuple) else output
+        return t.detach().clone()
+
     if architecture == 'VanillaBERT':
-        # Layers 3, 6, 9, 12 (0-indexed: 2, 5, 8, 11)
+        # model.encoder is an nn.ModuleList of 12 BertLayers
         target_layers = {2: 3, 5: 6, 8: 9, 11: 12}
-        
+
         def get_hook(depth):
             def hook(module, inp, output):
-                reps[depth] = output[0].detach().clone() if isinstance(output, tuple) else output.detach().clone()
+                reps[depth] = _out(output)
             return hook
-            
+
         for idx, depth in target_layers.items():
-            handles.append(model.encoder.layer[idx].register_forward_hook(get_hook(depth)))
-            
-    elif architecture == 'LoopedBERT':
-        # Depth markers: end of begin block (2), then after each middle loop iteration (4, 6, 8, 10), then end (12)
-        # However, middle block is applied iteratively. We need to hook inside the forward of the model.
-        # Given architectures.py design, we might not be able to easily hook a specific iteration 
-        # of the same layer object via standard PyTorch hooks because the hook fires every time.
-        # We can use a counter in the hook.
-        
+            handles.append(model.encoder[idx].register_forward_hook(get_hook(depth)))
+
+    elif architecture in ('LoopedBERT', 'HyperloopBERT'):
         call_count = [0]
-        
+
+        def begin_hook(module, inp, output):
+            reps[2] = _out(output)
+
         def middle_hook(module, inp, output):
             call_count[0] += 1
-            # middle block is 2 layers. It gets called 4 times.
-            # depth = 2 (begin) + call_count * 2
-            depth = 2 + call_count[0] * 2
-            reps[depth] = output[0].detach().clone() if isinstance(output, tuple) else output.detach().clone()
-            
-        handles.append(model.encoder.middle_block[-1].register_forward_hook(middle_hook))
-        
+            depth = 2 + call_count[0] * 2  # 4, 6, 8, 10
+            reps[depth] = _out(output)
+
         def end_hook(module, inp, output):
-            reps[12] = output[0].detach().clone() if isinstance(output, tuple) else output.detach().clone()
-            
-        handles.append(model.encoder.end_block[-1].register_forward_hook(end_hook))
-        
+            reps[12] = _out(output)
+
+        handles.append(model.begin_layers[-1].register_forward_hook(begin_hook))
+        handles.append(model.middle_layers[-1].register_forward_hook(middle_hook))
+        handles.append(model.end_layers[-1].register_forward_hook(end_hook))
+
     elif architecture == 'ALBERTLoopedBERT':
         call_count = [0]
-        
+
         def shared_hook(module, inp, output):
             call_count[0] += 1
-            depth = call_count[0]
-            reps[depth] = output[0].detach().clone() if isinstance(output, tuple) else output.detach().clone()
-            
-        handles.append(model.encoder.shared_layer.register_forward_hook(shared_hook))
-        
-    # Run forward
-    with torch.no_grad():
-        with torch.autocast(device_type=input_ids.device.type, dtype=torch.bfloat16):
-            model(input_ids=input_ids, attention_mask=attention_mask)
-            
-    # Cleanup
-    for h in handles:
-        h.remove()
-        
+            reps[call_count[0]] = _out(output)
+
+        handles.append(model.shared_layer.register_forward_hook(shared_hook))
+
+    else:
+        return reps
+
+    try:
+        with torch.no_grad():
+            # FP32 forward (pre-registered scoring precision): PLL gaps on
+            # borderline pairs are the same order as BF16 rounding, so the
+            # trajectory probe must match the primary scorer's precision.
+            with force_full_precision_attention(), \
+                 torch.autocast(device_type=input_ids.device.type, enabled=False):
+                model(input_ids=input_ids, attention_mask=attention_mask)
+    finally:
+        for h in handles:
+            h.remove()
+
     return reps
+
+
+def _modified_token_indices(ids_a, ids_b):
+    """
+    Indices in sequence A that fall OUTSIDE the common prefix/suffix shared
+    with sequence B (i.e. the tokens the stereotype manipulation changed),
+    excluding [CLS]/[SEP].
+    """
+    prefix_len = 0
+    while prefix_len < min(len(ids_a), len(ids_b)) and ids_a[prefix_len] == ids_b[prefix_len]:
+        prefix_len += 1
+    suffix_len = 0
+    while suffix_len < min(len(ids_a) - prefix_len, len(ids_b) - prefix_len) and \
+          ids_a[len(ids_a) - 1 - suffix_len] == ids_b[len(ids_b) - 1 - suffix_len]:
+        suffix_len += 1
+    indices = [i for i in range(prefix_len, len(ids_a) - suffix_len)
+               if 0 < i < len(ids_a) - 1]
+    return indices
+
+
+def masked_pll_at_depths(model, tokenizer, sentence, other_sentence, device, max_length=128):
+    """
+    True masked PLL of the MODIFIED tokens, computed at every hooked depth.
+
+    For each token position the pair manipulation changed, that token is
+    replaced with [MASK]; all masked variants are scored in one batched
+    forward pass with depth hooks; the MLM head is applied to each depth's
+    hidden state at the masked position.
+
+    Returns dict {depth: mean log-prob of the true tokens} or None if the
+    pair has no scoreable modified tokens.
+    """
+    enc = tokenizer(sentence, return_tensors='pt', max_length=max_length, truncation=True)
+    enc_other = tokenizer(other_sentence, return_tensors='pt', max_length=max_length, truncation=True)
+    ids = enc['input_ids'][0].tolist()
+    other_ids = enc_other['input_ids'][0].tolist()
+
+    mod_indices = _modified_token_indices(ids, other_ids)
+    if not mod_indices:
+        return None
+
+    input_ids = enc['input_ids'].to(device)
+    attention_mask = enc['attention_mask'].to(device)
+
+    masked_batch = input_ids.repeat(len(mod_indices), 1)
+    for row, i in enumerate(mod_indices):
+        masked_batch[row, i] = tokenizer.mask_token_id
+    masked_attn = attention_mask.repeat(len(mod_indices), 1)
+
+    arch = type(model).__name__
+    reps = extract_intermediate_representations(model, masked_batch, masked_attn, arch)
+    if not reps:
+        return None
+
+    depth_pll = {}
+    with torch.no_grad():
+        for depth, rep in reps.items():
+            with torch.autocast(device_type=masked_batch.device.type, enabled=False):
+                logits = model.mlm_head(rep.to(device).float())
+            total = 0.0
+            for row, i in enumerate(mod_indices):
+                log_probs = F.log_softmax(logits[row, i, :].float(), dim=-1)
+                total += log_probs[input_ids[0, i]].item()
+            depth_pll[depth] = total / len(mod_indices)
+    return depth_pll
 
 def classify_trajectory(rates):
     """
@@ -112,63 +190,33 @@ def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
     
     depth_scores = {} # depth -> [{'stereo_pll', 'anti_pll', 'pref', 'effect'}]
     
+    # True masked PLL of the MODIFIED tokens at every depth: each modified
+    # token is masked and predicted, depth activations are captured with
+    # forward hooks in a single batched pass per sentence. This is the
+    # standard CrowS-Pairs quantity restricted to the manipulated span,
+    # evaluated at intermediate effective depths.
     for idx, row in df.iterrows():
         stereo = row['stereo']
         anti = row['anti']
         category = row.get('bias_type', row.get('category', 'unknown'))
-        
-        stereo_inputs = tokenizer(stereo, return_tensors="pt", max_length=128, truncation=True).to(device)
-        anti_inputs = tokenizer(anti, return_tensors="pt", max_length=128, truncation=True).to(device)
-        
-        stereo_reps = extract_intermediate_representations(model, stereo_inputs['input_ids'], stereo_inputs['attention_mask'], meta['Architecture'])
-        anti_reps = extract_intermediate_representations(model, anti_inputs['input_ids'], anti_inputs['attention_mask'], meta['Architecture'])
-        
-        # Determine shared indices for SS-PLL style evaluation at intermediate depths
-        # For simplicity, we just do full PLL here, as defined in metric schema.
-        # But we need to apply MLM head to intermediate reps.
-        
-        for depth in stereo_reps.keys():
-            if depth not in anti_reps:
+
+        stereo_depth_pll = masked_pll_at_depths(model, tokenizer, stereo, anti, device)
+        anti_depth_pll = masked_pll_at_depths(model, tokenizer, anti, stereo, device)
+        if not stereo_depth_pll or not anti_depth_pll:
+            continue
+
+        for depth in stereo_depth_pll:
+            if depth not in anti_depth_pll:
                 continue
-                
-            # Apply MLM head
-            with torch.no_grad():
-                with torch.autocast(device_type=device if isinstance(device, str) else device.type, dtype=torch.bfloat16):
-                    stereo_logits = model.mlm_head(stereo_reps[depth])
-                    anti_logits = model.mlm_head(anti_reps[depth])
-                    
-            # Compute PLL using the logits
-            def pll_from_logits(logits, input_ids):
-                seq_len = input_ids.size(1)
-                total_log_prob = 0.0
-                num_tokens = seq_len - 2
-                if num_tokens <= 0: return 0.0
-                
-                # We approximate by taking the probability of the actual token 
-                # given the unmasked context up to this depth. This is not true MLM PLL
-                # since inputs weren't masked, but it serves as a proxy for how the representation
-                # encodes the tokens at intermediate layers (next-token or self-reconstruction prob).
-                # Actually, standard approach: hook into masked passes.
-                # Since we want actual PLL, we would need to run the full O(N) masking pass
-                # and hook EVERY time, which is O(N * Depth * Pairs) - extremely slow.
-                # To approximate: we just compute the sum of log probs of the input tokens
-                # given the unmasked forward pass (pseudo-reconstruction loss).
-                
-                log_probs = F.log_softmax(logits, dim=-1)
-                for i in range(1, seq_len - 1):
-                    token_id = input_ids[0, i]
-                    total_log_prob += log_probs[0, i, token_id].item()
-                return total_log_prob / num_tokens
-                
-            pll_stereo = pll_from_logits(stereo_logits, stereo_inputs['input_ids'])
-            pll_anti = pll_from_logits(anti_logits, anti_inputs['input_ids'])
-            
+            pll_stereo = stereo_depth_pll[depth]
+            pll_anti = anti_depth_pll[depth]
+
             effect = pll_stereo - pll_anti
             pref = 1 if pll_stereo > pll_anti else 0
-            
+
             if depth not in depth_scores:
                 depth_scores[depth] = []
-                
+
             depth_scores[depth].append({
                 'Category': category,
                 'Pref': pref,
@@ -252,12 +300,20 @@ def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry-run', action='store_true', help='Delegate to Dry_Run')
+    parser.add_argument('--stage', type=int, default=2, choices=[2, 3],
+                        help='Which stage models/results to analyse (3 reuses this script)')
     args = parser.parse_args()
-    
+
     if args.dry_run:
         logger.info("Dry run flag detected. Use python Dry_Run/dry_run_stage2.py directly instead.")
         return
-        
+
+    global cfg
+    if args.stage == 3:
+        import Stage3.config_stage3 as cfg3
+        cfg = cfg3
+        logger.info("Loop trajectory running against STAGE 3 models/results.")
+
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     data_dir = os.path.join(base_dir, 'data')
     results_dir = os.path.join(base_dir, cfg.RESULTS_DIR)
@@ -281,14 +337,41 @@ def main():
         
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    checkpoints = []
-    # Use primary band models
+    # Snapshot selection preserves iso-loss matching: use the COMMON primary
+    # band per size (the band every architecture crossed for every shared
+    # seed), NOT each architecture's own deepest band -- mixing bands would
+    # re-introduce the quality confound into the trajectory comparison.
+    from common.iso_loss import compute_primary_band
+    mlm_path = os.path.join(results_dir, 'mlm', 'summary_table.csv')
+    mlm_df = pd.read_csv(mlm_path) if os.path.exists(mlm_path) else None
+    primary_band_by_size = {}
+    for size in getattr(cfg, 'SIZES', ['base']):
+        primary_band_by_size[size] = compute_primary_band(
+            mlm_df, cfg.ARCHITECTURES, size, logger_obj=logger)
+        logger.info(f"Trajectory primary band ({size}): {primary_band_by_size[size]}")
+
+    candidates = {}
     type_dir = os.path.join(models_dir, 'iso_band_models')
     if os.path.exists(type_dir):
         for root, dirs, files in os.walk(type_dir):
-            if 'pytorch_model.bin' in files:
-                checkpoints.append(root)
-                
+            if 'pytorch_model.bin' not in files:
+                continue
+            meta = extract_model_metadata(root)
+            if not meta or meta['Band'] is None:
+                continue
+            if meta.get('Merge_At') is not None:
+                continue
+            if meta.get('Stream_Count') not in (None, 4):
+                continue  # trajectory uses the primary arms only
+            target = primary_band_by_size.get(meta['Model_Size'])
+            if target is None or meta['Band'] != target:
+                continue
+            key = (meta['Architecture'], meta['Model_Size'], meta['Seed'])
+            candidates[key] = (meta['Band'], root)
+    checkpoints = [root for _, root in candidates.values()]
+    if not checkpoints:
+        logger.warning("No snapshots at the common primary band; trajectory not run.")
+
     out_path = os.path.join(results_dir, 'mechanistic', 'loop_trajectory.csv')
     
     for cp_dir in checkpoints:

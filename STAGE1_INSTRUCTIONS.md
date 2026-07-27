@@ -23,8 +23,13 @@
 This is the first of three sequential, separately publishable stages of a de-risked research
 program. The full program tests the **Stereotype Consolidation Hypothesis (SCH)**: that
 weight-sharing in looped transformer encoders reduces the encoding of stereotypical
-associations at **matched model quality**. SCH is an open question (counter-evidence: Zhu et
-al., 2025, arXiv:2603.08391), not an assumption.
+associations at **matched model quality**. SCH is an open question, not an assumption, and is
+sharpened by the 2025-2026 looped-LM literature: Ouro (Zhu et al., 2025, arXiv:2510.25741) and
+Frey et al. (2026, arXiv:2603.08391) show looped gains come from knowledge *manipulation* while
+*per-parameter* memorization is preserved -- so SCH is stated as a claim about **total**
+stereotype-storage capacity at matched quality, not per-parameter memorization. (These are
+mechanistic support, not counter-evidence; the earlier "Zhu counter-evidence" attribution of
+arXiv:2603.08391 was an error -- that ID is Frey et al. 2026.)
 
 Stage 1 is the cheapest possible test of whether the effect exists at all, before any
 expensive architecture work. If Stage 1 fails, the whole program stops for ~50 GPU-hours
@@ -357,8 +362,12 @@ Clarivate "Science Citation Index Expanded" confirmation.
 ```
 # CITATION: Devlin, J. et al. (2019). BERT. NAACL.                         [VanillaBERT]
 # CITATION: Saunshi, N. et al. (2025). On the Power of Looped Transformers. arXiv. [SCH basis]
-# CITATION: Bae, J. et al. (2025). Looped encoder adaptation.              [LoopedBERT]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.                       [SCH counter-evidence]
+# CITATION: Bae, S. et al. (2025). Mixture-of-Recursions. arXiv:2507.10524. [LoopedBERT positioning]
+# CITATION: Geiping, J. et al. (2025). Huginn recurrent-depth. arXiv:2502.05171. [recurrent-depth pretraining]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support: manipulation not storage; per-parameter memorization preserved.
+#            arXiv:2603.08391 is Frey et al. 2026 -- earlier "Zhu counter-evidence" was a misattribution.]
+# CITATION: Voria, G. et al. (2026). Tracing Stereotypes / Biased Neurons. arXiv:2601.05663. [mechanistic ally]
 # CITATION: Nangia, N. et al. (2020). CrowS-Pairs. EMNLP.                  [Multi-CrowS-Pairs]
 # CITATION: Khandelwal, K. et al. (2023). Indian-BhED. arXiv:2309.08573.   [Indian instrument]
 # CITATION: Blodgett, S.L. et al. (2021). Stereotyping Norwegian Salmon. ACL. [PLL validity caveat]

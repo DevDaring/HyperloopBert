@@ -30,49 +30,67 @@ def eval_external_model(model_name, datasets, device, out_path):
         
     for ds_name, df in datasets.items():
         logger.info(f"Evaluating {model_name} on {ds_name}...")
-        
+
         results = []
+        failed = 0
         for idx, row in df.iterrows():
             stereo = row['stereo']
             anti = row['anti']
             category = row.get('bias_type', row.get('category', 'unknown'))
-            
-            # Note: ModerBERT might need a specific pipeline, but AutoModelForMaskedLM handles standard MLM.
-            # PLL requires the model to have MLM head.
+
             try:
                 scores = score_bias_pair(model, tokenizer, stereo, anti, device, compute_ss=True)
-                
+                # Canonical CrowS-Pairs (Nangia et al. 2020) preference: scored
+                # on the SHARED tokens only -- this is the number comparable to
+                # published bias scores; the full-sentence PLL is the internal
+                # primary metric.
+                ss_pref = None
+                if scores['SS_PLL_Stereotypical'] is not None and scores['SS_PLL_AntiStereotypical'] is not None:
+                    ss_pref = 1 if scores['SS_PLL_Stereotypical'] > scores['SS_PLL_AntiStereotypical'] else 0
                 results.append({
                     'Category': category,
                     'Stereotype_Preferred': scores['Stereotype_Preferred'],
+                    'Shared_Token_Preferred': ss_pref,
                     'Effect_Size': scores['Effect_Size']
                 })
+                if scores['Stereotype_Preferred'] is None:
+                    failed += 1
             except Exception as e:
-                pass
-                
+                failed += 1
+                logger.debug(f"{model_name}/{ds_name} row {idx} failed: {e}")
+
+        if failed:
+            logger.warning(f"{model_name}/{ds_name}: {failed} of {len(df)} pairs failed scoring.")
         if not results:
+            logger.error(f"{model_name}/{ds_name}: NO pairs scored -- this anchor "
+                         f"will be missing from calibration evidence.")
             continue
-            
+
         res_df = pd.DataFrame(results).dropna(subset=['Effect_Size', 'Stereotype_Preferred'])
         if res_df.empty:
             continue
-            
+
         overall_pref = res_df['Stereotype_Preferred'].mean()
+        ss_valid = res_df.dropna(subset=['Shared_Token_Preferred'])
+        shared_pref = ss_valid['Shared_Token_Preferred'].mean() if not ss_valid.empty else None
         mean_effect = res_df['Effect_Size'].mean()
         cat_means = res_df.groupby('Category')['Stereotype_Preferred'].mean()
         macro_pref = cat_means.mean()
-        
+
         sum_row = {
             'Model_Name': model_name,
             'Dataset': ds_name,
             'Category': 'ALL',
             'Overall_Stereotype_Preference_Rate': overall_pref,
+            'Shared_Token_Preference_Rate': shared_pref,
             'Macro_Average_Preference_Rate': macro_pref,
             'Mean_Effect_Size': mean_effect,
+            'Scored_Row_Count': int(len(res_df)),
+            'Failed_Row_Count': failed,
             'External_Calibration': True,
             'Timestamp': datetime.utcnow().isoformat() + 'Z'
         }
-        
+
         out_df = pd.DataFrame([sum_row])[EXTERNAL_CALIBRATION_COLUMNS]
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         mode = 'a' if os.path.exists(out_path) else 'w'
@@ -118,7 +136,23 @@ def main():
         
     for model_name in cfg.EXTERNAL_MODELS:
         eval_external_model(model_name, datasets_to_eval, device, out_path)
-        
+
+    # Hard-fail if any anchor is missing -- a silent gap here would void the
+    # Stage 2 calibration gate without anyone noticing. The two published
+    # anchors (bert-base-uncased, albert-base-v2) are REQUIRED for the gate;
+    # missing them aborts rather than proceeding on an unevaluable gate.
+    got = set(pd.read_csv(out_path)['Model_Name'].unique()) if os.path.exists(out_path) else set()
+    missing = [m for m in cfg.EXTERNAL_MODELS if m not in got]
+    required = {'bert-base-uncased', 'albert-base-v2'}
+    if missing:
+        msg = (f"CALIBRATION INCOMPLETE: anchors missing from results: {missing}. "
+               f"The Stage 2 calibration gate cannot be evaluated.")
+        if required & set(missing):
+            raise SystemExit(
+                msg + " A REQUIRED published anchor is missing; aborting so the "
+                "pipeline does not proceed on an unevaluable calibration gate. "
+                "Fix connectivity/model availability and re-run.")
+        logger.error(msg + " (roberta-base is an auxiliary anchor; continuing.)")
     logger.info(f"External calibration complete. Results saved to {out_path}")
 
 if __name__ == "__main__":

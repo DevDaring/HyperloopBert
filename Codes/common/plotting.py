@@ -62,9 +62,14 @@ def plot_iso_loss_bias(df: pd.DataFrame, dataset_name: str, metric_col: str,
     plot_df = df[(df['Model_Size'] == size) & (df['Band'].notna())].copy()
     if plot_df.empty:
         return
-        
-    # Convert Validation_Loss to float if it isn't already
+
+    # Use the recorded validation loss at the snapshot; fall back to the Band
+    # value itself (the nominal matched-loss level) when it is unavailable.
+    if 'Validation_Loss' not in plot_df.columns:
+        plot_df['Validation_Loss'] = plot_df['Band']
     plot_df['Validation_Loss'] = pd.to_numeric(plot_df['Validation_Loss'], errors='coerce')
+    plot_df['Validation_Loss'] = plot_df['Validation_Loss'].fillna(
+        pd.to_numeric(plot_df['Band'], errors='coerce'))
     plot_df[metric_col] = pd.to_numeric(plot_df[metric_col], errors='coerce')
     plot_df = plot_df.dropna(subset=['Validation_Loss', metric_col])
     

@@ -45,9 +45,14 @@ matched model quality — controlled evidence for the **Stereotype Consolidation
 
 **SCH (open question, not assumption):** Weight-sharing in looped transformers induces a
 memorization-reasoning tradeoff (Saunshi et al., 2025) that reduces encoding of
-stereotypical associations. Counter-evidence exists (Zhu et al., 2025, arXiv:2603.08391:
-similar per-parameter memorization in looped models) and must be addressed head-on, not
-refuted a priori.
+stereotypical associations. The 2025-2026 looped-LM literature sharpens (not refutes) SCH:
+Ouro (Zhu et al., 2025, arXiv:2510.25741) shows looped gains come from knowledge
+*manipulation*, not increased storage; Frey et al. (2026, arXiv:2603.08391) find looping aids
+manipulation while *per-parameter* memorization is preserved. SCH must therefore be stated as
+a claim about **total** stereotype-storage capacity at matched quality (NOT per-parameter
+memorization), with an explicit failure mode: high-frequency corpus stereotypes still leak in.
+(Attribution note: arXiv:2603.08391 is Frey et al. 2026, not Zhu -- an earlier "Zhu
+counter-evidence" citation was an error.)
 
 ### 0.3 The three-stage logic and why it de-risks the program
 
@@ -367,7 +372,7 @@ Classes to implement (with citation comment blocks from §13 directly above each
 - **LoopedBERT** — begin(2) -> middle(2, looped x4) -> end(2). Effective depth
   2 + 2*4 + 2 = 12. Unique layers = 6. Add loop-index embeddings
   (`Embedding(num_loops, hidden)`) before each middle iteration to break symmetry.
-  (Bae et al., 2025; Saunshi et al., 2025; encoder-only adaptation.)
+  (Bae et al., 2025, arXiv:2507.10524; Saunshi et al., 2025; encoder-only adaptation.)
 - **ALBERTLoopedBERT** — ONE shared layer applied 12 times. Unique layers = 1.
   **No embedding factorization** (isolates weight-sharing from embedding compression).
   Loop-index embeddings added before each of the 12 iterations. (Lan et al., 2020.)
@@ -735,10 +740,15 @@ at build time where shown as approximate.
 # CITATION: Lan, Z. et al. (2020). ALBERT: A Lite BERT. ICLR.           [ALBERT sharing; no factored embedding here]
 # CITATION: Saunshi, N. et al. (2025). Reasoning with Latent Thoughts:
 #           On the Power of Looped Transformers. arXiv.                 [memorization-reasoning tradeoff = SCH basis]
-# CITATION: Bae, J. et al. (2025). Looped encoder adaptation.           [LoopedBERT]
+# CITATION: Bae, S. et al. (2025). Mixture-of-Recursions. arXiv:2507.10524.  [LoopedBERT positioning]
+# CITATION: Geiping, J. et al. (2025). Huginn recurrent-depth. arXiv:2502.05171. [recurrent-depth pretraining]
 # CITATION: Zeitoun, A., Torroba-Hennigen, L., & Kim, Y. (2026).
 #           Hyperloop Transformers. arXiv:2604.21254. MIT.             [HyperloopBERT base; ours = encoder-only + CWSA]
-# COUNTER:  Zhu, L. et al. (2025). arXiv:2603.08391.                    [SCH counter-evidence; address, do not refute a priori]
+# SUPPORT:  Zhu, R.-J. et al. (2025). Ouro. arXiv:2510.25741; Frey, M. et al. (2026). arXiv:2603.08391.
+#           [SCH support: manipulation not storage; per-parameter memorization preserved.
+#            arXiv:2603.08391 is Frey et al. 2026, NOT Zhu -- prior attribution was an error.]
+# CITATION: Voria, G. et al. (2026). Tracing Stereotypes: From Biased Neurons to Fairer Models.
+#           arXiv:2601.05663.                                          [mechanistic ally: stereotypes localize to neurons]
 # CITATION: Nangia, N. et al. (2020). CrowS-Pairs. EMNLP.              [Multi-CrowS-Pairs base]
 # CITATION: Khandelwal, K. et al. (2023). Indian-BhED. arXiv:2309.08573.[Indian bias instrument base]
 # CITATION: Zhao, J. et al. (2018). Gender Bias in Coreference (WinoBias). NAACL.
@@ -747,7 +757,7 @@ at build time where shown as approximate.
 # DATASET WARNING: contains stereotypical content by design; research/fairness-audit use only.
 ```
 
-Also embed verbatim, where indicated: the SCH counter-evidence block (above the architecture
+Also embed verbatim, where indicated: the SCH support/positioning block (above the architecture
 definitions), the pre-registered primary endpoint block (above the bias evaluation), the
 benchmark-validity disclaimer, and the ethical-use notice.
 

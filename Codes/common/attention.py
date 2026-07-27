@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import math
+from contextlib import contextmanager
 from typing import Optional
 
 import torch
@@ -97,6 +98,26 @@ def get_attention_path() -> str:
     return ATTENTION_PATH
 
 
+@contextmanager
+def force_full_precision_attention():
+    """
+    Temporarily route attention through SDPA/eager instead of FlashAttention.
+
+    The flash kernel is BF16-only and casts its inputs internally, so a caller
+    that needs a genuine FP32 forward (the PLL/SS-PLL/WinoBias scorers: PLL
+    gaps on borderline pairs are the same order as BF16 rounding) must both
+    disable autocast AND bypass the flash path. Restores the previous path on
+    exit, including across exceptions.
+    """
+    global ATTENTION_PATH
+    previous = ATTENTION_PATH
+    ATTENTION_PATH = "sdpa" if _SDPA_AVAILABLE else "eager"
+    try:
+        yield
+    finally:
+        ATTENTION_PATH = previous
+
+
 # ---------------------------------------------------------------------------
 # Helper: build cu_seqlens for FlashAttention varlen API from attention_mask
 # ---------------------------------------------------------------------------
@@ -116,7 +137,10 @@ def _mask_to_cu_seqlens(
     """
     # attention_mask: 1 = real token, 0 = pad
     seqlens = attention_mask.sum(dim=1).to(torch.int32)          # (batch,)
-    cu_seqlens = F.pad(torch.cumsum(seqlens, dim=0), (1, 0))     # (batch+1,)
+    # torch.cumsum promotes int32 -> int64 unless dtype is forced; the flash
+    # varlen kernel REQUIRES int32 cu_seqlens and raises otherwise, which
+    # would silently demote every forward to SDPA while logs claim "flash".
+    cu_seqlens = F.pad(torch.cumsum(seqlens, dim=0, dtype=torch.int32), (1, 0))  # (batch+1,)
     max_seqlen = int(seqlens.max().item())
     return cu_seqlens, max_seqlen
 
@@ -177,7 +201,6 @@ class BidirectionalSelfAttention(nn.Module):
     hidden_size : int
     num_attention_heads : int
     attention_probs_dropout_prob : float  (default 0.1)
-    use_bf16 : bool  (default True)  -- cast inputs to BF16 for the flash path.
     """
 
     def __init__(
@@ -185,7 +208,6 @@ class BidirectionalSelfAttention(nn.Module):
         hidden_size: int,
         num_attention_heads: int,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
         if hidden_size % num_attention_heads != 0:
@@ -197,7 +219,6 @@ class BidirectionalSelfAttention(nn.Module):
         self.num_attention_heads = num_attention_heads
         self.head_dim = hidden_size // num_attention_heads
         self.attention_probs_dropout_prob = attention_probs_dropout_prob
-        self.use_bf16 = use_bf16
 
         # Q, K, V projections
         self.q_proj = nn.Linear(hidden_size, hidden_size, bias=True)
@@ -267,7 +288,6 @@ class BidirectionalSelfAttention(nn.Module):
 
         if attention_mask is not None:
             # Varlen path: pack sequences, call flash_attn_varlen_func, unpack
-            x_packed, cu_seqlens, max_seqlen = _pack_sequences(hidden_states, attention_mask)
             q_p, cu_q, mq = _pack_sequences(q, attention_mask)
             k_p, cu_k, mk = _pack_sequences(k, attention_mask)
             v_p, cu_v, mv = _pack_sequences(v, attention_mask)
@@ -315,11 +335,14 @@ class BidirectionalSelfAttention(nn.Module):
         k = self._split_heads(self.k_proj(hidden_states))
         v = self._split_heads(self.v_proj(hidden_states))
 
-        # Build additive mask for SDPA: 0 for real tokens, -inf for padding
+        # Build additive mask for SDPA: 0 for real tokens, large-negative for padding.
+        # The mask dtype MUST match the query dtype (under BF16 autocast q is bf16;
+        # a float32 mask raises a RuntimeError and would silently demote every
+        # forward pass to the eager path).
         bias = None
         if attention_mask is not None:
             # attention_mask: (batch, seq) with 1 = real, 0 = pad
-            additive = (1.0 - attention_mask.float()) * torch.finfo(hidden_states.dtype).min
+            additive = (1.0 - attention_mask.to(q.dtype)) * torch.finfo(q.dtype).min
             # Broadcast to (batch, 1, 1, seq)
             bias = additive.unsqueeze(1).unsqueeze(2)
 
@@ -405,8 +428,15 @@ class BidirectionalSelfAttention(nn.Module):
                 try:
                     return self._flash_forward(hidden_states, attention_mask)
                 except Exception as exc:
+                    # Demote the RECORDED path so logs and result provenance
+                    # stay truthful: after a runtime failure this build runs
+                    # on SDPA, and every subsequent log line must say so.
+                    global ATTENTION_PATH
+                    ATTENTION_PATH = "sdpa" if _SDPA_AVAILABLE else "eager"
                     logger.warning(
-                        "FlashAttention-2 forward failed (%s); falling back to SDPA/eager.", exc
+                        "FlashAttention-2 forward FAILED at runtime (%s); "
+                        "attention path demoted to %s for this build.",
+                        exc, ATTENTION_PATH.upper(),
                     )
                     # Fall through to next path
             else:
@@ -449,7 +479,6 @@ class BertLayer(nn.Module):
     intermediate_size : int  (FFN inner dimension)
     dropout : float          (applied after attention output and FFN output)
     attention_probs_dropout_prob : float
-    use_bf16 : bool
     """
 
     def __init__(
@@ -459,7 +488,6 @@ class BertLayer(nn.Module):
         intermediate_size: int,
         dropout: float = 0.1,
         attention_probs_dropout_prob: float = 0.1,
-        use_bf16: bool = True,
     ) -> None:
         super().__init__()
 
@@ -468,7 +496,6 @@ class BertLayer(nn.Module):
             hidden_size=hidden_size,
             num_attention_heads=num_attention_heads,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
-            use_bf16=use_bf16,
         )
         self.attn_dropout = nn.Dropout(p=dropout)
         self.attn_layer_norm = nn.LayerNorm(hidden_size, eps=1e-12)

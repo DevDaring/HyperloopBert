@@ -39,16 +39,29 @@ class SequenceClassificationModel(nn.Module):
         logits = self.classifier(pooled_output)
         return logits
 
-def train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device):
-    """Fine-tune model on GLUE task and return eval metrics."""
+def train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device,
+                        glue_cfg=None):
+    """Fine-tune model on GLUE task and return eval metrics.
+
+    glue_cfg: optional config module supplying SEQ_LENGTH / GLUE_* params;
+    defaults to the Stage 2 config. Stage 1's capability gate (leg 1) reuses
+    this function with its own config.
+    """
+    cfg = glue_cfg if glue_cfg is not None else globals()['cfg']
     logger.info(f"Fine-tuning {meta['Architecture']} on GLUE/{task}...")
+
+    # Seed the fine-tuning run for reproducibility (classifier init, dropout,
+    # dataloader shuffling all depend on it)
+    from common.train_loop import seed_everything
+    seed_everything(int(meta['Seed']))
     
     # Load dataset
     try:
         dataset = load_dataset('glue', task)
     except Exception as e:
-        logger.error(f"Failed to load GLUE task {task}: {e}")
-        return {'Accuracy': 0.0, 'F1': 0.0}
+        logger.error(f"Failed to load GLUE task {task}: {e}. NO row will be "
+                     f"written for this task (never record 0.0 as a result).")
+        return None
         
     is_regression = task == 'stsb'
     num_labels = 1 if is_regression else len(dataset['train'].features['label'].names)
@@ -85,8 +98,9 @@ def train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device):
     try:
         encoder.load_state_dict(torch.load(model_path, map_location='cpu', weights_only=True))
     except Exception as e:
-        logger.error(f"Failed to load encoder from {model_path}: {e}")
-        return {'Accuracy': 0.0, 'F1': 0.0}
+        logger.error(f"Failed to load encoder from {model_path}: {e}. NO row "
+                     f"will be written (never record 0.0 as a result).")
+        return None
         
     model = SequenceClassificationModel(encoder, model_info['Hidden_Size'], num_labels)
     model.to(device)
@@ -144,18 +158,22 @@ def train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device):
     from sklearn.metrics import accuracy_score, f1_score
     
     if is_regression:
-        # For STS-B, report Pearson/Spearman as 'Accuracy'/'F1' just to fit schema, 
-        # but Stage 2 only needs SST-2 and RTE (classification).
-        return {'Accuracy': 0.0, 'F1': 0.0}
+        # STS-B is not part of the configured task set; skip rather than
+        # fabricate schema-shaped zeros.
+        return None
     else:
         acc = accuracy_score(all_labels, all_preds)
         try:
-            f1 = f1_score(all_labels, all_preds, average='macro')
-        except:
-            f1 = 0.0
+            # MRPC is conventionally reported with binary F1 (GLUE standard);
+            # macro-F1 elsewhere.
+            avg = 'binary' if task == 'mrpc' else 'macro'
+            f1 = f1_score(all_labels, all_preds, average=avg)
+        except Exception:
+            f1 = float('nan')
             
-    logger.info(f"Task {task} -> Acc: {acc:.4f}, F1: {f1:.4f}")
-    return {'Accuracy': float(acc), 'F1': float(f1)}
+    n_eval = int(len(all_labels))
+    logger.info(f"Task {task} -> Acc: {acc:.4f}, F1: {f1:.4f} (n={n_eval})")
+    return {'Accuracy': float(acc), 'F1': float(f1), 'N_Examples': n_eval}
 
 def main():
     parser = argparse.ArgumentParser()
@@ -226,11 +244,13 @@ def main():
         for task in cfg.GLUE_TASKS:
             model_path = os.path.join(cp_dir, 'pytorch_model.bin')
             metrics = train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device)
+            if metrics is None:
+                continue  # failure already logged; never write a zero row
             task_metrics[task] = metrics
-            
-            # Compute partial average if possible
+
+            # Partial average over tasks completed so far for this snapshot
             glue_avg = sum(m['Accuracy'] for m in task_metrics.values()) / len(task_metrics)
-            
+
             res_row = {
                 'Stage': cfg.STAGE,
                 'Architecture': meta['Architecture'],
@@ -241,14 +261,22 @@ def main():
                 'Total_Parameters': model_info['Total_Parameters'],
                 'Effective_Depth': model_info['Effective_Depth'],
                 'Shared_Ratio': model_info['Shared_Ratio'],
+                'Band': meta['Band'],
+                'Token_Marker': meta['Token_Marker'],
+                'Stream_Count': meta.get('Stream_Count'),
                 'Task': task,
                 'Accuracy': metrics['Accuracy'],
                 'F1': metrics['F1'],
+                'Eval_Example_Count': metrics['N_Examples'],
                 'GLUE_Average': glue_avg, # Note: true GLUE avg needs all tasks
                 'Timestamp': datetime.utcnow().isoformat() + 'Z'
             }
-            
-            df_sum = pd.DataFrame([res_row])[GLUE_SUMMARY_COLUMNS]
+
+            df_sum = pd.DataFrame([res_row])
+            for col in GLUE_SUMMARY_COLUMNS:
+                if col not in df_sum.columns:
+                    df_sum[col] = None
+            df_sum = df_sum[GLUE_SUMMARY_COLUMNS]
             os.makedirs(os.path.dirname(summary_path), exist_ok=True)
             mode = 'a' if os.path.exists(summary_path) else 'w'
             header = not os.path.exists(summary_path)

@@ -34,10 +34,28 @@ def extract_model_metadata(snapshot_dir):
         arch = run_parts[0]
         size = run_parts[1]
         seed_str = run_parts[2]
-        seed = int(seed_str.replace('seed', ''))
+        try:
+            seed = int(seed_str.replace('seed', ''))
+        except ValueError:
+            return None
     else:
         return None
-        
+
+    # Optional ablation suffixes: ..._streams{n} and ..._merge{m} (Stage 3)
+    stream_count = None
+    merge_at = None
+    for part in run_parts[3:]:
+        if part.startswith('streams'):
+            try:
+                stream_count = int(part.replace('streams', ''))
+            except ValueError:
+                pass
+        elif part.startswith('merge'):
+            try:
+                merge_at = int(part.replace('merge', ''))
+            except ValueError:
+                pass
+
     band = None
     marker = None
     
@@ -60,55 +78,102 @@ def extract_model_metadata(snapshot_dir):
         'Seed': seed,
         'Band': band,
         'Token_Marker': marker,
+        'Stream_Count': stream_count,
+        'Merge_At': merge_at,
         'Run_ID': run_dir,
         'Snapshot_Type': type_dir
     }
 
-def get_snapshot_mlm_quality(results_dir, arch, size, seed, band, marker):
-    """Get the pseudo-perplexity from the MLM summary table to check quality screen."""
-    summary_path = os.path.join(results_dir, 'mlm', 'summary_table.csv')
-    if not os.path.exists(summary_path):
-        return None
-        
-    df = pd.read_csv(summary_path)
+def _snapshot_mask(df, arch, size, seed, band, marker, stream_count=None, merge_at=None):
+    """Row mask identifying ONE snapshot, ablation-aware (Stream_Count/Merge_At)."""
     mask = (df['Architecture'] == arch) & (df['Model_Size'] == size) & (df['Seed'] == seed)
-    
     if band is not None:
         mask = mask & (df['Band'] == band)
     elif marker is not None:
         mask = mask & (df['Token_Marker'] == marker)
-        
+    if 'Stream_Count' in df.columns:
+        if stream_count is not None:
+            mask = mask & (df['Stream_Count'] == stream_count)
+        else:
+            mask = mask & (df['Stream_Count'].isna())
+    if 'Merge_At' in df.columns:
+        if merge_at is not None:
+            mask = mask & (df['Merge_At'] == merge_at)
+        else:
+            mask = mask & (df['Merge_At'].isna())
+    return mask
+
+
+def get_snapshot_mlm_quality(results_dir, arch, size, seed, band, marker,
+                             stream_count=None, merge_at=None):
+    """Get the pseudo-perplexity from the MLM summary table to check quality screen."""
+    summary_path = os.path.join(results_dir, 'mlm', 'summary_table.csv')
+    if not os.path.exists(summary_path):
+        return None
+
+    df = pd.read_csv(summary_path)
+    mask = _snapshot_mask(df, arch, size, seed, band, marker, stream_count, merge_at)
+
     match = df[mask]
     if not match.empty:
-        pp = match['Pseudo_Perplexity'].iloc[0]
+        pp = match['Pseudo_Perplexity'].iloc[-1]  # last row wins if re-runs appended
         # Handle nan/inf
         try:
             return float(pp)
-        except:
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def get_snapshot_validation_loss(results_dir, arch, size, seed, band, marker,
+                                 stream_count=None, merge_at=None):
+    """Get the recorded validation loss at this snapshot from the MLM summary."""
+    summary_path = os.path.join(results_dir, 'mlm', 'summary_table.csv')
+    if not os.path.exists(summary_path):
+        return None
+    df = pd.read_csv(summary_path)
+    mask = _snapshot_mask(df, arch, size, seed, band, marker, stream_count, merge_at)
+    match = df[mask]
+    if not match.empty:
+        try:
+            return float(match['Validation_Loss'].iloc[-1])
+        except (TypeError, ValueError):
             return None
     return None
 
 def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info, out_progress_path):
     """Score a dataset and save progress."""
+    missing = [c for c in ('stereo', 'anti') if c not in df.columns]
+    if missing:
+        raise ValueError(
+            f"Dataset '{dataset_name}' is missing required column(s) {missing}. "
+            f"Available columns: {list(df.columns)}. Re-run Dataset/download_eval_datasets.py "
+            f"or rename the sentence-pair columns to 'stereo'/'anti'."
+        )
     results = []
-    
-    # Check if we can resume
-    start_idx = 0
+
+    # Resume: only rows that scored SUCCESSFULLY (non-null Effect_Size) count as
+    # complete. Rows that previously FAILED (null Effect_Size / Needs_Review)
+    # are retried rather than frozen forever behind a max(Row_Index) cursor.
+    completed = set()
     if os.path.exists(out_progress_path):
         try:
             existing_df = pd.read_csv(out_progress_path)
             if not existing_df.empty and 'Row_Index' in existing_df.columns:
-                start_idx = existing_df['Row_Index'].max() + 1
-                logger.info(f"Resuming {dataset_name} from index {start_idx}")
+                done = existing_df.dropna(subset=['Effect_Size'])
+                completed = set(done['Row_Index'].astype(int).tolist())
+                n_failed = int(existing_df['Row_Index'].nunique() - len(completed))
+                logger.info(f"Resuming {dataset_name}: {len(completed)} rows already "
+                            f"scored; {n_failed} unscored/failed rows will be retried.")
         except Exception:
             pass
-            
+
     batch_results = []
-    
+
     for idx, row in df.iterrows():
-        if idx < start_idx:
+        if idx in completed:
             continue
-            
+
         stereo = row['stereo']
         anti = row['anti']
         
@@ -129,7 +194,7 @@ def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info
             'SS_PLL_AntiStereotypical': None,
             'Effect_Size': scores['Effect_Size'],
             'Stereotype_Preferred': scores['Stereotype_Preferred'],
-            'Stage': cfg.STAGE,
+            'Stage': meta.get('Stage', cfg.STAGE),
             'Architecture': meta['Architecture'],
             'Model_Size': meta['Model_Size'],
             'Hidden_Size': model_info['Hidden_Size'],
@@ -142,7 +207,7 @@ def process_dataset(df, dataset_name, model, tokenizer, device, meta, model_info
             'Band': meta['Band'],
             'Token_Marker': meta['Token_Marker'],
             'External_Calibration': False,
-            'Needs_Review': False,
+            'Needs_Review': scores['PLL_Stereotypical'] is None or scores['PLL_AntiStereotypical'] is None,
             'Timestamp': datetime.utcnow().isoformat() + 'Z'
         }
         
@@ -174,13 +239,24 @@ def compute_summary(df, meta, model_info, summary_path):
         return
         
     dataset = df['Dataset'].iloc[0]
-    
-    # Quality screen logic should have been applied before calling this, 
+
+    # A retried row is appended, so a Row_Index can appear twice (early failure
+    # then later success). Keep the last occurrence per row so failed/scored
+    # counts are exact.
+    if 'Row_Index' in df.columns:
+        df = df.drop_duplicates(subset=['Row_Index'], keep='last')
+
+    # Quality screen logic should have been applied before calling this,
     # but we assume df has valid scores here.
     valid_df = df.dropna(subset=['Effect_Size', 'Stereotype_Preferred'])
+    failed_count = int(len(df) - len(valid_df))
+    tied_count = int((valid_df['Effect_Size'] == 0).sum())
+    if failed_count:
+        logger.warning(f"{dataset}: {failed_count} of {len(df)} pairs FAILED scoring "
+                       f"(Needs_Review) and are excluded from the denominators.")
     if valid_df.empty:
         return
-        
+
     # Overall
     overall_pref = valid_df['Stereotype_Preferred'].mean()
     mean_effect = valid_df['Effect_Size'].mean()
@@ -204,12 +280,18 @@ def compute_summary(df, meta, model_info, summary_path):
         'Shared_Ratio': model_info['Shared_Ratio'],
         'Band': meta['Band'],
         'Token_Marker': meta['Token_Marker'],
+        'Validation_Loss': meta.get('Validation_Loss'),
+        'Stream_Count': meta.get('Stream_Count'),
+        'Merge_At': meta.get('Merge_At'),
         'Overall_Stereotype_Preference_Rate': overall_pref,
         'Macro_Average_Preference_Rate': macro_pref,
         'Mean_Effect_Size': mean_effect,
         'Bootstrap_CI_Low': ci_low,
         'Bootstrap_CI_High': ci_high,
         'PLL_SS_PLL_Agreement': None, # Stage 2 feature
+        'Scored_Row_Count': int(len(valid_df)),
+        'Failed_Row_Count': failed_count,
+        'Tied_Pair_Count': tied_count,
         'Timestamp': datetime.utcnow().isoformat() + 'Z'
     }
     
@@ -290,7 +372,9 @@ def main():
             logger.info(f"Skipping {cp_dir} - failed quality screen (PP={pp})")
             continue
             
-        meta['Validation_Loss'] = None # We could fetch this from the summary, but it's not critical for eval execution
+        meta['Validation_Loss'] = get_snapshot_validation_loss(
+            results_dir, meta['Architecture'], meta['Model_Size'],
+            meta['Seed'], meta['Band'], meta['Token_Marker'])
         
         logger.info(f"Evaluating model: {cp_dir}")
         
@@ -314,10 +398,13 @@ def main():
             out_progress_path = os.path.join(results_dir, 'bias', prog_filename)
             summary_path = os.path.join(results_dir, 'bias', f"{ds_name}_summary.csv")
             
-            # Check if summary already exists for this snapshot
-            if args.resume and os.path.exists(summary_path):
+            # Skip if a summary row for this snapshot already exists.
+            # This runs UNCONDITIONALLY (not only with --resume): re-running the
+            # eval must never append duplicate summary rows, which would corrupt
+            # the seed-pairing in the downstream contrasts.
+            if os.path.exists(summary_path):
                 sum_df = pd.read_csv(summary_path)
-                
+
                 mask = (sum_df['Architecture'] == meta['Architecture']) & \
                        (sum_df['Model_Size'] == meta['Model_Size']) & \
                        (sum_df['Seed'] == meta['Seed'])
@@ -325,7 +412,7 @@ def main():
                     mask = mask & (sum_df['Band'] == meta['Band'])
                 else:
                     mask = mask & (sum_df['Token_Marker'] == meta['Token_Marker'])
-                    
+
                 if not sum_df[mask].empty:
                     logger.info(f"Skipping {ds_name} for {prog_filename} - summary already exists.")
                     continue

@@ -31,7 +31,11 @@ def main():
         
     # Full body similar to eval_bias_stage2
     from Stage2.eval_bias_stage2 import process_dataset, compute_summary, eval_winobias
-    from Stage1.eval_bias_stage1 import extract_model_metadata, get_snapshot_mlm_quality
+    from Stage1.eval_bias_stage1 import (
+        extract_model_metadata,
+        get_snapshot_mlm_quality,
+        get_snapshot_validation_loss,
+    )
     from common.architectures import build_model, get_model_info
     from common.bias_metrics import passes_quality_screen
     
@@ -75,49 +79,67 @@ def main():
         meta = extract_model_metadata(cp_dir)
         if not meta:
             continue
-            
-        # Parse num_streams from run_dir if available
-        num_streams = cfg.DEFAULT_NUM_STREAMS
-        if 'streams' in meta['Run_ID']:
-            parts = meta['Run_ID'].split('_')
-            for p in parts:
-                if p.startswith('streams'):
-                    try:
-                        num_streams = int(p.replace('streams', ''))
-                    except:
-                        pass
-        meta['num_streams'] = num_streams
-            
-        pp = get_snapshot_mlm_quality(results_dir, meta['Architecture'], meta['Model_Size'], 
-                                      meta['Seed'], meta['Band'], meta['Token_Marker'])
-                                      
+
+        # Correct stage label (compute_summary defaults to the Stage 2 config
+        # when reused across stages)
+        meta['Stage'] = cfg.STAGE
+
+        # Stream count / merge point parsed from the run directory name by
+        # extract_model_metadata; default to the primary stream count for
+        # Hyperloop-family runs trained without a suffix.
+        is_hyperloop = 'Hyperloop' in meta['Architecture']
+        if is_hyperloop and meta.get('Stream_Count') is None:
+            meta['Stream_Count'] = cfg.DEFAULT_NUM_STREAMS
+
+        pp = get_snapshot_mlm_quality(results_dir, meta['Architecture'], meta['Model_Size'],
+                                      meta['Seed'], meta['Band'], meta['Token_Marker'],
+                                      stream_count=meta.get('Stream_Count'),
+                                      merge_at=meta.get('Merge_At'))
+
         if not passes_quality_screen(pp, cfg.PSEUDO_PERPLEXITY_QUALITY_THRESHOLD):
+            logger.info(f"Skipping {cp_dir} - failed quality screen (PP={pp})")
             continue
-            
-        meta['Validation_Loss'] = None 
-        
+
+        meta['Validation_Loss'] = get_snapshot_validation_loss(
+            results_dir, meta['Architecture'], meta['Model_Size'],
+            meta['Seed'], meta['Band'], meta['Token_Marker'],
+            stream_count=meta.get('Stream_Count'), merge_at=meta.get('Merge_At'))
+
         logger.info(f"Evaluating model: {cp_dir}")
-        model = build_model(meta['Architecture'], meta['Model_Size'], num_streams=num_streams)
+        build_kwargs = {}
+        if is_hyperloop:
+            build_kwargs['num_streams'] = meta['Stream_Count']
+        if meta.get('Merge_At') is not None:
+            build_kwargs['merge_at'] = meta['Merge_At']
+        model = build_model(meta['Architecture'], meta['Model_Size'], **build_kwargs)
         model_info = get_model_info(model)
-        
+
         try:
-            model.load_state_dict(torch.load(os.path.join(cp_dir, 'pytorch_model.bin'), map_location='cpu', weights_only=True))
-        except:
+            model.load_state_dict(torch.load(os.path.join(cp_dir, 'pytorch_model.bin'),
+                                             map_location='cpu', weights_only=True))
+        except Exception as e:
+            logger.error(f"Failed to load model from {cp_dir}: {e}")
             continue
-            
+
         model.to(device)
         model.eval()
-        
+
         for ds_name, df in datasets_to_eval.items():
             band_or_marker = f"band{meta['Band']}" if meta['Band'] else f"tokens{meta['Token_Marker']}"
-            prog_filename = f"{ds_name}_{meta['Architecture']}_{meta['Model_Size']}_seed{meta['Seed']}_streams{num_streams}_{band_or_marker}_progress.csv"
+            suffix = ''
+            if meta.get('Stream_Count') is not None:
+                suffix += f"_streams{meta['Stream_Count']}"
+            if meta.get('Merge_At') is not None:
+                suffix += f"_merge{meta['Merge_At']}"
+            prog_filename = (f"{ds_name}_{meta['Architecture']}_{meta['Model_Size']}"
+                             f"_seed{meta['Seed']}{suffix}_{band_or_marker}_progress.csv")
             out_progress_path = os.path.join(results_dir, 'bias', prog_filename)
             summary_path = os.path.join(results_dir, 'bias', f"{ds_name}_summary.csv")
-            
-            if args.resume and os.path.exists(summary_path):
+
+            # Unconditional dedup keyed on the FULL snapshot identity,
+            # including Stream_Count and Merge_At (ablation-aware).
+            if os.path.exists(summary_path):
                 sum_df = pd.read_csv(summary_path)
-                # Need to handle num_streams ablation in summary. 
-                # io_schemas base doesn't have Stream_Count, we might add it or filter by Architecture + size
                 mask = (sum_df['Architecture'] == meta['Architecture']) & \
                        (sum_df['Model_Size'] == meta['Model_Size']) & \
                        (sum_df['Seed'] == meta['Seed'])
@@ -125,31 +147,28 @@ def main():
                     mask = mask & (sum_df['Band'] == meta['Band'])
                 else:
                     mask = mask & (sum_df['Token_Marker'] == meta['Token_Marker'])
-                    
+                if 'Stream_Count' in sum_df.columns:
+                    if meta.get('Stream_Count') is not None:
+                        mask = mask & (sum_df['Stream_Count'] == meta['Stream_Count'])
+                    else:
+                        mask = mask & (sum_df['Stream_Count'].isna())
+                if 'Merge_At' in sum_df.columns:
+                    if meta.get('Merge_At') is not None:
+                        mask = mask & (sum_df['Merge_At'] == meta['Merge_At'])
+                    else:
+                        mask = mask & (sum_df['Merge_At'].isna())
                 if not sum_df[mask].empty:
-                    # In true pipeline, we need to distinguish ablation models.
-                    # Since we only save 'HyperloopBERT' without stream count in summary, 
-                    # we must write stream count to another column or just rebuild it.
-                    pass
-            
-            res_df = process_dataset(df, ds_name, model, tokenizer, device, meta, model_info, out_progress_path)
-            
-            # Since Stage 3 summary needs Stream_Count for ablation analysis, 
-            # we modify compute_summary locally to include it if necessary, 
-            # but we can also extract it from prog_filename later.
+                    logger.info(f"Skipping {ds_name} for {prog_filename} - summary already exists.")
+                    continue
+
+            res_df = process_dataset(df, ds_name, model, tokenizer, device, meta,
+                                     model_info, out_progress_path)
             compute_summary(res_df, meta, model_info, summary_path)
-            
-            # Save ablation summary
-            if num_streams != cfg.DEFAULT_NUM_STREAMS:
-                ablation_summary_path = os.path.join(results_dir, 'bias', f"{ds_name}_ablation_summary.csv")
-                # Append num_streams to meta for saving
-                meta['Stream_Count'] = num_streams
-                compute_summary(res_df, meta, model_info, ablation_summary_path)
-            
+
         # WinoBias
         wino_sum_path = os.path.join(results_dir, 'bias', 'winobias_summary.csv')
         eval_winobias(model, tokenizer, device, winobias_dir, meta, model_info, wino_sum_path)
-            
+
         del model
         torch.cuda.empty_cache()
 

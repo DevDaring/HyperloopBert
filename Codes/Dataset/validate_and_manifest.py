@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 
 # Add parent dir to path to import common
@@ -9,7 +9,7 @@ from common.integrity import run_integrity_suite, check_eval_duplicates, build_m
 logger = setup_logging('validate_and_manifest')
 
 def main():
-    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     EVAL_DIR = os.path.join(DATA_DIR, 'datasets_eval')
     MANIFEST_PATH = os.path.join(DATA_DIR, 'dataset_manifest.json')
     QUARANTINE_DIR = os.path.join(DATA_DIR, 'quarantine')
@@ -42,7 +42,10 @@ def main():
         if 'quarantine' in root:
             continue
         for file in files:
-            if file.endswith('.jsonl') or file.endswith('.csv'):
+            # Tokenizer files are manifested too: an accidental tokenizer
+            # rebuild would silently shift every downstream number.
+            in_tokenizer_dir = os.path.basename(root) == 'tokenizer'
+            if file.endswith(('.jsonl', '.csv')) or (in_tokenizer_dir and file.endswith('.json')):
                 files_to_manifest.append(os.path.join(root, file))
                 
     manifest = build_manifest(files_to_manifest, MANIFEST_PATH)

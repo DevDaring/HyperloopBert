@@ -44,6 +44,8 @@ IDENTITY_COLUMNS: List[str] = [
 # ---------------------------------------------------------------------------
 
 MLM_SUMMARY_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Stream_Count",
+    "Merge_At",
     "Validation_Loss",
     "Pseudo_Perplexity",
     "Mask_Accuracy",
@@ -87,12 +89,18 @@ BIAS_EXAMPLE_COLUMNS: List[str] = [
 BIAS_SUMMARY_BASE_COLUMNS: List[str] = IDENTITY_COLUMNS + [
     "Band",
     "Token_Marker",
+    "Validation_Loss",
+    "Stream_Count",
+    "Merge_At",
     "Overall_Stereotype_Preference_Rate",
     "Macro_Average_Preference_Rate",
     "Mean_Effect_Size",
     "Bootstrap_CI_Low",
     "Bootstrap_CI_High",
     "PLL_SS_PLL_Agreement",
+    "Scored_Row_Count",
+    "Failed_Row_Count",
+    "Tied_Pair_Count",
     "Timestamp",
 ]
 
@@ -101,6 +109,9 @@ BIAS_SUMMARY_BASE_COLUMNS: List[str] = IDENTITY_COLUMNS + [
 # ---------------------------------------------------------------------------
 
 WINOBIAS_SUMMARY_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Band",
+    "Token_Marker",
+    "Stream_Count",
     "Pro_Stereotype_Accuracy",
     "Anti_Stereotype_Accuracy",
     "Pro_Anti_Gap",
@@ -116,8 +127,14 @@ EXTERNAL_CALIBRATION_COLUMNS: List[str] = [
     "Dataset",
     "Category",
     "Overall_Stereotype_Preference_Rate",
+    # Canonical CrowS-Pairs metric (Nangia et al. 2020): preference computed on
+    # the SHARED (unmodified) tokens only. Comparable to published numbers;
+    # the full-sentence PLL rate above is the internal primary metric.
+    "Shared_Token_Preference_Rate",
     "Macro_Average_Preference_Rate",
     "Mean_Effect_Size",
+    "Scored_Row_Count",
+    "Failed_Row_Count",
     "External_Calibration",
     "Timestamp",
 ]
@@ -127,10 +144,28 @@ EXTERNAL_CALIBRATION_COLUMNS: List[str] = [
 # ---------------------------------------------------------------------------
 
 GLUE_SUMMARY_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Band",
+    "Token_Marker",
+    "Stream_Count",
     "Task",
     "Accuracy",
     "F1",
+    # Eval-split size: the capability gate's exact binomial test needs counts
+    "Eval_Example_Count",
     "GLUE_Average",
+    "Timestamp",
+]
+
+# ---------------------------------------------------------------------------
+# Stage 1 capability gate: WinoBias masked-pronoun control (leg 3)
+# ---------------------------------------------------------------------------
+
+WINOBIAS_CAPABILITY_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Band",
+    "Split",
+    "Correct_Count",
+    "Scored_Count",
+    "Accuracy",
     "Timestamp",
 ]
 
@@ -211,6 +246,21 @@ TOKEN_DRIFT_COLUMNS: List[str] = IDENTITY_COLUMNS + [
 ]
 
 # ---------------------------------------------------------------------------
+# Mechanistic analysis: hyper-connection matrix statistics
+# (stability check per Xie et al. 2025, MHC, arXiv:2512.24880)
+# ---------------------------------------------------------------------------
+
+HYPERCONNECTION_STATS_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Loop_Index",
+    "Projection",
+    "Stream_Index",
+    "Block_Frobenius_Norm",
+    "Block_Deviation_From_Init",
+    "Matrix_Spectral_Norm",
+    "Timestamp",
+]
+
+# ---------------------------------------------------------------------------
 # Stream count ablation
 # ---------------------------------------------------------------------------
 
@@ -222,6 +272,81 @@ STREAM_ABLATION_COLUMNS: List[str] = IDENTITY_COLUMNS + [
     "Std_Across_Seeds",
     "Bootstrap_CI_Low",
     "Bootstrap_CI_High",
+    "Timestamp",
+]
+
+# ---------------------------------------------------------------------------
+# Qualitative model-output dump (common/qualitative_output.py): the actual
+# MLM-head predictions a paper reviewer expects to SEE, not just the PLL score.
+# Two artifacts per snapshot:
+#   (1) open-vocabulary top-k predictions at a masked position
+#   (2) targeted-contrast probabilities on paired demographic tokens
+# ---------------------------------------------------------------------------
+
+QUALITATIVE_TOPK_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Band",
+    "Token_Marker",
+    "Stream_Count",
+    "Merge_At",
+    "Probe_ID",
+    "Category",
+    "Masked_Sentence",
+    "Mask_Position",
+    "Rank",
+    "Predicted_Token",
+    "Predicted_Probability",
+    "Timestamp",
+]
+
+QUALITATIVE_CONTRAST_COLUMNS: List[str] = IDENTITY_COLUMNS + [
+    "Band",
+    "Token_Marker",
+    "Stream_Count",
+    "Merge_At",
+    "Probe_ID",
+    "Category",
+    "Masked_Sentence",
+    "Target_A",
+    "Probability_A",
+    "Target_B",
+    "Probability_B",
+    "Log_Odds_A_Over_B",
+    "Preferred_Target",
+    "Timestamp",
+]
+
+# ---------------------------------------------------------------------------
+# Corpus stereotype statistics (Dataset/corpus_stereotype_stats.py):
+# benchmark-pair lexeme co-occurrence in the training corpus. Interprets null
+# bias results: near-zero co-occurrence means "never learned", not
+# "architecturally mitigated".
+# ---------------------------------------------------------------------------
+
+CORPUS_PAIR_STATS_COLUMNS: List[str] = [
+    "Dataset",
+    "Row_Index",
+    "Category",
+    "Stereo_Terms",
+    "Anti_Terms",
+    "Context_Terms",
+    "Docs_With_Stereo_Term",
+    "Docs_With_Anti_Term",
+    "Docs_With_Context_Term",
+    "Stereo_Cooccurrence_Docs",
+    "Anti_Cooccurrence_Docs",
+    "Sampled_Docs",
+    "Timestamp",
+]
+
+CORPUS_CATEGORY_STATS_COLUMNS: List[str] = [
+    "Dataset",
+    "Category",
+    "Pair_Count",
+    "Mean_Stereo_Cooccurrence_Docs",
+    "Median_Stereo_Cooccurrence_Docs",
+    "Mean_Anti_Cooccurrence_Docs",
+    "Zero_Stereo_Cooccurrence_Fraction",
+    "Sampled_Docs",
     "Timestamp",
 ]
 

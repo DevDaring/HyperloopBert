@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 import hashlib
@@ -111,6 +111,6 @@ def build_report(data_dir: str, output_path: str):
     logger.info(f"Provenance report written to {output_path}")
 
 if __name__ == "__main__":
-    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     REPORT_PATH = os.path.join(DATA_DIR, 'provenance_report.md')
     build_report(DATA_DIR, REPORT_PATH)

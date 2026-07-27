@@ -43,18 +43,22 @@ def paired_permutation_test(a: List[float], b: List[float], n_permutations: int 
     
     rng = np.random.RandomState(seed)
     n = len(diffs)
-    
+
     # Randomly flip signs
     signs = rng.choice([-1, 1], size=(n_permutations, n))
     perm_means = np.mean(diffs * signs, axis=1)
-    
+
+    # CITATION: Phipson, B. & Smyth, G.K. (2010). Permutation p-values should
+    #           never be zero. Stat. Appl. Genet. Mol. Biol. 9(1).
+    #           [+1 correction: p = (b + 1) / (m + 1) guarantees p > 0]
     if alternative == 'greater':
-        p_val = np.mean(perm_means >= obs_mean)
+        exceed = np.sum(perm_means >= obs_mean)
     elif alternative == 'less':
-        p_val = np.mean(perm_means <= obs_mean)
+        exceed = np.sum(perm_means <= obs_mean)
     else: # two-sided
-        p_val = np.mean(np.abs(perm_means) >= np.abs(obs_mean))
-        
+        exceed = np.sum(np.abs(perm_means) >= np.abs(obs_mean))
+
+    p_val = (exceed + 1.0) / (n_permutations + 1.0)
     return float(obs_mean), float(p_val)
 
 def holm_bonferroni_correction(p_values: List[Tuple[str, float]], alpha: float = 0.05) -> List[Tuple[str, float, float, bool]]:
@@ -92,22 +96,59 @@ def holm_bonferroni_correction(p_values: List[Tuple[str, float]], alpha: float =
     
     return results
 
+def item_level_paired_contrast(deltas: List[float], n_permutations: int = 10000,
+                               alternative: str = 'greater', seed: int = 42) -> Dict:
+    """
+    Item-level paired contrast: the resampling unit is the SENTENCE PAIR, not
+    the seed. `deltas` is the per-item difference (condition A minus condition
+    B), already averaged across seeds per item. Sign-flip permutation over
+    items gives real statistical power at 3 seeds (n ~ 1500 items on
+    Multi-CrowS-Pairs), which seed-level resampling cannot
+    (p_min = 1/2^n_seeds). This is the pre-registered PRIMARY test; the
+    seed-level test is retained as a robustness check.
+
+    Returns dict: mean_delta, p_value, ci_low, ci_high, cohens_d, n_items.
+    """
+    deltas = [d for d in deltas if d is not None and not np.isnan(d)]
+    if len(deltas) < 10:
+        return {'mean_delta': 0.0, 'p_value': 1.0, 'ci_low': 0.0,
+                'ci_high': 0.0, 'cohens_d': 0.0, 'n_items': len(deltas)}
+    zeros = [0.0] * len(deltas)
+    mean_delta, p_value = paired_permutation_test(
+        deltas, zeros, n_permutations=n_permutations,
+        alternative=alternative, seed=seed)
+    _, ci_low, ci_high = bootstrap_ci(deltas, seed=seed)
+    return {
+        'mean_delta': float(mean_delta),
+        'p_value': float(p_value),
+        'ci_low': float(ci_low),
+        'ci_high': float(ci_high),
+        'cohens_d': cohens_d(deltas, zeros),
+        'n_items': len(deltas),
+    }
+
+
 def cohens_d(a: List[float], b: List[float]) -> float:
     """
-    Cohen's d effect size for paired samples.
+    Cohen's d effect size for paired samples (d_z).
     d = mean(a-b) / std(a-b)
-    Returns: float
+    Returns: float. A perfectly consistent nonzero effect (std of differences
+    = 0) returns signed infinity, NOT 0.0 -- returning 0.0 there would report
+    the strongest possible effect as "no effect".
     """
     if not a or not b or len(a) != len(b):
         return 0.0
-        
+
     diffs = np.array(a) - np.array(b)
     std_diff = np.std(diffs, ddof=1)
-    
+    mean_diff = float(np.mean(diffs))
+
     if std_diff == 0:
-        return 0.0
-        
-    return float(np.mean(diffs) / std_diff)
+        if mean_diff == 0:
+            return 0.0
+        return float(np.copysign(np.inf, mean_diff))
+
+    return float(mean_diff / std_diff)
 
 def seed_variance_report(values_by_seed: Dict[int, float]) -> Dict[str, float]:
     """
@@ -155,7 +196,8 @@ def pearson_and_spearman(x: List[float], y: List[float], label: str = 'explorato
     }
 
 
-def exploratory_contrast(a, b, label: str = '', n_permutations: int = 1000, seed: int = 42):
+def exploratory_contrast(a, b, label: str = '', n_permutations: int = 1000,
+                         seed: int = 42, alternative: str = 'two-sided'):
     """
     Exploratory (uncorrected) contrast between two groups.
 
@@ -183,7 +225,8 @@ def exploratory_contrast(a, b, label: str = '', n_permutations: int = 1000, seed
         label           : str
         note            : str    -- reminder that this is exploratory/uncorrected
     """
-    mean_delta, p_value = paired_permutation_test(a, b, n_permutations=n_permutations, seed=seed)
+    mean_delta, p_value = paired_permutation_test(a, b, n_permutations=n_permutations,
+                                                  alternative=alternative, seed=seed)
     d = cohens_d(a, b)
     return {
         'mean_delta': mean_delta,
@@ -192,3 +235,17 @@ def exploratory_contrast(a, b, label: str = '', n_permutations: int = 1000, seed
         'label': label,
         'note': 'EXPLORATORY: uncorrected p-value; do not use for confirmatory inference without Holm correction',
     }
+
+
+def binomial_p_above_chance(successes: int, n: int, p0: float = 0.5) -> float:
+    """
+    One-sided exact binomial p-value for H1: accuracy > p0.
+
+    Used by the Stage 1 capability gate (legs 1 and 3): an undertrained model
+    guard must be an actual statistical test against chance, not an eyeballed
+    threshold. Returns P(X >= successes) under Binomial(n, p0).
+    """
+    if n <= 0 or successes < 0:
+        return 1.0
+    import scipy.stats as _stats
+    return float(_stats.binom.sf(successes - 1, n, p0))

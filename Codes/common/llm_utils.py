@@ -35,12 +35,19 @@ JSON enforcement
 
 Providers
 ---------
-| Provider    | Tier      | Model                  | Keys        |
-|-------------|-----------|------------------------|-------------|
-| gemini      | PRIMARY   | GEMINI_MODEL_NAME env  | GCP_KEY1..4 |
-| deepseek    | SECONDARY | deepseek-chat          | DEEPSEEK_KEY1..2 |
-| mistral     | TERTIARY  | mistral-small-latest   | MISTRAL_KEY1..2 |
-| openrouter  | ALTERNATE | configurable           | OPENROUTER_KEY1..2 |
+| Provider    | Judge tier | Model                    | Keys                |
+|-------------|------------|--------------------------|---------------------|
+| deepseek    | PRIMARY    | deepseek-chat            | DEEPSEEK_API_KEY_1/2 |
+| mistral     | SECONDARY  | mistral-small-latest     | MISTRAL_API_KEY1/2  |
+| openrouter  | TERTIARY   | openai/gpt-4o-mini       | OPENROUTER_API_KEY_1/2 |
+| gemini      | DISABLED   | -- (never called)        | --                  |
+
+JUDGEMENT POLICY (project requirement): Gemini is NEVER used. For any
+judgement/extraction task call `call_judge()`, which tries DeepSeek (primary),
+then Mistral (secondary), then OpenRouter/gpt-4o-mini (tertiary), round-robining
+keys WITHIN each provider. `call_llm(provider=...)` keeps its strict no-fallback
+contract for callers that must pin one provider; `call_judge()` is the ordered
+multi-provider path.
 
 All HTTP calls use the requests library only. The openai Python package is
 NOT required and NOT imported.
@@ -549,7 +556,7 @@ def _get_provider_config(provider: str) -> Dict[str, Any]:
             env_loader.get("openrouter_api_base_url")
             or "https://openrouter.ai/api/v1"
         )
-        # OpenRouter model is configurable; default to a sensible option.
+        # Project requirement: OpenRouter tertiary judge uses openai/gpt-4o-mini.
         model = (
             env_loader.get("openrouter_primary_model_name")
             or "openai/gpt-4o-mini"
@@ -631,6 +638,14 @@ def call_llm(
     if not 0.0 <= temperature <= 2.0:
         raise ValueError(f"temperature must be in [0.0, 2.0], got {temperature}")
 
+    # Project policy: Gemini is disabled for every task. Enforce at the boundary
+    # so no code path (or future caller) can reach a Gemini model.
+    if provider.strip().lower() == "gemini":
+        raise ValueError(
+            "Gemini is disabled by project policy. Use call_judge() (DeepSeek -> "
+            "Mistral -> OpenRouter) or an explicit non-Gemini provider."
+        )
+
     # Build full prompt including schema instruction.
     full_prompt = prompt + _build_schema_instruction(schema)
 
@@ -688,3 +703,58 @@ def call_llm(
 
     logger.debug("call_llm: provider=%s parse=success keys=%s", provider, list(parsed.keys()))
     return parsed
+
+
+# ---------------------------------------------------------------------------
+# Judgement path: ordered multi-provider fallback (project policy)
+# ---------------------------------------------------------------------------
+
+# Ordered judge tiers. Gemini is intentionally absent and must never be added.
+JUDGE_PROVIDER_ORDER: List[str] = ["deepseek", "mistral", "openrouter"]
+
+
+def call_judge(
+    prompt: str,
+    schema: Optional[Dict[str, Any]] = None,
+    temperature: float = 0.1,
+    max_tokens: int = 1024,
+) -> Dict[str, Any]:
+    """
+    Run a judgement/extraction task under the project's provider policy:
+    DeepSeek (primary) -> Mistral (secondary) -> OpenRouter/gpt-4o-mini
+    (tertiary), round-robining keys WITHIN each provider. Gemini is NEVER used.
+
+    Unlike call_llm (strict, no cross-tier fallback), this DOES fall back to the
+    next provider when one is unavailable (no keys) or fails after its own
+    retries -- judgement tasks favour completing over pinning one provider.
+
+    Returns the parsed JSON dict from the first provider that succeeds. If every
+    tier is unavailable or fails, returns {"needs_review": True, "raw": ...}
+    with the reason, so callers never crash a pipeline on judge unavailability.
+    Key values are never logged.
+    """
+    errors = []
+    for provider in JUDGE_PROVIDER_ORDER:
+        if not env_loader.is_provider_available(provider):
+            logger.info("call_judge: provider=%s has no keys; trying next tier.", provider)
+            errors.append(f"{provider}: no keys")
+            continue
+        try:
+            result = call_llm(prompt, provider=provider, schema=schema,
+                              temperature=temperature, max_tokens=max_tokens)
+            # A parse failure returns needs_review rather than raising; treat it
+            # as this tier failing and fall through to the next provider.
+            if isinstance(result, dict) and result.get("needs_review"):
+                logger.warning("call_judge: provider=%s returned needs_review; "
+                               "trying next tier.", provider)
+                errors.append(f"{provider}: parse failure")
+                continue
+            logger.info("call_judge: provider=%s succeeded.", provider)
+            return result
+        except Exception as exc:  # RuntimeError (retries exhausted), auth, etc.
+            logger.warning("call_judge: provider=%s failed (%s); trying next tier.",
+                           provider, exc)
+            errors.append(f"{provider}: {exc}")
+
+    logger.error("call_judge: all judge tiers unavailable/failed: %s", "; ".join(errors))
+    return {"needs_review": True, "raw": f"all judge tiers failed: {'; '.join(errors)}"}
