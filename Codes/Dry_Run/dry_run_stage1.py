@@ -10,7 +10,7 @@ logger = setup_logging('dry_run_stage1')
 def patch_config():
     import Stage1.config_stage1 as cfg1
     import Dry_Run.config_dry_run as cfg_dry
-    
+
     logger.info("Monkeypatching Stage 1 config for dry run...")
     cfg1.SIZES = cfg_dry.SIZES
     cfg1.DEFAULT_SEEDS = cfg_dry.DEFAULT_SEEDS
@@ -21,6 +21,15 @@ def patch_config():
     cfg1.VAL_SAMPLES = cfg_dry.VAL_SAMPLES
     cfg1.DEFAULT_ISO_BANDS = cfg_dry.DEFAULT_ISO_BANDS.copy()
     cfg1.ARCHITECTURES = cfg_dry.STAGE1_ARCHITECTURES
+
+    # CRITICAL: isolate ALL output from the real Stage 1 directories. 'tiny' is
+    # a REAL Stage 1 size too, so without this, dry-run rows/checkpoints would
+    # land in the exact paths the real run reads and appends to.
+    sub = cfg_dry.DRY_RUN_SUBDIR
+    cfg1.RESULTS_DIR = f'results/{sub}/stage1'
+    cfg1.MODELS_DIR = f'models/{sub}/stage1'
+    cfg1.FIGURES_DIR = f'figures/{sub}/stage1'
+    cfg1.CHECKPOINTS_DIR = f'checkpoints/{sub}/stage1'
 
 def main():
     patch_config()

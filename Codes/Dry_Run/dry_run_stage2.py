@@ -25,6 +25,14 @@ def patch_config():
     cfg2.GLUE_BATCH_SIZE = cfg_dry.GLUE_BATCH_SIZE
     cfg2.EXTERNAL_MODELS = cfg_dry.EXTERNAL_MODELS
 
+    # CRITICAL: isolate from real Stage 2 output directories (see dry_run_stage1
+    # for why -- 'tiny' is also a real Stage 2 size).
+    sub = cfg_dry.DRY_RUN_SUBDIR
+    cfg2.RESULTS_DIR = f'results/{sub}/stage2'
+    cfg2.MODELS_DIR = f'models/{sub}/stage2'
+    cfg2.FIGURES_DIR = f'figures/{sub}/stage2'
+    cfg2.CHECKPOINTS_DIR = f'checkpoints/{sub}/stage2'
+
 def main():
     patch_config()
     

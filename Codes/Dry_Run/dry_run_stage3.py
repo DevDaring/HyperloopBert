@@ -23,7 +23,25 @@ def patch_config():
     cfg3.GLUE_EPOCHS = cfg_dry.GLUE_EPOCHS
     cfg3.GLUE_BATCH_SIZE = cfg_dry.GLUE_BATCH_SIZE
     # Less ablation for dry run
-    cfg3.NUM_STREAMS_ABLATION = [2, 4] 
+    cfg3.NUM_STREAMS_ABLATION = [2, 4]
+
+    # CRITICAL: without this, the dry run would execute a REAL 100M-token
+    # seq=256 adaptation tail (config_stage3's real budget) instead of a fast
+    # smoke test.
+    cfg3.SEQ_LENGTH_TAIL = cfg_dry.SEQ_LENGTH_TAIL
+    cfg3.TAIL_TOKENS = cfg_dry.TAIL_TOKENS
+    cfg3.TAIL_TOKEN_MARKERS = cfg_dry.TAIL_TOKEN_MARKERS.copy()
+    cfg3.TAIL_ISO_BANDS = cfg_dry.TAIL_ISO_BANDS.copy()
+
+    # CRITICAL: isolate from real Stage 3 output directories (see dry_run_stage1
+    # for why -- 'tiny' is also a real Stage 3 size, and Stage 3's SIZES config
+    # only lists 'base', but ABLATION_SEEDS-based ablation runs are size-generic
+    # so the same isolation logic applies).
+    sub = cfg_dry.DRY_RUN_SUBDIR
+    cfg3.RESULTS_DIR = f'results/{sub}/stage3'
+    cfg3.MODELS_DIR = f'models/{sub}/stage3'
+    cfg3.FIGURES_DIR = f'figures/{sub}/stage3'
+    cfg3.CHECKPOINTS_DIR = f'checkpoints/{sub}/stage3'
 
 def main():
     patch_config()
