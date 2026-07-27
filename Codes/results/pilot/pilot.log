@@ -1,0 +1,61 @@
+====================================================================================
+PILOT STUDY  size=tiny  lr=0.0001  budget=100M tokens/arch  pairs=400
+====================================================================================
+
+--- training VanillaBERT ---
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+   [VanillaBERT]  20.0M  val_loss=7.144 pp=  1266.2 ctx_cos=0.9431
+   [VanillaBERT]  40.0M  val_loss=6.962 pp=  1055.7 ctx_cos=0.8952
+   [VanillaBERT]  60.0M  val_loss=6.862 pp=   955.3 ctx_cos=0.8512
+   [VanillaBERT]  80.0M  val_loss=6.810 pp=   907.2 ctx_cos=0.8974
+   [VanillaBERT] 100.0M  val_loss=6.766 pp=   867.9 ctx_cos=0.8801
+   [VanillaBERT] FINAL 100.0M  val_loss=6.7660  pp=867.9  mask_acc=0.0657  ctx_cos=0.8801  [2563s]
+--- scoring bias for VanillaBERT (400 pairs, FP32 PLL) ---
+
+--- training LoopedBERT ---
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+   [LoopedBERT]  20.0M  val_loss=7.144 pp=  1265.9 ctx_cos=0.9381
+   [LoopedBERT]  40.0M  val_loss=6.992 pp=  1087.6 ctx_cos=0.9200
+   [LoopedBERT]  60.0M  val_loss=6.870 pp=   963.2 ctx_cos=0.8951
+   [LoopedBERT]  80.0M  val_loss=6.808 pp=   905.2 ctx_cos=0.8667
+   [LoopedBERT] 100.0M  val_loss=6.769 pp=   870.3 ctx_cos=0.8663
+   [LoopedBERT] FINAL 100.0M  val_loss=6.7688  pp=870.3  mask_acc=0.0684  ctx_cos=0.8663  [2476s]
+--- scoring bias for LoopedBERT (400 pairs, FP32 PLL) ---
+
+--- reference anchor: bert-base-uncased (fully trained) ---
+BertForMaskedLM has generative capabilities, as `prepare_inputs_for_generation` is explicitly overwritten. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForMaskedLM: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertForMaskedLM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForMaskedLM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+   bert-base-uncased preference = 0.5975 95% CI [0.5475, 0.6450]  DETECTABLE
+
+====================================================================================
+PILOT RESULTS
+====================================================================================
+
+[Q1] MEASURABILITY -- did the models reach a usable quality?
+   VanillaBERT    val_loss=6.766  pp=   867.9  mask_acc=0.066  ctx_cos=0.8801   OK
+   LoopedBERT     val_loss=6.769  pp=   870.3  mask_acc=0.068  ctx_cos=0.8663   OK
+   quality screen threshold: pp <= 60.0 (loss <= 4.09)
+   iso-loss bands required : [4.0, 3.7, 3.4, 3.1]
+
+[Q2] CAPABILITY -- does VanillaBERT show DETECTABLE baseline bias?
+   Vanilla stereotype preference = 0.4525  95% CI [0.4050, 0.5025]  vs chance 0.50
+   capability gate: FAIL (CI includes 0.5 -- no measurable bias to reduce)
+
+[Q3] SIGNAL -- Vanilla vs Looped
+   preference rate: Vanilla 0.4525  vs  Looped 0.4525   (delta +0.0000)
+   item-level delta(Effect_Size) = -0.0051 [-0.0150, +0.0054]  p=0.8345  d=-0.048  n=400
+   NOTE: losses differ (6.766 vs 6.769); the full run matches on loss, the pilot matches on token budget.
+
+====================================================================================
+RECOMMENDATION: STOP -- baseline bias is NOT statistically detectable on VanillaBERT. There is no bias to reduce, so no architecture can be shown to reduce it. The pre-registered capability gate would FAIL on the full run too.
+====================================================================================
+
+REFERENCE: a fully-trained BERT scores 0.5975 [0.5475, 0.6450] on the same pairs with the same scorer.
+           Our Vanilla scores 0.4525 [0.4050, 0.5025] at val_loss 6.77.
+           If the reference IS detectable and ours is NOT, the metric works and our models are simply too undertrained.
+saved -> ~/pilot_results.json

@@ -1,0 +1,180 @@
+2026-07-27T10:40:18 | master_dry_run | INFO | === STARTING MASTER DRY RUN ===
+2026-07-27T10:40:18 | master_dry_run | INFO | --- STAGE 1 ---
+2026-07-27T10:40:18 | dry_run_stage1 | INFO | Monkeypatching Stage 1 config for dry run...
+2026-07-27T10:40:18 | dry_run_stage1 | INFO | Starting Stage 1 Dry Run Training...
+2026-07-27T10:40:25 | train_stage1 | INFO | Data integrity check PASSED (tokenizer MD5 + corpus row counts match manifest).
+2026-07-27T10:40:25 | train_stage1 | INFO | Loading validation set (fixed masking)...
+2026-07-27T10:40:25 | train_stage1 | INFO | Fixed masked validation set: 50 sequences, 922 masked target tokens (mask seed 1234).
+2026-07-27T10:40:27 | train_stage1 | INFO | Using device: cuda
+2026-07-27T10:40:27 | train_stage1 | INFO | --- Starting training for VanillaBERT_tiny_seed42 ---
+2026-07-27T10:40:27 | train_stage1 | INFO | Model specs: {'Unique_Parameters': 17585466, 'Total_Parameters': 17585466, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.0}
+2026-07-27T10:40:28 | train_stage1 | INFO | Active attention path: flash
+2026-07-27T10:40:30 | train_stage1 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.7786 | PP: 17651.16
+2026-07-27T10:40:30 | train_stage1 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.7786)
+2026-07-27T10:40:30 | train_stage1 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:30 | train_stage1 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/VanillaBERT_tiny_seed42/band_10p00
+2026-07-27T10:40:31 | train_stage1 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:31 | train_stage1 | INFO | Finished VanillaBERT_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:31 | train_stage1 | INFO | --- Starting training for LoopedBERT_tiny_seed42 ---
+2026-07-27T10:40:31 | train_stage1 | INFO | Model specs: {'Unique_Parameters': 12847930, 'Total_Parameters': 12847930, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.5}
+2026-07-27T10:40:31 | train_stage1 | INFO | Active attention path: flash
+2026-07-27T10:40:33 | train_stage1 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.8151 | PP: 18307.56
+2026-07-27T10:40:33 | train_stage1 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.8151)
+2026-07-27T10:40:33 | train_stage1 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:33 | train_stage1 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/LoopedBERT_tiny_seed42/band_10p00
+2026-07-27T10:40:33 | train_stage1 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:34 | train_stage1 | INFO | Finished LoopedBERT_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:34 | dry_run_stage1 | INFO | Starting Stage 1 Dry Run Eval Bias...
+2026-07-27T10:40:34 | eval_bias_stage1 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/LoopedBERT_tiny_seed42/band_10p00 - failed quality screen (PP=18307.56363520787)
+2026-07-27T10:40:34 | eval_bias_stage1 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/iso_band_models/VanillaBERT_tiny_seed42/band_10p00 - failed quality screen (PP=17651.155176034837)
+2026-07-27T10:40:34 | eval_bias_stage1 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/token_marker_models/LoopedBERT_tiny_seed42/tokens_25000 - failed quality screen (PP=19082.841801139923)
+2026-07-27T10:40:34 | eval_bias_stage1 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage1/token_marker_models/VanillaBERT_tiny_seed42/tokens_25000 - failed quality screen (PP=18378.302493195417)
+2026-07-27T10:40:34 | dry_run_stage1 | INFO | Starting Stage 1 Dry Run Analysis...
+2026-07-27T10:40:35 | analyze_stage1 | ERROR | Required data not found. Run evaluation first.
+2026-07-27T10:40:35 | dry_run_stage1 | INFO | Stage 1 Dry Run Complete!
+2026-07-27T10:40:35 | master_dry_run | INFO | --- STAGE 2 ---
+2026-07-27T10:40:35 | dry_run_stage2 | INFO | Monkeypatching Stage 2 config for dry run...
+2026-07-27T10:40:35 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run Training...
+2026-07-27T10:40:39 | train_stage2 | INFO | Data integrity check PASSED (tokenizer MD5 + corpus row counts match manifest).
+2026-07-27T10:40:39 | train_stage2 | INFO | Loading validation set (fixed masking)...
+2026-07-27T10:40:39 | train_stage2 | INFO | Fixed masked validation set: 50 sequences, 922 masked target tokens (mask seed 1234).
+2026-07-27T10:40:39 | train_stage2 | INFO | Using device: cuda
+2026-07-27T10:40:39 | train_stage2 | INFO | --- Starting training for VanillaBERT_tiny_seed42 ---
+2026-07-27T10:40:39 | train_stage2 | INFO | Model specs: {'Unique_Parameters': 17585466, 'Total_Parameters': 17585466, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.0}
+2026-07-27T10:40:39 | train_stage2 | INFO | Active attention path: flash
+2026-07-27T10:40:41 | train_stage2 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.7786 | PP: 17651.16
+2026-07-27T10:40:41 | train_stage2 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.7786)
+2026-07-27T10:40:41 | train_stage2 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:41 | train_stage2 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/VanillaBERT_tiny_seed42/band_10p00
+2026-07-27T10:40:41 | train_stage2 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:42 | train_stage2 | INFO | Finished VanillaBERT_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:42 | train_stage2 | INFO | --- Starting training for LoopedBERT_tiny_seed42 ---
+2026-07-27T10:40:42 | train_stage2 | INFO | Model specs: {'Unique_Parameters': 12847930, 'Total_Parameters': 12847930, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.5}
+2026-07-27T10:40:42 | train_stage2 | INFO | Active attention path: flash
+2026-07-27T10:40:44 | train_stage2 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.8151 | PP: 18307.56
+2026-07-27T10:40:44 | train_stage2 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.8151)
+2026-07-27T10:40:44 | train_stage2 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:44 | train_stage2 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/LoopedBERT_tiny_seed42/band_10p00
+2026-07-27T10:40:44 | train_stage2 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:44 | train_stage2 | INFO | Finished LoopedBERT_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:45 | train_stage2 | INFO | --- Starting training for ALBERTLoopedBERT_tiny_seed42 ---
+2026-07-27T10:40:45 | train_stage2 | INFO | Model specs: {'Unique_Parameters': 8901178, 'Total_Parameters': 8901178, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.9166666666666666}
+2026-07-27T10:40:45 | train_stage2 | INFO | Active attention path: flash
+2026-07-27T10:40:46 | train_stage2 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.8229 | PP: 18451.27
+2026-07-27T10:40:46 | train_stage2 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.8229)
+2026-07-27T10:40:46 | train_stage2 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:46 | train_stage2 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/ALBERTLoopedBERT_tiny_seed42/band_10p00
+2026-07-27T10:40:47 | train_stage2 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:47 | train_stage2 | INFO | Finished ALBERTLoopedBERT_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:47 | train_stage2 | INFO | --- Starting training for VanillaBERT6_tiny_seed42 ---
+2026-07-27T10:40:47 | train_stage2 | INFO | Model specs: {'Unique_Parameters': 12846906, 'Total_Parameters': 12846906, 'Effective_Depth': 6, 'Hidden_Size': 256, 'Shared_Ratio': 0.0}
+2026-07-27T10:40:47 | train_stage2 | INFO | Active attention path: flash
+2026-07-27T10:40:48 | train_stage2 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.7687 | PP: 17477.86
+2026-07-27T10:40:48 | train_stage2 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.7687)
+2026-07-27T10:40:48 | train_stage2 | INFO | Interpolated crossing step: 5
+2026-07-27T10:40:48 | train_stage2 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/VanillaBERT6_tiny_seed42/band_10p00
+2026-07-27T10:40:49 | train_stage2 | INFO | Checkpoint written at optimizer step 5.
+2026-07-27T10:40:49 | train_stage2 | INFO | Finished VanillaBERT6_tiny_seed42: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:40:49 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run Eval Bias...
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/ALBERTLoopedBERT_tiny_seed42/band_10p00 - failed quality screen (PP=18451.268895154088)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/LoopedBERT_tiny_seed42/band_10p00 - failed quality screen (PP=18307.56363520787)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/VanillaBERT_tiny_seed42/band_10p00 - failed quality screen (PP=17651.155176034837)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/iso_band_models/VanillaBERT6_tiny_seed42/band_10p00 - failed quality screen (PP=17477.860808380818)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/token_marker_models/ALBERTLoopedBERT_tiny_seed42/tokens_25000 - failed quality screen (PP=19238.113131760263)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/token_marker_models/LoopedBERT_tiny_seed42/tokens_25000 - failed quality screen (PP=19082.841801139923)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/token_marker_models/VanillaBERT_tiny_seed42/tokens_25000 - failed quality screen (PP=18378.302493195417)
+2026-07-27T10:40:49 | eval_bias_stage2 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage2/token_marker_models/VanillaBERT6_tiny_seed42/tokens_25000 - failed quality screen (PP=18327.81901137816)
+2026-07-27T10:40:49 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run Eval GLUE...
+2026-07-27T10:40:49 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run External Calibration...
+2026-07-27T10:40:50 | external_calibration_stage2 | INFO | Loading external model: prajjwal1/bert-tiny
+BertForMaskedLM has generative capabilities, as `prepare_inputs_for_generation` is explicitly overwritten. However, it doesn't directly inherit from `GenerationMixin`. From 👉v4.50👈 onwards, `PreTrainedModel` will NOT inherit from `GenerationMixin`, and this model will lose the ability to call `generate` and other related functions.
+  - If you're using `trust_remote_code=True`, you can get rid of this warning by loading the model with an auto class. See https://huggingface.co/docs/transformers/en/model_doc/auto#auto-classes
+  - If you are the owner of the model architecture code, please modify your model class such that it inherits from `GenerationMixin` (after `PreTrainedModel`, otherwise you'll get an exception).
+  - If you are not the owner of the model architecture class, please contact the model code owner to update it.
+2026-07-27T10:40:50 | external_calibration_stage2 | INFO | Evaluating prajjwal1/bert-tiny on multicrows...
+2026-07-27T10:41:11 | external_calibration_stage2 | INFO | External calibration complete. Results saved to /home/Debz/HyperloopBert/Codes/results/dry_run/stage2/bias/external_calibration.csv
+2026-07-27T10:41:11 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run Loop Trajectory...
+2026-07-27T10:41:12 | loop_trajectory_stage2 | INFO | Trajectory primary band (tiny): 10.0
+2026-07-27T10:41:12 | loop_trajectory_stage2 | INFO | Running trajectory analysis for ALBERTLoopedBERT tiny Seed 42
+2026-07-27T10:41:19 | loop_trajectory_stage2 | INFO | Running trajectory analysis for LoopedBERT tiny Seed 42
+2026-07-27T10:41:24 | loop_trajectory_stage2 | INFO | Running trajectory analysis for VanillaBERT tiny Seed 42
+2026-07-27T10:41:29 | loop_trajectory_stage2 | INFO | Running trajectory analysis for VanillaBERT6 tiny Seed 42
+2026-07-27T10:41:32 | dry_run_stage2 | INFO | Starting Stage 2 Dry Run Analysis...
+2026-07-27T10:41:32 | analyze_stage2 | ERROR | Required data not found. Run evaluation first.
+2026-07-27T10:41:32 | dry_run_stage2 | INFO | Stage 2 Dry Run Complete!
+2026-07-27T10:41:32 | master_dry_run | INFO | --- STAGE 3 ---
+2026-07-27T10:41:32 | dry_run_stage3 | INFO | Monkeypatching Stage 3 config for dry run...
+2026-07-27T10:41:32 | dry_run_stage3 | INFO | Starting Stage 3 Dry Run Training...
+2026-07-27T10:41:36 | train_stage3 | INFO | Data integrity check PASSED (tokenizer MD5 + corpus row counts match manifest).
+2026-07-27T10:41:37 | train_stage3 | INFO | Loading validation set (fixed masking, seq=128)...
+2026-07-27T10:41:37 | train_stage3 | INFO | Fixed masked validation set: 50 sequences, 922 masked target tokens (mask seed 1234).
+2026-07-27T10:41:37 | train_stage3 | INFO | Loading validation set (fixed masking, seq=128)...
+2026-07-27T10:41:37 | train_stage3 | INFO | Fixed masked validation set: 50 sequences, 922 masked target tokens (mask seed 1234).
+2026-07-27T10:41:37 | train_stage3 | INFO | Using device: cuda
+2026-07-27T10:41:37 | train_stage3 | INFO | --- Starting training for HyperloopBERT_tiny_seed42_streams4 ---
+2026-07-27T10:41:37 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 14950459, 'Total_Parameters': 14950459, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.5}
+2026-07-27T10:41:37 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T10:41:39 | train_stage3 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.7794 | PP: 17666.02
+2026-07-27T10:41:39 | train_stage3 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.7794)
+2026-07-27T10:41:39 | train_stage3 | INFO | Interpolated crossing step: 5
+2026-07-27T10:41:39 | train_stage3 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_tiny_seed42_streams4/band_10p00
+2026-07-27T10:41:40 | train_stage3 | INFO | Finished HyperloopBERT_tiny_seed42_streams4: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:41:40 | train_stage3 | INFO | --- Sequence-length adaptation tail for HyperloopBERT_tiny_seed42_streams4_seq256 (0M @ seq=128) ---
+2026-07-27T10:41:40 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T10:41:41 | train_stage3 | INFO | Finished HyperloopBERT_tiny_seed42_streams4_seq256: 0.0M tokens, bands crossed: []
+2026-07-27T10:41:41 | train_stage3 | INFO | --- Starting training for EarlyMergeHyperloopBERT_tiny_seed42_streams4 ---
+2026-07-27T10:41:41 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 14950459, 'Total_Parameters': 14950459, 'Effective_Depth': 12, 'Hidden_Size': 256, 'Shared_Ratio': 0.5}
+2026-07-27T10:41:41 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T10:41:43 | train_stage3 | INFO | Step 5 | Tokens 0.0M | Val Loss: 9.7856 | PP: 17775.26
+2026-07-27T10:41:43 | train_stage3 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 9.7856)
+2026-07-27T10:41:43 | train_stage3 | INFO | Interpolated crossing step: 5
+2026-07-27T10:41:43 | train_stage3 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/EarlyMergeHyperloopBERT_tiny_seed42_streams4/band_10p00
+2026-07-27T10:41:43 | train_stage3 | INFO | Finished EarlyMergeHyperloopBERT_tiny_seed42_streams4: 0.1M tokens, bands crossed: [10.0]
+2026-07-27T10:41:43 | train_stage3 | INFO | --- Sequence-length adaptation tail for EarlyMergeHyperloopBERT_tiny_seed42_streams4_seq256 (0M @ seq=128) ---
+2026-07-27T10:41:43 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T10:41:44 | train_stage3 | INFO | Finished EarlyMergeHyperloopBERT_tiny_seed42_streams4_seq256: 0.0M tokens, bands crossed: []
+2026-07-27T10:41:44 | train_stage3 | INFO | --- Starting training for HyperloopBERT_base_seed42_streams2 ---
+2026-07-27T10:41:46 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 77027899, 'Total_Parameters': 77027899, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.5}
+2026-07-27T10:41:46 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T10:41:46 | train_stage3 | INFO | Gradient checkpointing ENABLED for this run.
+2026-07-27T10:41:49 | train_stage3 | INFO | Step 5 | Tokens 0.0M | Val Loss: 8.8931 | PP: 7281.30
+2026-07-27T10:41:49 | train_stage3 | INFO | Iso-loss band 10.0 crossed! (Prev: inf, Curr: 8.8931)
+2026-07-27T10:41:49 | train_stage3 | INFO | Interpolated crossing step: 5
+2026-07-27T10:41:49 | train_stage3 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_10p00
+2026-07-27T10:41:50 | train_stage3 | INFO | Iso-loss band 9.0 crossed! (Prev: inf, Curr: 8.8931)
+2026-07-27T10:41:50 | train_stage3 | INFO | Interpolated crossing step: 5
+2026-07-27T10:41:50 | train_stage3 | INFO | Saving snapshot to: /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_9p00
+2026-07-27T10:41:51 | train_stage3 | INFO | Finished HyperloopBERT_base_seed42_streams2: 0.1M tokens, bands crossed: [10.0, 9.0]
+2026-07-27T10:41:51 | dry_run_stage3 | INFO | Starting Stage 3 Dry Run Eval Bias...
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/EarlyMergeHyperloopBERT_tiny_seed42_streams4/band_10p00 - failed quality screen (PP=17775.2616470904)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_9p00 - failed quality screen (PP=7281.297023520537)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_base_seed42_streams2/band_10p00 - failed quality screen (PP=7281.297023520537)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/iso_band_models/HyperloopBERT_tiny_seed42_streams4/band_10p00 - failed quality screen (PP=17666.02453496249)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/token_marker_models/EarlyMergeHyperloopBERT_tiny_seed42_streams4/tokens_25000 - failed quality screen (PP=18601.26339253748)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/token_marker_models/HyperloopBERT_base_seed42_streams2/tokens_25000 - failed quality screen (PP=8183.209953611561)
+2026-07-27T10:41:51 | eval_bias_stage3 | INFO | Skipping /home/Debz/HyperloopBert/Codes/models/dry_run/stage3/token_marker_models/HyperloopBERT_tiny_seed42_streams4/tokens_25000 - failed quality screen (PP=18430.525700518032)
+2026-07-27T10:41:51 | dry_run_stage3 | INFO | Starting Stage 3 Dry Run Eval GLUE...
+2026-07-27T10:41:51 | dry_run_stage3 | INFO | Starting Stage 3 Dry Run Stream Analysis...
+2026-07-27T10:41:51 | stream_analysis_stage3 | INFO | Mechanistic suite on HyperloopBERT seed 42 (band 10.0)...
+2026-07-27T10:41:51 | stream_analysis_stage3 | INFO | Computing hyper-connection matrix statistics...
+2026-07-27T10:41:52 | stream_analysis_stage3 | INFO | Hyper-connection stats: 32 rows; max spectral norm 1.366 (report vs the MHC instability criterion in the paper).
+2026-07-27T10:41:52 | stream_analysis_stage3 | INFO | Analyzing stream disagreement (per loop)...
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Loop 0: disagreement=-0.0000, signed r=0.230 (p=0.0214) [CORRELATIONAL]
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Loop 1: disagreement=0.0126, signed r=-0.070 (p=0.4879) [CORRELATIONAL]
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Loop 2: disagreement=0.0147, signed r=-0.104 (p=0.3017) [CORRELATIONAL]
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Loop 3: disagreement=0.0138, signed r=-0.110 (p=0.2772) [CORRELATIONAL]
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Loop 4: disagreement=0.0118, signed r=-0.064 (p=0.5252) [CORRELATIONAL]
+2026-07-27T10:41:57 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=1 (OOD, eval-time)...
+2026-07-27T10:42:00 | stream_analysis_stage3 | INFO | merge_at=1: preference=0.4400 (n=100) [OOD INTERVENTION]
+2026-07-27T10:42:00 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=2 (OOD, eval-time)...
+2026-07-27T10:42:03 | stream_analysis_stage3 | INFO | merge_at=2: preference=0.4300 (n=100) [OOD INTERVENTION]
+2026-07-27T10:42:03 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=3 (OOD, eval-time)...
+2026-07-27T10:42:06 | stream_analysis_stage3 | INFO | merge_at=3: preference=0.4500 (n=100) [OOD INTERVENTION]
+2026-07-27T10:42:06 | stream_analysis_stage3 | INFO | Computing loop-wise CKA...
+2026-07-27T10:42:07 | stream_analysis_stage3 | INFO | CKA: wrote 15 depth-pair rows.
+2026-07-27T10:42:07 | stream_analysis_stage3 | INFO | Analyzing demographic token drift...
+2026-07-27T10:42:08 | stream_analysis_stage3 | INFO | Token drift: wrote 130 rows.
+2026-07-27T10:42:08 | dry_run_stage3 | INFO | Starting Stage 3 Dry Run Analysis...
+2026-07-27T10:42:08 | analyze_stage3 | ERROR | Required data not found. Run evaluation first.
+2026-07-27T10:42:08 | dry_run_stage3 | INFO | Stage 3 Dry Run Complete!
+2026-07-27T10:42:08 | master_dry_run | INFO | === MASTER DRY RUN COMPLETED SUCCESSFULLY ===

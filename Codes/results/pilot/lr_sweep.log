@@ -1,0 +1,14 @@
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+================================================================================================
+LR/batch sweep -- 6M tokens per config, VanillaBERT tiny, seed 42
+unigram plateau is ~7.2 ; PASS needs end-loss < 6.5 AND ctx_cos < 0.99
+================================================================================================
+A) lr=5e-4 batch=64  (CURRENT)     start=10.21 end= 7.20 drop= 3.01 ctx_cos=1.0000  COLLAPSED/STUCK   [248s]
+B) lr=1e-4 batch=64                start=10.30 end= 7.20 drop= 3.10 ctx_cos=0.9103  COLLAPSED/STUCK   [249s]
+C) lr=3e-5 batch=64                start=10.33 end= 7.58 drop= 2.75 ctx_cos=0.9953  COLLAPSED/STUCK   [253s]
+D) lr=5e-4 batch=256 (accum x4)    start=10.33 end= 7.20 drop= 3.12 ctx_cos=1.0000  COLLAPSED/STUCK   [252s]
+E) lr=2e-4 batch=256 (accum x4)    start=10.34 end= 7.23 drop= 3.11 ctx_cos=1.0000  COLLAPSED/STUCK   [250s]

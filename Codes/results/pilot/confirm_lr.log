@@ -1,0 +1,18 @@
+lr=0.0001  budget=30M  (LR schedule sized for the real 200M run)
+ tokens_M    loss        ppl  ctx_cos         lr
+FlashAttention-2 forward FAILED at runtime (mat1 and mat2 must have the same dtype, but got BFloat16 and Float); attention path demoted to SDPA for this build.
+      2.5   9.605    14841.1   0.9993   1.18e-05
+      5.0   8.379     4356.7   0.9998   2.36e-05
+      7.5   7.320     1510.1   0.9797   3.54e-05
+     10.0   7.258     1419.4   0.9435   4.72e-05
+     12.5   7.171     1300.5   0.9274   5.89e-05
+     15.0   7.164     1292.4   0.9691   7.06e-05
+     17.5   7.138     1258.5   0.9595   8.24e-05
+     20.0   7.104     1217.3   0.9492   9.42e-05
+     22.5   7.066     1171.4   0.9556   9.93e-05
+     25.0   7.061     1165.8   0.8926   9.80e-05
+     27.5   7.007     1104.8   0.9335   9.67e-05
+     30.0   6.961     1055.1   0.9390   9.54e-05
+
+elapsed 714s  (30.0M tokens, 42021 tok/s)
+iso-loss bands needed: 4.0 / 3.7 / 3.4 / 3.1 ; quality screen needs loss <= 4.09

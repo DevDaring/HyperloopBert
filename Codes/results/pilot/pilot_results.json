@@ -1,0 +1,39 @@
+{
+  "results": {
+    "VanillaBERT": {
+      "val_loss": 6.766032709756672,
+      "pp": 867.8619947156567,
+      "mask_acc": 0.06568894587807875,
+      "ctx_cos": 0.8801480134328207
+    },
+    "LoopedBERT": {
+      "val_loss": 6.768795371520543,
+      "pp": 870.2629188083213,
+      "mask_acc": 0.06838702783565742,
+      "ctx_cos": 0.8662976821263632
+    }
+  },
+  "reference_bert_base": {
+    "rate": 0.5975,
+    "ci_low": 0.5475,
+    "ci_high": 0.645,
+    "detectable": true
+  },
+  "capability": {
+    "rate": 0.4525,
+    "ci_low": 0.405,
+    "ci_high": 0.5025,
+    "pass": false
+  },
+  "signal": {
+    "mean_delta": -0.00508046196443573,
+    "p_value": 0.8345165483451655,
+    "ci_low": -0.014986546343459367,
+    "ci_high": 0.00536215227301115,
+    "cohens_d": -0.048487215767384316,
+    "n_items": 400.0
+  },
+  "pref_vanilla": 0.4525,
+  "pref_looped": 0.4525,
+  "recommendation": "STOP -- baseline bias is NOT statistically detectable on VanillaBERT. There is no bias to reduce, so no architecture can be shown to reduce it. The pre-registered capability gate would FAIL on the full run too."
+}
