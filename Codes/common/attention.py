@@ -418,11 +418,22 @@ class BidirectionalSelfAttention(nn.Module):
 
         path = get_attention_path()
 
-        # FlashAttention path: require BF16-capable input, CUDA device, and no CPU
+        # FlashAttention path: require CUDA and a half-precision activation dtype.
+        #
+        # FP32 input is deliberately NOT eligible: _flash_forward casts the
+        # activations to BF16 while the projection weights stay FP32, so the
+        # matmul raises "mat1 and mat2 must have the same dtype". That is a
+        # PREDICTABLE, benign condition (it is exactly what the FP32 scoring
+        # path in common/bias_metrics.py does), not a runtime flash failure --
+        # routing it through the failure handler below would permanently and
+        # globally demote ATTENTION_PATH, so a single FP32 eval call would
+        # silently downgrade every subsequent forward in the process and make
+        # the logged provenance wrong. Treat it as "not eligible" and fall
+        # through quietly instead.
         if path == "flash":
             eligible = (
                 hidden_states.is_cuda
-                and (hidden_states.dtype in (torch.bfloat16, torch.float16, torch.float32))
+                and hidden_states.dtype in (torch.bfloat16, torch.float16)
             )
             if eligible:
                 try:
