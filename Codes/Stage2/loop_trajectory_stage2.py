@@ -41,9 +41,18 @@ def extract_intermediate_representations(model, input_ids, attention_mask, archi
         t = output[0] if isinstance(output, tuple) else output
         return t.detach().clone()
 
-    if architecture == 'VanillaBERT':
-        # model.encoder is an nn.ModuleList of 12 BertLayers
-        target_layers = {2: 3, 5: 6, 8: 9, 11: 12}
+    if architecture in ('VanillaBERT', 'VanillaBERT6'):
+        # model.encoder is an nn.ModuleList of `n` BertLayers (n=12 for the
+        # confirmatory VanillaBERT; n=6 for the VanillaBERT6 exploratory
+        # parameter-matched control -- VanillaBERT6 is VanillaBERT(num_layers=6),
+        # the SAME Python class, so `architecture` must come from the caller's
+        # metadata, never from type(model).__name__, which cannot tell them
+        # apart. Depths are 4 evenly-spaced quarter-points of the network,
+        # always including the final layer (n=12 -> depths 3,6,9,12, matching
+        # the original hardcoded convention exactly).
+        n = len(model.encoder)
+        quarters = sorted({max(1, round(n * k / 4)) for k in (1, 2, 3, 4)})
+        target_layers = {depth - 1: depth for depth in quarters}
 
         def get_hook(depth):
             def hook(module, inp, output):
@@ -116,7 +125,8 @@ def _modified_token_indices(ids_a, ids_b):
     return indices
 
 
-def masked_pll_at_depths(model, tokenizer, sentence, other_sentence, device, max_length=128):
+def masked_pll_at_depths(model, tokenizer, sentence, other_sentence, device,
+                         architecture, max_length=128):
     """
     True masked PLL of the MODIFIED tokens, computed at every hooked depth.
 
@@ -124,6 +134,14 @@ def masked_pll_at_depths(model, tokenizer, sentence, other_sentence, device, max
     replaced with [MASK]; all masked variants are scored in one batched
     forward pass with depth hooks; the MLM head is applied to each depth's
     hidden state at the masked position.
+
+    architecture: the metadata architecture STRING (e.g. from meta['Architecture']),
+    NOT type(model).__name__ -- VanillaBERT6 is implemented as
+    VanillaBERT(num_layers=6) (the SAME Python class as the 12-layer
+    VanillaBERT), so type(model).__name__ == 'VanillaBERT' for BOTH and cannot
+    distinguish them. Using the class name here previously caused the 12-layer
+    hook layout to be applied to the 6-layer VanillaBERT6 model, crashing with
+    an out-of-range ModuleList index.
 
     Returns dict {depth: mean log-prob of the true tokens} or None if the
     pair has no scoreable modified tokens.
@@ -145,8 +163,7 @@ def masked_pll_at_depths(model, tokenizer, sentence, other_sentence, device, max
         masked_batch[row, i] = tokenizer.mask_token_id
     masked_attn = attention_mask.repeat(len(mod_indices), 1)
 
-    arch = type(model).__name__
-    reps = extract_intermediate_representations(model, masked_batch, masked_attn, arch)
+    reps = extract_intermediate_representations(model, masked_batch, masked_attn, architecture)
     if not reps:
         return None
 
@@ -205,8 +222,10 @@ def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
         anti = row['anti']
         category = row.get('bias_type', row.get('category', 'unknown'))
 
-        stereo_depth_pll = masked_pll_at_depths(model, tokenizer, stereo, anti, device)
-        anti_depth_pll = masked_pll_at_depths(model, tokenizer, anti, stereo, device)
+        stereo_depth_pll = masked_pll_at_depths(model, tokenizer, stereo, anti, device,
+                                                meta['Architecture'])
+        anti_depth_pll = masked_pll_at_depths(model, tokenizer, anti, stereo, device,
+                                              meta['Architecture'])
         if not stereo_depth_pll or not anti_depth_pll:
             continue
 
