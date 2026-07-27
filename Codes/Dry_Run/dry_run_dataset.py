@@ -48,8 +48,9 @@ def check_hf_slices():
         checks['fineweb_edu'] = f'FAIL ({e})'
 
     try:
-        ds = load_dataset("HuggingFaceM4/Multi-lingual-crows-pairs",
-                          name="english", split="test")
+        # Canonical public English CrowS-Pairs (Nangia et al. 2020). The old
+        # 'HuggingFaceM4/Multi-lingual-crows-pairs' mirror no longer exists.
+        ds = load_dataset("nyu-mll/crows_pairs", split="test")
         checks['multicrows'] = 'PASS' if len(ds) > 0 else 'FAIL (empty)'
     except Exception as e:
         checks['multicrows'] = f'FAIL ({e})'

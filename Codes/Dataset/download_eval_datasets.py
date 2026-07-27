@@ -63,21 +63,42 @@ def download_multi_crows_pairs(namespace: str = 'Debk'):
         logger.info(f"Multi-CrowS-Pairs already exists at {out_path}")
         return
 
+    # Source order: the project namespace mirror first (spec 7.2), then the
+    # canonical public English CrowS-Pairs (Nangia et al. 2020). Each source is
+    # tried across candidate splits and only accepted if its columns can be
+    # standardized to stereo/anti -- a mirror with an incompatible schema is
+    # skipped rather than crashing the pipeline.
+    # NOTE: the former fallback 'HuggingFaceM4/Multi-lingual-crows-pairs' no
+    # longer exists on the Hub; 'nyu-mll/crows_pairs' is the maintained source.
+    sources = [
+        (f"{namespace}/Multi-CrowS-Pairs", ["test", "train"], {}),
+        ("nyu-mll/crows_pairs", ["test", "train"], {}),
+    ]
     df = None
-    for repo, kwargs in [(f"{namespace}/Multi-CrowS-Pairs", {}),
-                         ("HuggingFaceM4/Multi-lingual-crows-pairs", {'name': 'english'})]:
-        try:
-            logger.info(f"Downloading Multi-CrowS-Pairs from {repo}...")
-            dataset = load_dataset(repo, split="test", **kwargs)
-            df = dataset.to_pandas()
+    for repo, splits, kwargs in sources:
+        for split in splits:
+            try:
+                logger.info(f"Downloading Multi-CrowS-Pairs from {repo} [{split}]...")
+                dataset = load_dataset(repo, split=split, **kwargs)
+            except Exception as e:
+                logger.warning(f"Could not load {repo} [{split}]: {e}")
+                continue
+            candidate = dataset.to_pandas()
+            try:
+                candidate = _standardize_pair_columns(candidate, f"{repo}")
+            except ValueError as e:
+                logger.warning(f"{repo} [{split}] schema not usable ({e}); trying next source.")
+                break  # other splits of the same repo share the schema
+            df = candidate
+            logger.info(f"Using CrowS-Pairs source {repo} [{split}].")
             break
-        except Exception as e:
-            logger.warning(f"Could not load {repo}: {e}")
+        if df is not None:
+            break
 
     if df is None:
-        raise RuntimeError("Multi-CrowS-Pairs could not be downloaded from any source.")
+        raise RuntimeError("Multi-CrowS-Pairs could not be downloaded from any source "
+                           "(tried project namespace mirror and nyu-mll/crows_pairs).")
 
-    df = _standardize_pair_columns(df, 'Multi-CrowS-Pairs')
     df.to_csv(out_path, index=False)
     logger.info(f"Saved {len(df)} pairs to {out_path}")
 
