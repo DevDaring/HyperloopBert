@@ -691,9 +691,16 @@ def call_llm(
         _log_parse_failure(provider, raw_text)
         return {"needs_review": True, "raw": raw_text[:2000]}
 
-    # Optional schema key validation.
+    # Optional schema key validation. `schema` is a JSON-Schema dict (with
+    # top-level keys like "type"/"properties"/"required"), so the field names
+    # to check for live in schema["required"] (or schema["properties"].keys()
+    # as a fallback for schemas that omit "required") -- NOT the schema dict's
+    # own top-level keys.
     if schema is not None:
-        missing_keys = [k for k in schema if k not in parsed]
+        expected_keys = schema.get("required")
+        if expected_keys is None:
+            expected_keys = list(schema.get("properties", {}).keys())
+        missing_keys = [k for k in expected_keys if k not in parsed]
         if missing_keys:
             logger.warning(
                 "Response from provider=%s is missing expected schema keys: %s",
