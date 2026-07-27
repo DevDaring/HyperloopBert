@@ -5,3 +5,4 @@ stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,3.4,/root/HyperloopBer
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p00,2.9965542893553856,24000,2026-07-27T20:07:31.949046Z
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p70,2.5866862060364992,26000,2026-07-27T20:14:32.713486Z
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p40,2.352965392027068,29000,2026-07-27T20:25:06.014545Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p20,2.1830836868123735,32500,2026-07-27T20:37:28.848940Z
