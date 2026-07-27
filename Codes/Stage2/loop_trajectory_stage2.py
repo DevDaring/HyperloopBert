@@ -182,7 +182,12 @@ def classify_trajectory(rates):
 def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
     """Run loop trajectory analysis and save to CSV."""
     logger.info(f"Running trajectory analysis for {meta['Architecture']} {meta['Model_Size']} Seed {meta['Seed']}")
-    
+
+    # Identity columns (Hidden_Size/Unique_Parameters/Total_Parameters/
+    # Effective_Depth/Shared_Ratio) are required by BIAS_TRAJECTORY_COLUMNS but
+    # are not in `meta` -- read them from the model itself.
+    model_info = get_model_info(model)
+
     dataset_name = 'Multi-CrowS-Pairs' # Defaulting for Stage 2 trajectory
     
     # We will score a subset (e.g. 100 pairs) to keep it fast, or the full dataset if small
@@ -252,7 +257,12 @@ def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
             'Stage': cfg.STAGE,
             'Architecture': meta['Architecture'],
             'Model_Size': meta['Model_Size'],
+            'Hidden_Size': model_info['Hidden_Size'],
             'Seed': meta['Seed'],
+            'Unique_Parameters': model_info['Unique_Parameters'],
+            'Total_Parameters': model_info['Total_Parameters'],
+            'Effective_Depth': model_info['Effective_Depth'],
+            'Shared_Ratio': model_info['Shared_Ratio'],
             'Dataset': dataset_name,
             'Category': 'ALL',
             'Loop_Depth': depth,
@@ -263,14 +273,19 @@ def run_trajectory_analysis(model, tokenizer, df, device, meta, out_path):
             'Timestamp': datetime.utcnow().isoformat() + 'Z'
         }
         results.append(res_row)
-        
+
         # Per category
         for cat, group in df_scores.groupby('Category'):
             results.append({
                 'Stage': cfg.STAGE,
                 'Architecture': meta['Architecture'],
                 'Model_Size': meta['Model_Size'],
+                'Hidden_Size': model_info['Hidden_Size'],
                 'Seed': meta['Seed'],
+                'Unique_Parameters': model_info['Unique_Parameters'],
+                'Total_Parameters': model_info['Total_Parameters'],
+                'Effective_Depth': model_info['Effective_Depth'],
+                'Shared_Ratio': model_info['Shared_Ratio'],
                 'Dataset': dataset_name,
                 'Category': cat,
                 'Loop_Depth': depth,
