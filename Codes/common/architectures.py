@@ -60,7 +60,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint_utils
 
-from common.attention import BertLayer, set_attention_path_for_new_build
+from common.attention import BertLayer, set_attention_path_for_new_build, get_attention_path
 
 logger = logging.getLogger(__name__)
 
