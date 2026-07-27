@@ -11,11 +11,20 @@ python3 -m pip install --upgrade pip setuptools wheel \
       sentencepiece==0.2.0 protobuf==4.25.0 \
  && python3 -m pip install "tokenizers>=0.20,<0.21" "huggingface_hub>=0.24" "scipy>=1.10,<1.14" \
       "scikit-learn>=1.3,<1.6" "matplotlib>=3.7,<3.10" "seaborn>=0.13,<0.14" \
- && ( cd /tmp && rm -f "flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp312-cp312-linux_x86_64.whl" \
-      && wget -q https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp312-cp312-linux_x86_64.whl ) \
- && python3 -m pip install --no-deps "/tmp/flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-cp312-cp312-linux_x86_64.whl"
-# NOTE: the wheel MUST keep its original filename -- modern pip parses version/
-# ABI tags from the name and rejects a renamed 'flash_attn.whl'.
+
+# FlashAttention-2 prebuilt wheel. The ABI tag must match the RUNNING Python
+# (cp310/cp311/cp312/cp313), so it is detected rather than hardcoded -- a
+# hardcoded cp312 wheel silently fails on any image shipping a different
+# Python, which is the common case across cloud provider base images.
+# NOTE: the wheel MUST keep its original filename -- modern pip parses the
+# version/ABI tags from the name and rejects a renamed 'flash_attn.whl'.
+PYTAG="cp$(python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')"
+FA_WHL="flash_attn-2.8.3+cu12torch2.5cxx11abiFALSE-${PYTAG}-${PYTAG}-linux_x86_64.whl"
+echo "Detected Python tag: ${PYTAG} -> ${FA_WHL}"
+( cd /tmp && rm -f "${FA_WHL}" \
+  && wget -q "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/${FA_WHL}" ) \
+ && python3 -m pip install --no-deps "/tmp/${FA_WHL}" \
+ || echo "WARNING: flash-attn wheel for ${PYTAG} unavailable; pipeline will fall back to SDPA (slower but correct)."
 
 # Verification probe: every line must import cleanly.
 python3 - <<'EOF'
