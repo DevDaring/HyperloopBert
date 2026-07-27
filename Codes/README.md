@@ -225,6 +225,14 @@ Kurita, K. et al. (2019). Measuring Bias in Contextualized
   Word Representations. GeBNLP @ ACL.                        [masked-pronoun protocol]
 Blodgett, S.L. et al. (2021). Stereotyping Norwegian Salmon.
   ACL.                                                       [SS-PLL motivation]
+Wang, A., Phan, M., Ho, D.E., & Koyejo, S. (2025). Fairness
+  through Difference Awareness: Measuring Desired Group
+  Discrimination in LLMs. ACL 2025 (Best Paper).
+  arXiv:2502.01926.                        [CONSTRUCT SCOPE: our PLL preference rate is a
+                                            CORRELATION benchmark in their descriptive /
+                                            normative / correlation taxonomy. We do NOT
+                                            claim difference-aware fairness; see the
+                                            limitations + future-work notes.]
 Nadeem, M. et al. (2021). StereoSet. ACL.                    [appendix only]
 Phipson, B. & Smyth, G.K. (2010). Permutation p-values
   should never be zero. SAGMB.                               [+1 correction]

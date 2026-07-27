@@ -211,9 +211,19 @@ Structural Weight Sharing is the Locus of Bias Reduction in Looped Transformers
                     f"significant = {c['Significant']}, n_items = {c.get('N_Items')})\n")
 
     outline += """
+## Construct scope
+- Primary endpoint is a CORRELATION-type fairness measure (descriptive /
+  normative / correlation taxonomy of Wang et al. 2025, "Fairness through
+  Difference Awareness", ACL 2025 Best Paper, arXiv:2502.01926). We measure
+  stereotype ASSOCIATION at matched quality, not difference-aware fairness.
+
 ## Limitations
 - 400M-token budget; models are architecture probes, not SOTA encoders
 - GLUE average trails full BERT-base (screen threshold documented)
+- A lower stereotype preference rate is not automatically "more fair": Wang et
+  al. (2025) show bias-mitigation strategies can backfire on difference-aware
+  tasks, and the mechanism suppressing stereotype association could in
+  principle also erode legitimate group distinctions.
 """
     os.makedirs(os.path.dirname(outline_path), exist_ok=True)
     with open(outline_path, 'w') as f:

@@ -371,5 +371,9 @@ Clarivate "Science Citation Index Expanded" confirmation.
 # CITATION: Nangia, N. et al. (2020). CrowS-Pairs. EMNLP.                  [Multi-CrowS-Pairs]
 # CITATION: Khandelwal, K. et al. (2023). Indian-BhED. arXiv:2309.08573.   [Indian instrument]
 # CITATION: Blodgett, S.L. et al. (2021). Stereotyping Norwegian Salmon. ACL. [PLL validity caveat]
+# CITATION: Wang, A. et al. (2025). Fairness through Difference Awareness. ACL 2025 (Best Paper).
+#           arXiv:2502.01926.  [CONSTRUCT SCOPE: our preference-rate endpoint is a CORRELATION
+#           benchmark in their descriptive/normative/correlation taxonomy. Claim reduced stereotype
+#           ASSOCIATION, never difference-aware fairness; bias mitigation can backfire there.]
 # DATA WARNING: contains stereotypical content by design; research/fairness-audit use only.
 ```

@@ -177,6 +177,62 @@ schema `HYPERCONNECTION_STATS_COLUMNS` in `common/io_schemas.py`.
 
 ---
 
+## A10. Construct scoping against difference awareness (NEW — framing, no code change)
+
+**What changed.** The paper now states explicitly *which kind* of fairness construct
+it measures, using the taxonomy of Wang et al. (2025), "Fairness through
+Difference Awareness: Measuring *Desired* Group Discrimination in LLMs"
+(ACL 2025 Best Paper, arXiv:2502.01926). That paper distinguishes:
+
+- **descriptive** benchmarks (fact-based group representation),
+- **normative** benchmarks (value-based judgements about group treatment),
+- **correlation** benchmarks (association-based).
+
+Our primary instrument — CrowS-Pairs-style PLL stereotype *preference rate* —
+is a **correlation** benchmark. The paper now says so, and scopes its claim
+accordingly: we measure stereotype **association**, NOT difference-aware
+fairness.
+
+**Why.** Wang et al. show that difference-*unaware* treatment (colour-blindness)
+is not universally the correct fairness target, and that **existing bias-mitigation
+strategies can backfire** on difference-aware tasks. Our pre-registered decision
+rule encodes the assumption "lower stereotype preference rate is better". That
+assumption is defensible for correlation-type bias but must not be silently
+generalised to fairness overall. Stating the scope is more honest than implying
+a broader claim, and pre-empts an obvious reviewer objection at a venue that
+just awarded this paper Best Paper.
+
+**Consequences for the claims (all framing, no analysis change):**
+1. **Scoping:** the finding is about correlation-type stereotype association at
+   matched quality, not about difference-aware fairness.
+2. **Limitation:** a reduced group-association rate is not automatically
+   desirable; in principle the same mechanism could erode *legitimate* group
+   distinctions.
+3. **Sharpened prediction (future work):** SCH says weight sharing reduces
+   *total* stereotype storage at matched quality. If that mechanism is
+   non-selective, it should ALSO erode legitimate **descriptive** group
+   knowledge. This is a stated failure mode of the hypothesis, and it
+   complements the manipulation-vs-storage framing from Ouro/Frey (A9).
+
+**Not run as an experiment, and why.** The difference-awareness benchmark is
+16k 3-option multiple-choice items targeting instruction-tuned generative LLMs,
+and its descriptive items require factual knowledge (asylum law, occupations,
+religions) while its normative items require value judgements. Our models are
+17M–110M-parameter MLM encoders trained from scratch on 200M tokens, which the
+Stage 1 capability gate already screens as barely above chance on SST-2/RTE.
+Every architecture and size would score at chance (~33%), producing a uniform
+null with no discriminative power for SCH. Running it would add cost and noise,
+not evidence. It is therefore cited and engaged with, not executed — and named
+as future work at instruction-tuned scale.
+
+**Where.** `Codes/README.md` (citations), `research_explained_technical.html`
+(SCH framing + scope), `STAGE1_INSTRUCTIONS.md` (citations),
+`Codes/common/bias_metrics.py` (construct note next to the Blodgett caveat),
+`Codes/Stage1/analyze_stage1.py` and `Codes/Stage2/analyze_stage2.py`
+(generated paper-outline limitations).
+
+---
+
 ## A9. Literature/citation corrections (see paper related-work)
 
 Citation errors identified in the Round-2 review are corrected in the docs

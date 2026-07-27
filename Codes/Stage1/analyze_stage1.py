@@ -424,11 +424,31 @@ Parameter Sharing Reduces Stereotype Memorization: A Controlled Study Across Mod
                     f"with the primary instrument\n")
 
     outline += """
+## Construct scope (state this BEFORE the limitations in the paper)
+- The primary endpoint is a CORRELATION-type fairness measure in the
+  descriptive / normative / correlation taxonomy of Wang et al. (2025,
+  "Fairness through Difference Awareness", ACL 2025 Best Paper,
+  arXiv:2502.01926). We measure stereotype ASSOCIATION at matched model
+  quality; we do NOT claim difference-aware fairness.
+
 ## Limitations
 - Scratch pretraining at 200M tokens; not SOTA quality
 - PLL construct-validity caveat (Blodgett et al. 2021); strengthened in Stage 2 with SS-PLL
 - English-only primary analysis
 - Iso-loss matching is banded, not exact; per-contrast loss gaps reported above
+- A lower stereotype preference rate is not automatically desirable. Wang et al.
+  (2025) show difference-UNAWARE treatment is not universally the correct target
+  and that bias-mitigation strategies can backfire on difference-aware tasks; in
+  principle the same mechanism that suppresses stereotype association could also
+  erode LEGITIMATE group distinctions.
+
+## Future work (stated failure mode of SCH)
+- SCH predicts weight sharing reduces TOTAL stereotype storage at matched
+  quality. If that mechanism is non-selective, it should ALSO degrade
+  legitimate DESCRIPTIVE group knowledge. Testing that needs
+  instruction-tuned-scale models and a difference-awareness benchmark
+  (Wang et al. 2025); it is out of reach at this token budget, where every
+  arm would sit at chance on such a benchmark.
 """
 
     os.makedirs(os.path.dirname(outline_path), exist_ok=True)

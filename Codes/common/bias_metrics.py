@@ -15,6 +15,20 @@ from common.attention import force_full_precision_attention
 # CITATION: Blodgett, S.L. et al. (2021). Stereotyping Norwegian Salmon:
 #           An Inventory of Pitfalls in Fairness Benchmark Datasets. ACL 2021.
 #           [PLL validity critique; motivation for SS-PLL]
+# CITATION: Wang, A., Phan, M., Ho, D.E., & Koyejo, S. (2025). Fairness through
+#           Difference Awareness: Measuring Desired Group Discrimination in
+#           LLMs. ACL 2025 (Best Paper). arXiv:2502.01926.
+# CONSTRUCT SCOPE (read before interpreting any number this module produces):
+#           Wang et al. distinguish DESCRIPTIVE (fact-based), NORMATIVE
+#           (value-based) and CORRELATION (association-based) fairness
+#           benchmarks. Everything computed here -- PLL / SS-PLL stereotype
+#           preference rate, WinoBias masked-pronoun consistency -- is a
+#           CORRELATION measure. A lower preference rate therefore means "weaker
+#           stereotype ASSOCIATION", NOT "more fair" in general: Wang et al.
+#           show difference-UNAWARE treatment is not universally the right
+#           target and that bias-mitigation strategies can BACKFIRE on
+#           difference-aware tasks. Scope every claim built on these numbers to
+#           correlation-type bias.
 # PRE-REGISTERED ENDPOINT: The primary comparison is at matched validation loss
 #           (iso-perplexity), NOT at fixed token budget. This removes model quality
 #           as an alternative explanation for bias differences.
