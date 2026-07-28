@@ -1,0 +1,315 @@
+% ============================================================================
+% HyperloopBERT — bibliography for FIRE 2026
+%
+% CITATION POLICY: where a paper exists in BOTH arXiv and a conference/journal,
+% the CONFERENCE/JOURNAL version is cited. Entries marked "% arXiv only" have
+% no peer-reviewed version at time of writing and should be re-checked before
+% camera-ready.
+% ============================================================================
+
+% ------------------------------------------------------------------ backbones
+@inproceedings{devlin2019bert,
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for
+               Language Understanding},
+  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and
+               Toutanova, Kristina},
+  booktitle = {Proceedings of the 2019 Conference of the North American Chapter
+               of the Association for Computational Linguistics: Human Language
+               Technologies (NAACL-HLT)},
+  pages     = {4171--4186},
+  year      = {2019},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{lan2020albert,
+  title     = {{ALBERT}: A Lite {BERT} for Self-supervised Learning of Language
+               Representations},
+  author    = {Lan, Zhenzhong and Chen, Mingda and Goodman, Sebastian and
+               Gimpel, Kevin and Sharma, Piyush and Soricut, Radu},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2020}
+}
+
+@article{turc2019wellread,
+  % arXiv only — the BERT miniatures used as feasibility-curve anchors
+  title   = {Well-Read Students Learn Better: On the Importance of Pre-training
+             Compact Models},
+  author  = {Turc, Iulia and Chang, Ming-Wei and Lee, Kenton and
+             Toutanova, Kristina},
+  journal = {arXiv preprint arXiv:1908.08962},
+  year    = {2019}
+}
+
+% ------------------------------------------------- bias benchmarks & metrics
+@inproceedings{nangia2020crows,
+  title     = {{CrowS-Pairs}: A Challenge Dataset for Measuring Social Biases in
+               Masked Language Models},
+  author    = {Nangia, Nikita and Vania, Clara and Bhalerao, Rasika and
+               Bowman, Samuel R.},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in
+               Natural Language Processing (EMNLP)},
+  pages     = {1953--1967},
+  year      = {2020},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{zhao2018winobias,
+  title     = {Gender Bias in Coreference Resolution: Evaluation and Debiasing
+               Methods},
+  author    = {Zhao, Jieyu and Wang, Tianlu and Yatskar, Mark and
+               Ordonez, Vicente and Chang, Kai-Wei},
+  booktitle = {Proceedings of the 2018 Conference of the North American Chapter
+               of the Association for Computational Linguistics: Human Language
+               Technologies (NAACL-HLT)},
+  pages     = {15--20},
+  year      = {2018},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{blodgett2021salmon,
+  title     = {Stereotyping {N}orwegian Salmon: An Inventory of Pitfalls in
+               Fairness Benchmark Datasets},
+  author    = {Blodgett, Su Lin and Lopez, Gilsinia and Olteanu, Alexandra and
+               Sim, Robert and Wallach, Hanna},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for
+               Computational Linguistics and the 11th International Joint
+               Conference on Natural Language Processing (ACL-IJCNLP)},
+  pages     = {1004--1015},
+  year      = {2021},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{nadeem2021stereoset,
+  title     = {{StereoSet}: Measuring Stereotypical Bias in Pretrained Language
+               Models},
+  author    = {Nadeem, Moin and Bethke, Anna and Reddy, Siva},
+  booktitle = {Proceedings of the 59th Annual Meeting of the Association for
+               Computational Linguistics and the 11th International Joint
+               Conference on Natural Language Processing (ACL-IJCNLP)},
+  pages     = {5356--5371},
+  year      = {2021},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{kurita2019measuring,
+  title     = {Measuring Bias in Contextualized Word Representations},
+  author    = {Kurita, Keita and Vyas, Nidhi and Pareek, Ayush and
+               Black, Alan W. and Tsvetkov, Yulia},
+  booktitle = {Proceedings of the First Workshop on Gender Bias in Natural
+               Language Processing (GeBNLP) at ACL},
+  pages     = {166--172},
+  year      = {2019},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{wang2025difference,
+  % ACL 2025 Best Paper — cite the ACL version, NOT arXiv:2502.01926
+  title     = {Fairness through Difference Awareness: Measuring Desired Group
+               Discrimination in {LLM}s},
+  author    = {Wang, Angelina and Phan, Michelle and Ho, Daniel E. and
+               Koyejo, Sanmi},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for
+               Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {6867--6893},
+  year      = {2025},
+  address   = {Vienna, Austria},
+  publisher = {Association for Computational Linguistics}
+}
+
+@article{khandelwal2023indianbhed,
+  % arXiv only
+  title   = {{Indian-BhED}: A Dataset for Measuring India-Centric Biases in
+             Large Language Models},
+  author  = {Khandelwal, Khyati and Tonneau, Manuel and Bean, Andrew M. and
+             Kirk, Hannah Rose and Hale, Scott A.},
+  journal = {arXiv preprint arXiv:2309.08573},
+  year    = {2023}
+}
+
+% --------------------------------------------- looped / recurrent-depth work
+@article{saunshi2025looped,
+  % arXiv only — RE-CHECK for a venue before camera-ready
+  title   = {Reasoning with Latent Thoughts: On the Power of Looped
+             Transformers},
+  author  = {Saunshi, Nikunj and Dikkala, Nishanth and Li, Zhiyuan and
+             Kumar, Sanjiv and Reddi, Sashank J.},
+  journal = {arXiv preprint arXiv:2502.17416},
+  year    = {2025}
+}
+
+@article{geiping2025huginn,
+  % arXiv only
+  title   = {Scaling up Test-Time Compute with Latent Reasoning: A Recurrent
+             Depth Approach},
+  author  = {Geiping, Jonas and McLeish, Sean and Jain, Neel and
+             Kirchenbauer, John and Singh, Siddharth and
+             Bartoldson, Brian R. and Kailkhura, Bhavya and
+             Bhatele, Abhinav and Goldstein, Tom},
+  journal = {arXiv preprint arXiv:2502.05171},
+  year    = {2025}
+}
+
+@article{zhu2025ouro,
+  % arXiv only. This is the REAL Ouro paper. Do NOT confuse with
+  % arXiv:2603.08391, which is Frey et al. 2026 (see frey2026adaptive).
+  title   = {Ouro: Scaling Latent Reasoning via Looped Language Models},
+  author  = {Zhu, Rui-Jie and others},
+  journal = {arXiv preprint arXiv:2510.25741},
+  year    = {2025}
+}
+
+@article{frey2026adaptive,
+  % arXiv only
+  title   = {Adaptive Loops and Memory in Transformers: Think Harder or Know
+             More?},
+  author  = {Frey, Markus and Shomali, Behzad and Bashir, Ali Hamza and
+             Berghaus, David and Koehler, Joachim and Ali, Mehdi},
+  journal = {arXiv preprint arXiv:2603.08391},
+  year    = {2026}
+}
+
+@article{bae2025mor,
+  % arXiv only
+  title   = {Mixture-of-Recursions: Learning Dynamic Recursive Depths for
+             Adaptive Token-Level Computation},
+  author  = {Bae, Sangmin and others},
+  journal = {arXiv preprint arXiv:2507.10524},
+  year    = {2025}
+}
+
+@article{zeitoun2026hyperloop,
+  % arXiv only
+  title   = {Hyperloop Transformers},
+  author  = {Zeitoun, Abdelrahman and Torroba-Hennigen, Lucas and Kim, Yoon},
+  journal = {arXiv preprint arXiv:2604.21254},
+  year    = {2026}
+}
+
+@inproceedings{zhu2025hyperconnections,
+  title     = {Hyper-Connections},
+  author    = {Zhu, Defa and Huang, Hongzhi and Huang, Zihao and Zeng, Yutao
+               and Mao, Yunyao and Wu, Banggu and Min, Qiyang and Zhou, Xun},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+
+@article{xie2025mhc,
+  % arXiv only
+  title   = {{MHC}: Manifold-Constrained Hyper-Connections},
+  author  = {Xie, Zhijian and others},
+  journal = {arXiv preprint arXiv:2512.24880},
+  year    = {2025}
+}
+
+% -------------------------------------------------- compression & fairness
+@article{hooker2020characterising,
+  % arXiv only
+  title   = {Characterising Bias in Compressed Models},
+  author  = {Hooker, Sara and Moorosi, Nyalleng and Clark, Gregory and
+             Bengio, Samy and Denton, Emily},
+  journal = {arXiv preprint arXiv:2010.03058},
+  year    = {2020}
+}
+
+@article{xu2022compression,
+  % arXiv only
+  title   = {Can Model Compression Improve {NLP} Fairness?},
+  author  = {Xu, Guangxuan and Hu, Qingyuan},
+  journal = {arXiv preprint arXiv:2201.08542},
+  year    = {2022}
+}
+
+@inproceedings{ramesh2023comparative,
+  title     = {A Comparative Study on the Impact of Model Compression
+               Techniques on Fairness in Language Models},
+  author    = {Ramesh, Krithika and Sitaram, Sunayana and Choudhury, Monojit},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for
+               Computational Linguistics (ACL)},
+  year      = {2023},
+  publisher = {Association for Computational Linguistics}
+}
+
+@article{voria2026tracing,
+  % arXiv only
+  title   = {Tracing Stereotypes in Pre-trained Transformers: From Biased
+             Neurons to Fairer Models},
+  author  = {Voria, Gianmario and Openja, Moses and Khomh, Foutse and
+             Catolino, Gemma and Palomba, Fabio},
+  journal = {arXiv preprint arXiv:2601.05663},
+  year    = {2026}
+}
+
+% ------------------------------------------------------- methods & infra
+@inproceedings{dao2022flashattention,
+  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with
+               {IO}-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and
+               Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2022}
+}
+
+@inproceedings{kornblith2019similarity,
+  title     = {Similarity of Neural Network Representations Revisited},
+  author    = {Kornblith, Simon and Norouzi, Mohammad and Lee, Honglak and
+               Hinton, Geoffrey},
+  booktitle = {Proceedings of the 36th International Conference on Machine
+               Learning (ICML)},
+  pages     = {3519--3529},
+  year      = {2019}
+}
+
+@inproceedings{geiping2023cramming,
+  title     = {Cramming: Training a Language Model on a Single {GPU} in One Day},
+  author    = {Geiping, Jonas and Goldstein, Tom},
+  booktitle = {Proceedings of the 40th International Conference on Machine
+               Learning (ICML)},
+  pages     = {11117--11143},
+  year      = {2023}
+}
+
+@article{phipson2010permutation,
+  title   = {Permutation {P}-values Should Never Be Zero: Calculating Exact
+             {P}-values When Permutations Are Randomly Drawn},
+  author  = {Phipson, Belinda and Smyth, Gordon K.},
+  journal = {Statistical Applications in Genetics and Molecular Biology},
+  volume  = {9},
+  number  = {1},
+  year    = {2010}
+}
+
+@inproceedings{wolf2020transformers,
+  title     = {Transformers: State-of-the-Art Natural Language Processing},
+  author    = {Wolf, Thomas and Debut, Lysandre and Sanh, Victor and
+               Chaumond, Julien and Delangue, Clement and Moi, Anthony and
+               Cistac, Pierric and Rault, Tim and Louf, R{\'e}mi and
+               Funtowicz, Morgan and others},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in
+               Natural Language Processing: System Demonstrations (EMNLP)},
+  pages     = {38--45},
+  year      = {2020},
+  publisher = {Association for Computational Linguistics}
+}
+
+@inproceedings{penedo2024fineweb,
+  title     = {The {FineWeb} Datasets: Decanting the Web for the Finest Text
+               Data at Scale},
+  author    = {Penedo, Guilherme and Kydl{\'i}{\v{c}}ek, Hynek and
+               Ben Allal, Loubna and Lozhkov, Anton and Mitchell, Margaret and
+               Raffel, Colin and Von Werra, Leandro and Wolf, Thomas},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)
+               Datasets and Benchmarks Track},
+  year      = {2024}
+}
+
+@inproceedings{wang2018glue,
+  title     = {{GLUE}: A Multi-Task Benchmark and Analysis Platform for Natural
+               Language Understanding},
+  author    = {Wang, Alex and Singh, Amanpreet and Michael, Julian and
+               Hill, Felix and Levy, Omer and Bowman, Samuel R.},
+  booktitle = {Proceedings of the 2018 EMNLP Workshop BlackboxNLP: Analyzing
+               and Interpreting Neural Networks for NLP},
+  pages     = {353--355},
+  year      = {2018},
+  publisher = {Association for Computational Linguistics}
+}
