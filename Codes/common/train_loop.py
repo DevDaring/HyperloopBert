@@ -461,7 +461,16 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
             model.gradient_checkpointing_enable()
             logger.info("Gradient checkpointing ENABLED for this run.")
 
-    optimizer = AdamW(model.parameters(), lr=cfg.LEARNING_RATE,
+    # Per-architecture peak LR. HyperloopBERT reaches the MLM breakthrough ~3x
+    # earlier in tokens than the other arms, so the shared 3e-4 peak is far
+    # hotter for it: at 3e-4 it diverged 3300 steps after warmup ended
+    # (loss 2.5250 -> 6.86 -> NaN). Comparing an architecture at a setting that
+    # breaks it is not a fair control, so peak LR is tuned per architecture and
+    # the arms are matched on validation loss (iso-loss), not on hyperparameters.
+    _lr = getattr(cfg, "LEARNING_RATE_OVERRIDES", {}).get(arch, cfg.LEARNING_RATE)
+    if _lr != cfg.LEARNING_RATE:
+        logger.info(f"Peak LR override for {arch}: {_lr} (default {cfg.LEARNING_RATE})")
+    optimizer = AdamW(model.parameters(), lr=_lr,
                       betas=cfg.ADAMW_BETAS, eps=cfg.ADAMW_EPS,
                       weight_decay=cfg.WEIGHT_DECAY)
     scheduler = get_lr_schedule(optimizer, warmup_steps, total_steps)
@@ -475,6 +484,8 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
     token_markers = list(cfg.TOKEN_MARKERS)
     step = 0
     tokens_processed = 0
+    nonfinite_grads = 0          # cumulative skipped updates
+    consecutive_nonfinite = 0    # resets on any finite update
     skip_docs = 0
     micro_batch_size = cfg.MICRO_BATCH_SIZE
 
@@ -578,7 +589,33 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
         tokens_processed += int(attention_mask.sum().item())
 
         if (step + 1) % accum_steps == 0:
-            torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.GRAD_CLIP)
+            # clip_grad_norm_ returns the pre-clip total norm. If that norm is
+            # NaN/Inf, applying the update writes non-finite values into the
+            # weights and the run is unrecoverable from that point on. Skipping
+            # the update (without advancing the scheduler) is the standard
+            # recovery; aborting after a sustained run of them turns a silent
+            # 8-hour NaN burn into an immediate, diagnosable failure.
+            gnorm = torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.GRAD_CLIP)
+            if not torch.isfinite(gnorm):
+                nonfinite_grads += 1
+                consecutive_nonfinite += 1
+                optimizer.zero_grad(set_to_none=True)
+                if consecutive_nonfinite <= 3 or consecutive_nonfinite % 100 == 0:
+                    logger.warning(
+                        f"NON-FINITE grad norm at optimizer step "
+                        f"~{(step + 1) // accum_steps} (total skipped "
+                        f"{nonfinite_grads}, consecutive {consecutive_nonfinite}) "
+                        f"-- update SKIPPED")
+                limit = getattr(cfg, "MAX_CONSECUTIVE_NONFINITE", 50)
+                if consecutive_nonfinite >= limit:
+                    logger.error(
+                        f"ABORTING {run_id}: {consecutive_nonfinite} consecutive "
+                        f"non-finite gradient norms -- weights are unrecoverable. "
+                        f"Lower LEARNING_RATE_OVERRIDES[{arch!r}] and rerun.")
+                    raise RuntimeError(
+                        f"training diverged (non-finite gradients) in {run_id}")
+                continue
+            consecutive_nonfinite = 0
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()

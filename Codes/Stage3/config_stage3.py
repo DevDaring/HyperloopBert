@@ -65,6 +65,23 @@ ADAMW_BETAS = (0.9, 0.98)
 ADAMW_EPS = 1e-6
 WEIGHT_DECAY = 0.01
 GRAD_CLIP = 1.0
+
+# --- Per-architecture peak LR (amendment A13) ----------------------------
+# HyperloopBERT escapes the MLM unigram plateau ~3x earlier in tokens than the
+# other arms (loss 3.65 @0.50B vs 5.88 for VanillaBERT), so the shared 3e-4 peak
+# is effectively far hotter for it. At 3e-4 it diverged 3300 steps after warmup
+# ended: 2.5250 @0.88B -> 6.86 @0.91B -> NaN, and stayed NaN for the remaining
+# 6.1B tokens. Halving the peak keeps it in the stable regime. Arms are matched
+# on validation loss (iso-loss), not on hyperparameters, so a per-architecture
+# peak LR is the correct control -- holding LR fixed would instead compare each
+# architecture at a setting tuned for a different one.
+LEARNING_RATE_OVERRIDES = {
+    "HyperloopBERT": 1.5e-4,
+}
+
+# Abort a run after this many consecutive non-finite gradient norms. Without it
+# a diverged run keeps burning GPU hours producing NaN (this cost 8 h once).
+MAX_CONSECUTIVE_NONFINITE = 50
 WARMUP_RATIO = 0.1
 # Measured on H100: micro=512 with grad-checkpointing OFF gives 275,945 tok/s
 # vs 102,860 at the old micro=16+ckpt settings (2.7x). Peak memory 56GB of 80GB.
