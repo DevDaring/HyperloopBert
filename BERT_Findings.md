@@ -1,7 +1,8 @@
 # HyperloopBERT — Findings, Evidence, and Honest Assessment
 
 **Status:** LIVE DOCUMENT — updated during the experiment, finalised on completion.
-**Last updated:** 2026-07-28 03:20 UTC (LoopedBERT, architecture 2 of 4, ~30% complete)
+**Last updated:** 2026-07-28 08:15 UTC / 13:45 IST
+(VanillaBERT ✅ · LoopedBERT ✅ · ALBERTLoopedBERT training · HyperloopBERT queued)
 
 This document records what was actually found, with the data behind each claim, and an
 honest accounting of strengths and weaknesses. It is written so a reviewer (or future-you)
@@ -243,21 +244,61 @@ scored 0.0657).
 This is the single most important development — it moves the capability gate from "probably
 fails" to "probably passes".
 
-### 5.2 LoopedBERT (architecture 2 of 4) — IN PROGRESS (~30%)
+### 5.2 LoopedBERT (architecture 2 of 4) — COMPLETE
 
-| Tokens | Val loss | PP |
-|---|---|---|
-| 2.065B | 2.1917 | 8.95 |
+7.000B tokens. All **7 bands crossed**, identical to VanillaBERT — so the iso-loss
+comparison rests on genuinely matched checkpoints rather than extrapolation.
 
-**Provisional observation (do not over-read):** at matched token counts the two
-architectures are nearly indistinguishable in quality.
+| | Unique layers | Final loss | Final PP | Bands | Checkpoints |
+|---|---|---|---|---|---|
+| VanillaBERT | 12 | **1.4800** | **4.393** | 7 | 7 |
+| LoopedBERT | 6 | **1.5158** | **4.553** | 7 | 8 |
 
-```
-VanillaBERT (12 unique layers) @ 2.03B → 2.1831
-LoopedBERT  ( 6 unique layers) @ 2.07B → 2.1917      Δ ≈ 0.009 nats
-```
+LoopedBERT retains one extra *distinct* checkpoint (band 3.0) because its descent through
+the breakthrough was slightly more gradual, so a validation interval landed between bands
+3.4 and 3.0 where Vanilla's collapsed. The primary contrast uses the deepest **common**
+band (2.2), which both possess.
 
-LoopedBERT is matching Vanilla's loss trajectory with **half the unique parameters**.
+### 5.2.1 FINDING 3 — Weight sharing costs ~0.036 nats for half the unique parameters
+
+Measured at six matched budgets across the full run:
+
+| Budget | VanillaBERT | LoopedBERT | Δ (nats) |
+|---|---|---|---|
+| 2.0B | 2.2162 | 2.1917 | −0.025 (Looped *ahead*) |
+| 3.0B | 1.8753 | 1.8828 | +0.008 |
+| 4.0B | 1.7199 | 1.7373 | +0.017 |
+| 6.38B | 1.5100 | 1.5419 | +0.032 |
+| **7.0B (final)** | **1.4800** | **1.5158** | **+0.036** |
+
+The gap is near zero early and widens slowly as both converge, ending at **0.036 nats
+(PP 4.393 → 4.553, ~3.6% relative)** for a **50% reduction in unique parameters** at
+identical effective depth, identical data order, identical schedule and identical hardware.
+
+This is a clean, controlled parameter-efficiency result and it is **independent of the bias
+question**. It is consistent with ALBERT's original claim but measured here under far
+tighter control (same seed, same data ordering, same step budget, iso-loss checkpoints).
+
+**Caveat that cuts against SCH:** if weight sharing genuinely squeezed out memorised
+content, a larger quality cost might be expected. A 3.6% relative penalty suggests the
+shared model is *not* meaningfully capacity-starved at this budget — which weakens the
+mechanism SCH proposes, and is a reason my estimate of a significant bias effect stays
+modest (§6.3).
+
+### 5.3 ALBERTLoopedBERT (architecture 3 of 4) — IN PROGRESS
+
+Started 07:44 UTC / 13:14 IST. Early trajectory is visibly worse at matched steps, as
+expected for a single shared layer applied 12 times:
+
+| Step | Tokens | ALBERT loss | (Vanilla at same step) |
+|---|---|---|---|
+| 2000 | 125M | 6.9712 | 6.4649 |
+| 4000 | 250M | 6.4925 | 6.0744 |
+| 6000 | 375M | 6.1357 | 5.9649 |
+| 8000 | 501M | 5.9969 | 5.8844 |
+
+This is the arm most at risk of failing to reach the deepest common band, and the arm where
+SCH predicts the **largest** effect. Both make it the most informative of the four.
 
 ### 5.3 Data integrity (verified computationally every hour)
 
@@ -353,6 +394,97 @@ This is true in **every** branch:
 - effect found → headline result **plus** the method
 - clean null → pre-registered null **plus** the method
 - gate fails → the measurement-validity paper, with §3 as the centrepiece
+
+---
+
+## 9. The future of this research
+
+Written while the experiment is still running, so it reflects what the data *so far*
+actually supports rather than what would be convenient. Ordered by expected value per unit
+of effort.
+
+### 9.1 Immediate — cheap, high value, finishes the current story
+
+| # | Work | Cost | Why |
+|---|---|---|---|
+| 1 | **Seeds 43, 44** for the two headline arms | ~13 GPU-h | Only real weakness of the current design. The item-level test (n≈1508) is primary, but zero seed-variance is the first thing a reviewer flags. |
+| 2 | **Stream-count dose-response** (n = 1/2/4 Hyperloop) | ~20 GPU-h | Dropped for budget. It is the *causal* arm of the program — only stream count varies — and currently the weakest-supported claim about Hyperloop. |
+| 3 | **Readout blind-spot control** | ~0 (eval-time) | *Dense Supervision Is Not Enough* (arXiv:2606.24898) directly attacks loop-wise trajectory claims. The eval-time early-merge intervention is already implemented; running it converts a vulnerability into evidence of rigour. |
+| 4 | **INLP / projection debiasing on VanillaBERT** | ~1 GPU-h | Answers the most predictable reviewer question — *"why architecture-level mitigation when post-hoc debiasing exists?"* — with data instead of prose. |
+
+### 9.2 The measurement-validity thread — the most promising standalone direction
+
+§3 is the result that does not depend on SCH, and it is the seed of a larger contribution.
+
+The natural next paper is a **minimum-viable-quality standard for intrinsic bias
+benchmarking**: a calibration curve mapping model quality (validation loss / perplexity) to
+the *statistical detectability* of stereotype bias, across model families, benchmarks
+(CrowS-Pairs, StereoSet, WinoBias) and metrics (PLL, SS-PLL, embedding association).
+
+The deliverable is concrete and reusable:
+
+> *"Below quality X on benchmark Y with metric Z, a null result is uninformative; report the
+> capability gate alongside the bias number."*
+
+We already have four points on that curve (4.4M, 11.3M, 41.4M, 110M properly-trained, plus
+our own undertrained models). Extending it is cheap because it requires **no pretraining** —
+only scoring existing public checkpoints. This is the highest value-per-GPU-hour direction
+available, and it would give the community a checklist item that currently does not exist.
+
+### 9.3 Scientific extensions of SCH itself
+
+1. **Where on the sharing spectrum does the effect appear?** The current design has three
+   points (12 / 6 / 1 unique layers). A finer sweep (12/8/6/4/2/1) at fixed effective depth
+   would turn a comparison into a **dose-response curve** — a far stronger causal claim.
+2. **Sharing at pretraining vs compression after training.** This work varies sharing *at
+   pretraining under iso-loss*; the compression–fairness literature
+   (Hooker et al. 2020; Xu et al. 2022; Ramesh et al. 2023) removes parameters from an
+   already-trained model. The `VanillaBERT6` parameter-matched control is the bridge, and a
+   direct head-to-head (share-then-train vs train-then-prune, matched on final loss) is a
+   clean, well-posed question nobody has answered under quality control.
+3. **The difference-awareness failure mode.** SCH sharpened (per Wang et al. 2025 and the
+   Ouro/Frey manipulation-vs-storage results) predicts that if sharing suppresses group
+   associations *non-selectively*, it should also erode **legitimate descriptive** group
+   knowledge. That is a falsifiable prediction and it needs instruction-tuned-scale models
+   plus the difference-awareness benchmark. This is the most intellectually interesting
+   open question the project has generated.
+4. **Does it survive scale?** Everything here is 110M encoders at 7B tokens. Whether the
+   mechanism holds for billion-parameter decoder LMs is untested. §3 partially reassures
+   (the phenomenon exists at 4.4M), but extrapolation upward is not established.
+
+### 9.4 Regional / multilingual extension (relevant to the FIRE venue)
+
+The India-centric arm was **dropped**: the available mirror is Bengali, unusable by an
+English-only WordPiece tokenizer (§2.2, bug 11). Restoring it requires either an
+English-language Indian-BhED source or a multilingual tokenizer and corpus. Given FIRE's
+regional focus this is the most venue-relevant extension, and IndiBias (NAACL 2024),
+IndiCASA and IndRegBias are natural instruments. Note this changes the experiment
+materially — a multilingual tokenizer alters the whole pretraining setup — so it is a
+follow-up study, not a patch.
+
+### 9.5 Engineering artifacts worth releasing separately
+
+The infrastructure findings (§2, §4.4) have standalone value:
+
+- the **capability gate** as a reusable component for bias studies
+- the **iso-loss snapshotting** protocol
+- the observation that a research pipeline can pass review and still be structurally
+  incapable of producing data (16 bugs, 6 fatal)
+- concrete throughput numbers: pre-tokenisation ~8×, gradient checkpointing costing 45%
+  when memory is abundant, and 4% → 18% MFU
+
+A short reproducibility/tooling note would be low-effort and genuinely useful to others
+running from-scratch bias studies on a budget.
+
+### 9.6 What I would do with the next 100 GPU-hours
+
+In priority order, and this is a real recommendation rather than a wish list:
+
+1. **Seeds 43/44** on the four architectures (~26 h) — removes the single-seed weakness
+2. **Stream-count dose-response** (~20 h) — makes the Hyperloop claim causal
+3. **Finer sharing sweep** 12/8/6/4/2/1 (~40 h) — converts the core result into a curve
+4. **Extend the feasibility curve** (~2 h, no pretraining) — the cheapest real contribution
+5. Hold ~12 h in reserve; this project has consistently needed it
 
 ---
 
