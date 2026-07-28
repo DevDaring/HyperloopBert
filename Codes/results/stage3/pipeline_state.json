@@ -1,4 +1,5 @@
 {
   "VanillaBERT_base_seed42": true,
-  "LoopedBERT_base_seed42": true
+  "LoopedBERT_base_seed42": true,
+  "ALBERTLoopedBERT_base_seed42": true
 }

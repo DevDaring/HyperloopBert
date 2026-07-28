@@ -9,6 +9,12 @@
     "models/stage3/iso_band_models/LoopedBERT_base_seed42/band_5p00/pytorch_model.bin": [
       "models/stage3/iso_band_models/LoopedBERT_base_seed42/band_4p00/pytorch_model.bin",
       "models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p40/pytorch_model.bin"
+    ],
+    "models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_5p00/pytorch_model.bin": [
+      "models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_4p00/pytorch_model.bin"
+    ],
+    "models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p40/pytorch_model.bin": [
+      "models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p00/pytorch_model.bin"
     ]
   }
 }

@@ -185,7 +185,10 @@ def main():
     api = HfApi(token=_token())          # token never logged
     api.create_repo(args.repo, repo_type='model', exist_ok=True, private=False)
 
-    card = os.path.join(BASE, f'.hf_card_{args.stage}.md')
+    # PID-unique: two concurrent uploads (e.g. a timed-out ssh whose remote
+    # process kept running, plus a retry) previously shared one card path,
+    # so the first to finish deleted the second's file mid-flight.
+    card = os.path.join(BASE, f'.hf_card_{args.stage}.{os.getpid()}.md')
     with open(card, 'w', encoding='utf-8') as f:
         f.write(_model_card(args.stage, items))
     items.append((card, 'README.md'))
@@ -198,7 +201,12 @@ def main():
             ok += 1
         except Exception as e:
             logger.error(f"failed {rp}: {str(e)[:160]}")
-    os.remove(card)
+    # Cleanup must never fail the run: every real artifact is already uploaded
+    # by this point, so a missing temp card is not an error worth crashing on.
+    try:
+        os.remove(card)
+    except OSError:
+        pass
     logger.info(f"uploaded {ok}/{len(items)} -> https://huggingface.co/{args.repo}")
 
 
