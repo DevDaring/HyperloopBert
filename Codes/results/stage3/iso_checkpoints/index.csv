@@ -12,3 +12,4 @@ stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,3.4,/root/HyperloopBert/C
 stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p00,2.967567900507031,24500,2026-07-28T02:40:48.680755Z
 stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p70,2.6882121797823917,26000,2026-07-28T02:46:01.247770Z
 stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p40,2.3959020573212877,29000,2026-07-28T02:56:29.588677Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p20,2.191694966556164,33000,2026-07-28T03:10:31.193330Z
