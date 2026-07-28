@@ -137,6 +137,39 @@ def main():
                      f"(no models/results found). Has the stage run?")
         return
 
+    # Deduplicate identical checkpoints by content hash. When the validation
+    # loss falls through several iso-loss bands inside ONE validation interval,
+    # every one of those bands snapshots the SAME weights -- uploading each copy
+    # wastes bandwidth and, worse, implies the bands are distinct models when
+    # they are not. Duplicates are dropped and the alias mapping is published as
+    # duplicate_checkpoints.json so the artifact is self-documenting.
+    import hashlib
+    seen, deduped, aliases = {}, [], {}
+    for lp, rp in items:
+        if not lp.endswith('.bin'):
+            deduped.append((lp, rp))
+            continue
+        h = hashlib.md5(open(lp, 'rb').read()).hexdigest()
+        if h in seen:
+            aliases.setdefault(seen[h], []).append(rp)
+        else:
+            seen[h] = rp
+            deduped.append((lp, rp))
+    if aliases:
+        n_dup = sum(len(v) for v in aliases.values())
+        logger.info(f"dedup: {n_dup} checkpoint(s) are byte-identical to another "
+                    f"and will be skipped (alias map published):")
+        for canon, dups in aliases.items():
+            logger.info(f"   {canon}  ==  {', '.join(dups)}")
+        alias_path = os.path.join(BASE, f'.hf_dupes_{args.stage}.json')
+        with open(alias_path, 'w', encoding='utf-8') as f:
+            json.dump({'note': ('These iso-loss bands were all crossed within a '
+                                'single validation interval, so they reference the '
+                                'SAME checkpoint. Only the canonical copy is stored.'),
+                       'aliases': aliases}, f, indent=2)
+        deduped.append((alias_path, 'duplicate_checkpoints.json'))
+    items = deduped
+
     total_mb = sum(os.path.getsize(p) for p, _ in items) / 1e6
     logger.info(f"{len(items)} file(s), {total_mb:.1f} MB -> {args.repo}")
     for lp, rp in items[:25]:
