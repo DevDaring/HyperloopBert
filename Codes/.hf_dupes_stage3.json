@@ -1,0 +1,10 @@
+{
+  "note": "These iso-loss bands were all crossed within a single validation interval, so they reference the SAME checkpoint. Only the canonical copy is stored.",
+  "aliases": {
+    "models/stage3/iso_band_models/VanillaBERT_base_seed42/band_5p00/pytorch_model.bin": [
+      "models/stage3/iso_band_models/VanillaBERT_base_seed42/band_4p00/pytorch_model.bin",
+      "models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p40/pytorch_model.bin",
+      "models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p00/pytorch_model.bin"
+    ]
+  }
+}
