@@ -25,3 +25,5 @@ stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,4.0,/root/HyperloopBer
 stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,3.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p40,2.904259909625356,10000,2026-07-28T14:53:18.505120Z
 stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p00,2.904259909625356,10000,2026-07-28T14:53:18.508892Z
 stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p70,2.6536323043933674,12000,2026-07-28T15:01:34.826536Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,5.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_5p00,4.037003418332518,10000,2026-07-28T22:31:52.103417Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,4.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_4p00,3.7005346013211655,10500,2026-07-28T22:33:58.975425Z
