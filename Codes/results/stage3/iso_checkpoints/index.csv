@@ -6,3 +6,8 @@ stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,3.0,/root/HyperloopBer
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p70,2.5866862060364992,26000,2026-07-27T20:14:32.713486Z
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p40,2.352965392027068,29000,2026-07-27T20:25:06.014545Z
 stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p20,2.1830836868123735,32500,2026-07-27T20:37:28.848940Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,5.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_5p00,3.1406568550769194,24000,2026-07-28T02:39:02.142188Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,4.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_4p00,3.1406568550769194,24000,2026-07-28T02:39:02.146014Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,3.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p40,3.1406568550769194,24000,2026-07-28T02:39:02.149609Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p00,2.967567900507031,24500,2026-07-28T02:40:48.680755Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p70,2.6882121797823917,26000,2026-07-28T02:46:01.247770Z
