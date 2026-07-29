@@ -69,7 +69,17 @@ def main():
         if not passes_quality_screen(pp, cfg.PSEUDO_PERPLEXITY_QUALITY_THRESHOLD):
             continue
             
-        temp_model = build_model(meta['Architecture'], meta['Model_Size'], num_streams=num_streams)
+        # Only the Hyperloop family accepts num_streams; forwarding it to
+        # VanillaBERT/LoopedBERT/ALBERTLoopedBERT raises TypeError. Gate on the
+        # architecture, not on num_streams -- it is initialised to
+        # cfg.DEFAULT_NUM_STREAMS above and so is never None. Mirrors
+        # eval_bias_stage3.py (is_hyperloop at line 90).
+        build_kwargs = {}
+        if 'Hyperloop' in meta['Architecture']:
+            build_kwargs['num_streams'] = num_streams
+        if meta.get('Merge_At') is not None:
+            build_kwargs['merge_at'] = meta['Merge_At']
+        temp_model = build_model(meta['Architecture'], meta['Model_Size'], **build_kwargs)
         model_info = get_model_info(temp_model)
         del temp_model
         
