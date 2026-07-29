@@ -1,0 +1,875 @@
+=== [2026-07-27T18:43:05Z] 1/6 TRAIN -- Vanilla, Looped, ALBERT, Hyperloop @ 7B tokens each (~28h) ===
+2026-07-27T18:43:18 | train_stage3 | INFO | Data integrity check PASSED (tokenizer MD5 + corpus row counts match manifest).
+2026-07-27T18:43:18 | train_stage3 | INFO | Loading validation set (fixed masking, seq=128)...
+2026-07-27T18:43:40 | train_stage3 | INFO | Fixed masked validation set: 5000 sequences, 93960 masked target tokens (mask seed 1234).
+2026-07-27T18:43:40 | train_stage3 | INFO | Using device: cuda
+2026-07-27T18:43:40 | train_stage3 | INFO | --- Starting training for VanillaBERT_base_seed42 ---
+2026-07-27T18:43:43 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 110104890, 'Total_Parameters': 110104890, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.0}
+2026-07-27T18:43:44 | train_stage3 | INFO | Active attention path: flash
+2026-07-27T18:43:45 | train_stage3 | INFO | Using PRE-TOKENIZED corpus: /root/HyperloopBert/Codes/data/fineweb-edu/train_128.bin
+2026-07-27T18:50:42 | train_stage3 | INFO | Step 2000 | Tokens 125.2M | Val Loss: 6.4649 | PP: 642.21
+2026-07-27T18:50:44 | train_stage3 | INFO | Checkpoint written at optimizer step 2000.
+2026-07-27T18:57:41 | train_stage3 | INFO | Step 4000 | Tokens 250.3M | Val Loss: 6.0744 | PP: 434.61
+2026-07-27T18:57:43 | train_stage3 | INFO | Checkpoint written at optimizer step 4000.
+2026-07-27T19:04:39 | train_stage3 | INFO | Step 6000 | Tokens 375.5M | Val Loss: 5.9649 | PP: 389.53
+2026-07-27T19:04:41 | train_stage3 | INFO | Checkpoint written at optimizer step 6000.
+2026-07-27T19:11:37 | train_stage3 | INFO | Step 8000 | Tokens 500.8M | Val Loss: 5.8844 | PP: 359.39
+2026-07-27T19:11:39 | train_stage3 | INFO | Checkpoint written at optimizer step 8000.
+2026-07-27T19:18:36 | train_stage3 | INFO | Step 10000 | Tokens 626.0M | Val Loss: 5.8433 | PP: 344.92
+2026-07-27T19:18:37 | train_stage3 | INFO | Checkpoint written at optimizer step 10000.
+2026-07-27T19:25:34 | train_stage3 | INFO | Step 12000 | Tokens 751.2M | Val Loss: 5.8099 | PP: 333.58
+2026-07-27T19:25:36 | train_stage3 | INFO | Checkpoint written at optimizer step 12000.
+2026-07-27T19:32:32 | train_stage3 | INFO | Step 14000 | Tokens 876.3M | Val Loss: 5.7708 | PP: 320.78
+2026-07-27T19:32:34 | train_stage3 | INFO | Checkpoint written at optimizer step 14000.
+2026-07-27T19:39:31 | train_stage3 | INFO | Step 16000 | Tokens 1001.3M | Val Loss: 5.9754 | PP: 393.63
+2026-07-27T19:39:33 | train_stage3 | INFO | Checkpoint written at optimizer step 16000.
+2026-07-27T19:46:31 | train_stage3 | INFO | Step 18000 | Tokens 1126.5M | Val Loss: 5.7455 | PP: 312.78
+2026-07-27T19:46:32 | train_stage3 | INFO | Checkpoint written at optimizer step 18000.
+2026-07-27T19:53:30 | train_stage3 | INFO | Step 20000 | Tokens 1251.6M | Val Loss: 5.6133 | PP: 274.05
+2026-07-27T19:53:32 | train_stage3 | INFO | Checkpoint written at optimizer step 20000.
+2026-07-27T20:00:30 | train_stage3 | INFO | Step 22000 | Tokens 1376.8M | Val Loss: 5.2008 | PP: 181.42
+2026-07-27T20:00:32 | train_stage3 | INFO | Checkpoint written at optimizer step 22000.
+2026-07-27T20:07:29 | train_stage3 | INFO | Step 24000 | Tokens 1502.0M | Val Loss: 2.9966 | PP: 20.02
+2026-07-27T20:07:29 | train_stage3 | INFO | Iso-loss band 5.0 crossed! (Prev: 5.2008, Curr: 2.9966)
+2026-07-27T20:07:29 | train_stage3 | INFO | Interpolated crossing step: 22182
+2026-07-27T20:07:29 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_5p00
+2026-07-27T20:07:30 | train_stage3 | INFO | Iso-loss band 4.0 crossed! (Prev: 5.2008, Curr: 2.9966)
+2026-07-27T20:07:30 | train_stage3 | INFO | Interpolated crossing step: 23089
+2026-07-27T20:07:30 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_4p00
+2026-07-27T20:07:30 | train_stage3 | INFO | Iso-loss band 3.4 crossed! (Prev: 5.2008, Curr: 2.9966)
+2026-07-27T20:07:30 | train_stage3 | INFO | Interpolated crossing step: 23633
+2026-07-27T20:07:30 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p40
+2026-07-27T20:07:31 | train_stage3 | INFO | Iso-loss band 3.0 crossed! (Prev: 5.2008, Curr: 2.9966)
+2026-07-27T20:07:31 | train_stage3 | INFO | Interpolated crossing step: 23996
+2026-07-27T20:07:31 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p00
+2026-07-27T20:07:33 | train_stage3 | INFO | Checkpoint written at optimizer step 24000.
+2026-07-27T20:14:32 | train_stage3 | INFO | Step 26000 | Tokens 1627.2M | Val Loss: 2.5867 | PP: 13.29
+2026-07-27T20:14:32 | train_stage3 | INFO | Iso-loss band 2.7 crossed! (Prev: 2.9966, Curr: 2.5867)
+2026-07-27T20:14:32 | train_stage3 | INFO | Interpolated crossing step: 25447
+2026-07-27T20:14:32 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p70
+2026-07-27T20:14:34 | train_stage3 | INFO | Checkpoint written at optimizer step 26000.
+2026-07-27T20:21:32 | train_stage3 | INFO | Step 28000 | Tokens 1752.4M | Val Loss: 2.4660 | PP: 11.78
+2026-07-27T20:21:34 | train_stage3 | INFO | Checkpoint written at optimizer step 28000.
+2026-07-27T20:23:20 | train_stage3 | INFO | Step 28500 | Tokens 1783.7M | Val Loss: 2.4040 | PP: 11.07
+2026-07-27T20:25:05 | train_stage3 | INFO | Step 29000 | Tokens 1815.0M | Val Loss: 2.3530 | PP: 10.52
+2026-07-27T20:25:05 | train_stage3 | INFO | Iso-loss band 2.4 crossed! (Prev: 2.4040, Curr: 2.3530)
+2026-07-27T20:25:05 | train_stage3 | INFO | Interpolated crossing step: 28539
+2026-07-27T20:25:05 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p40
+2026-07-27T20:28:35 | train_stage3 | INFO | Step 30000 | Tokens 1877.6M | Val Loss: 2.3338 | PP: 10.32
+2026-07-27T20:28:37 | train_stage3 | INFO | Checkpoint written at optimizer step 30000.
+2026-07-27T20:30:22 | train_stage3 | INFO | Step 30500 | Tokens 1908.9M | Val Loss: 2.3332 | PP: 10.31
+2026-07-27T20:32:08 | train_stage3 | INFO | Step 31000 | Tokens 1940.2M | Val Loss: 2.2858 | PP: 9.83
+2026-07-27T20:33:53 | train_stage3 | INFO | Step 31500 | Tokens 1971.5M | Val Loss: 2.2369 | PP: 9.36
+2026-07-27T20:35:40 | train_stage3 | INFO | Step 32000 | Tokens 2002.8M | Val Loss: 2.2142 | PP: 9.15
+2026-07-27T20:35:42 | train_stage3 | INFO | Checkpoint written at optimizer step 32000.
+2026-07-27T20:37:28 | train_stage3 | INFO | Step 32500 | Tokens 2034.1M | Val Loss: 2.1831 | PP: 8.87
+2026-07-27T20:37:28 | train_stage3 | INFO | Iso-loss band 2.2 crossed! (Prev: 2.2142, Curr: 2.1831)
+2026-07-27T20:37:28 | train_stage3 | INFO | Interpolated crossing step: 32228
+2026-07-27T20:37:28 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p20
+2026-07-27T20:42:43 | train_stage3 | INFO | Step 34000 | Tokens 2128.0M | Val Loss: 2.1413 | PP: 8.51
+2026-07-27T20:42:44 | train_stage3 | INFO | Checkpoint written at optimizer step 34000.
+2026-07-27T20:49:43 | train_stage3 | INFO | Step 36000 | Tokens 2253.1M | Val Loss: 2.0830 | PP: 8.03
+2026-07-27T20:49:45 | train_stage3 | INFO | Checkpoint written at optimizer step 36000.
+2026-07-27T20:56:43 | train_stage3 | INFO | Step 38000 | Tokens 2378.4M | Val Loss: 2.0243 | PP: 7.57
+2026-07-27T20:56:45 | train_stage3 | INFO | Checkpoint written at optimizer step 38000.
+2026-07-27T21:03:44 | train_stage3 | INFO | Step 40000 | Tokens 2503.6M | Val Loss: 2.0067 | PP: 7.44
+2026-07-27T21:03:46 | train_stage3 | INFO | Checkpoint written at optimizer step 40000.
+2026-07-27T21:10:44 | train_stage3 | INFO | Step 42000 | Tokens 2628.8M | Val Loss: 1.9630 | PP: 7.12
+2026-07-27T21:10:46 | train_stage3 | INFO | Checkpoint written at optimizer step 42000.
+2026-07-27T21:17:45 | train_stage3 | INFO | Step 44000 | Tokens 2753.9M | Val Loss: 1.9488 | PP: 7.02
+2026-07-27T21:17:46 | train_stage3 | INFO | Checkpoint written at optimizer step 44000.
+2026-07-27T21:24:45 | train_stage3 | INFO | Step 46000 | Tokens 2878.9M | Val Loss: 1.9946 | PP: 7.35
+2026-07-27T21:24:46 | train_stage3 | INFO | Checkpoint written at optimizer step 46000.
+2026-07-27T21:31:45 | train_stage3 | INFO | Step 48000 | Tokens 3004.1M | Val Loss: 1.8753 | PP: 6.52
+2026-07-27T21:31:47 | train_stage3 | INFO | Checkpoint written at optimizer step 48000.
+2026-07-27T21:38:45 | train_stage3 | INFO | Step 50000 | Tokens 3129.2M | Val Loss: 1.8574 | PP: 6.41
+2026-07-27T21:38:47 | train_stage3 | INFO | Checkpoint written at optimizer step 50000.
+2026-07-27T21:45:46 | train_stage3 | INFO | Step 52000 | Tokens 3254.4M | Val Loss: 1.8236 | PP: 6.19
+2026-07-27T21:45:47 | train_stage3 | INFO | Checkpoint written at optimizer step 52000.
+2026-07-27T21:52:46 | train_stage3 | INFO | Step 54000 | Tokens 3379.6M | Val Loss: 1.8161 | PP: 6.15
+2026-07-27T21:52:47 | train_stage3 | INFO | Checkpoint written at optimizer step 54000.
+2026-07-27T21:59:46 | train_stage3 | INFO | Step 56000 | Tokens 3504.8M | Val Loss: 1.7972 | PP: 6.03
+2026-07-27T21:59:48 | train_stage3 | INFO | Checkpoint written at optimizer step 56000.
+2026-07-27T22:06:47 | train_stage3 | INFO | Step 58000 | Tokens 3629.9M | Val Loss: 1.7672 | PP: 5.85
+2026-07-27T22:06:49 | train_stage3 | INFO | Checkpoint written at optimizer step 58000.
+2026-07-27T22:13:48 | train_stage3 | INFO | Step 60000 | Tokens 3755.2M | Val Loss: 1.7523 | PP: 5.77
+2026-07-27T22:13:50 | train_stage3 | INFO | Checkpoint written at optimizer step 60000.
+2026-07-27T22:20:49 | train_stage3 | INFO | Step 62000 | Tokens 3880.4M | Val Loss: 1.7336 | PP: 5.66
+2026-07-27T22:20:50 | train_stage3 | INFO | Checkpoint written at optimizer step 62000.
+2026-07-27T22:27:51 | train_stage3 | INFO | Step 64000 | Tokens 4005.6M | Val Loss: 1.7181 | PP: 5.57
+2026-07-27T22:27:53 | train_stage3 | INFO | Checkpoint written at optimizer step 64000.
+2026-07-27T22:34:52 | train_stage3 | INFO | Step 66000 | Tokens 4130.7M | Val Loss: 1.7002 | PP: 5.47
+2026-07-27T22:34:54 | train_stage3 | INFO | Checkpoint written at optimizer step 66000.
+2026-07-27T22:41:53 | train_stage3 | INFO | Step 68000 | Tokens 4256.0M | Val Loss: 1.6818 | PP: 5.37
+2026-07-27T22:41:55 | train_stage3 | INFO | Checkpoint written at optimizer step 68000.
+2026-07-27T22:48:54 | train_stage3 | INFO | Step 70000 | Tokens 4381.2M | Val Loss: 1.6740 | PP: 5.33
+2026-07-27T22:48:56 | train_stage3 | INFO | Checkpoint written at optimizer step 70000.
+2026-07-27T22:55:55 | train_stage3 | INFO | Step 72000 | Tokens 4506.4M | Val Loss: 1.6531 | PP: 5.22
+2026-07-27T22:55:57 | train_stage3 | INFO | Checkpoint written at optimizer step 72000.
+2026-07-27T23:02:56 | train_stage3 | INFO | Step 74000 | Tokens 4631.5M | Val Loss: 1.6454 | PP: 5.18
+2026-07-27T23:02:58 | train_stage3 | INFO | Checkpoint written at optimizer step 74000.
+2026-07-27T23:09:57 | train_stage3 | INFO | Step 76000 | Tokens 4756.6M | Val Loss: 1.6296 | PP: 5.10
+2026-07-27T23:09:59 | train_stage3 | INFO | Checkpoint written at optimizer step 76000.
+2026-07-27T23:16:58 | train_stage3 | INFO | Step 78000 | Tokens 4881.7M | Val Loss: 1.6206 | PP: 5.06
+2026-07-27T23:17:00 | train_stage3 | INFO | Checkpoint written at optimizer step 78000.
+2026-07-27T23:23:59 | train_stage3 | INFO | Step 80000 | Tokens 5006.9M | Val Loss: 1.6091 | PP: 5.00
+2026-07-27T23:24:01 | train_stage3 | INFO | Checkpoint written at optimizer step 80000.
+2026-07-27T23:31:01 | train_stage3 | INFO | Step 82000 | Tokens 5132.0M | Val Loss: 1.5983 | PP: 4.94
+2026-07-27T23:31:03 | train_stage3 | INFO | Checkpoint written at optimizer step 82000.
+2026-07-27T23:38:02 | train_stage3 | INFO | Step 84000 | Tokens 5257.3M | Val Loss: 1.5894 | PP: 4.90
+2026-07-27T23:38:04 | train_stage3 | INFO | Checkpoint written at optimizer step 84000.
+2026-07-27T23:45:03 | train_stage3 | INFO | Step 86000 | Tokens 5382.4M | Val Loss: 1.5847 | PP: 4.88
+2026-07-27T23:45:05 | train_stage3 | INFO | Checkpoint written at optimizer step 86000.
+2026-07-27T23:52:04 | train_stage3 | INFO | Step 88000 | Tokens 5507.6M | Val Loss: 1.5689 | PP: 4.80
+2026-07-27T23:52:06 | train_stage3 | INFO | Checkpoint written at optimizer step 88000.
+2026-07-27T23:59:05 | train_stage3 | INFO | Step 90000 | Tokens 5632.8M | Val Loss: 1.5610 | PP: 4.76
+2026-07-27T23:59:07 | train_stage3 | INFO | Checkpoint written at optimizer step 90000.
+2026-07-28T00:06:06 | train_stage3 | INFO | Step 92000 | Tokens 5758.0M | Val Loss: 1.5501 | PP: 4.71
+2026-07-28T00:06:08 | train_stage3 | INFO | Checkpoint written at optimizer step 92000.
+2026-07-28T00:13:07 | train_stage3 | INFO | Step 94000 | Tokens 5883.2M | Val Loss: 1.5407 | PP: 4.67
+2026-07-28T00:13:09 | train_stage3 | INFO | Checkpoint written at optimizer step 94000.
+2026-07-28T00:20:07 | train_stage3 | INFO | Step 96000 | Tokens 6008.3M | Val Loss: 1.5295 | PP: 4.62
+2026-07-28T00:20:09 | train_stage3 | INFO | Checkpoint written at optimizer step 96000.
+2026-07-28T00:27:08 | train_stage3 | INFO | Step 98000 | Tokens 6133.6M | Val Loss: 1.5212 | PP: 4.58
+2026-07-28T00:27:10 | train_stage3 | INFO | Checkpoint written at optimizer step 98000.
+2026-07-28T00:34:09 | train_stage3 | INFO | Step 100000 | Tokens 6258.7M | Val Loss: 1.5173 | PP: 4.56
+2026-07-28T00:34:11 | train_stage3 | INFO | Checkpoint written at optimizer step 100000.
+2026-07-28T00:41:09 | train_stage3 | INFO | Step 102000 | Tokens 6384.0M | Val Loss: 1.5100 | PP: 4.53
+2026-07-28T00:41:11 | train_stage3 | INFO | Checkpoint written at optimizer step 102000.
+2026-07-28T00:48:10 | train_stage3 | INFO | Step 104000 | Tokens 6509.1M | Val Loss: 1.5021 | PP: 4.49
+2026-07-28T00:48:12 | train_stage3 | INFO | Checkpoint written at optimizer step 104000.
+2026-07-28T00:55:10 | train_stage3 | INFO | Step 106000 | Tokens 6634.2M | Val Loss: 1.4956 | PP: 4.46
+2026-07-28T00:55:12 | train_stage3 | INFO | Checkpoint written at optimizer step 106000.
+2026-07-28T01:02:11 | train_stage3 | INFO | Step 108000 | Tokens 6759.3M | Val Loss: 1.4928 | PP: 4.45
+2026-07-28T01:02:13 | train_stage3 | INFO | Checkpoint written at optimizer step 108000.
+2026-07-28T01:09:12 | train_stage3 | INFO | Step 110000 | Tokens 6884.5M | Val Loss: 1.4843 | PP: 4.41
+2026-07-28T01:09:13 | train_stage3 | INFO | Checkpoint written at optimizer step 110000.
+2026-07-28T01:15:41 | train_stage3 | INFO | Finished VanillaBERT_base_seed42: 7000.0M tokens, bands crossed: [5.0, 4.0, 3.4, 3.0, 2.7, 2.4, 2.2]
+2026-07-28T01:15:41 | train_stage3 | INFO | --- Starting training for LoopedBERT_base_seed42 ---
+2026-07-28T01:15:44 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 67580730, 'Total_Parameters': 67580730, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.5}
+2026-07-28T01:15:44 | train_stage3 | INFO | Active attention path: flash
+2026-07-28T01:15:44 | train_stage3 | INFO | Using PRE-TOKENIZED corpus: /root/HyperloopBert/Codes/data/fineweb-edu/train_128.bin
+2026-07-28T01:22:39 | train_stage3 | INFO | Step 2000 | Tokens 125.2M | Val Loss: 6.6204 | PP: 750.25
+2026-07-28T01:22:41 | train_stage3 | INFO | Checkpoint written at optimizer step 2000.
+2026-07-28T01:29:36 | train_stage3 | INFO | Step 4000 | Tokens 250.3M | Val Loss: 6.1056 | PP: 448.35
+2026-07-28T01:29:38 | train_stage3 | INFO | Checkpoint written at optimizer step 4000.
+2026-07-28T01:36:33 | train_stage3 | INFO | Step 6000 | Tokens 375.5M | Val Loss: 5.9786 | PP: 394.90
+2026-07-28T01:36:34 | train_stage3 | INFO | Checkpoint written at optimizer step 6000.
+2026-07-28T01:43:30 | train_stage3 | INFO | Step 8000 | Tokens 500.8M | Val Loss: 5.8962 | PP: 363.66
+2026-07-28T01:43:31 | train_stage3 | INFO | Checkpoint written at optimizer step 8000.
+2026-07-28T01:50:26 | train_stage3 | INFO | Step 10000 | Tokens 626.0M | Val Loss: 5.8512 | PP: 347.64
+2026-07-28T01:50:27 | train_stage3 | INFO | Checkpoint written at optimizer step 10000.
+2026-07-28T01:57:22 | train_stage3 | INFO | Step 12000 | Tokens 751.2M | Val Loss: 5.8094 | PP: 333.43
+2026-07-28T01:57:23 | train_stage3 | INFO | Checkpoint written at optimizer step 12000.
+2026-07-28T02:04:17 | train_stage3 | INFO | Step 14000 | Tokens 876.3M | Val Loss: 5.7769 | PP: 322.76
+2026-07-28T02:04:19 | train_stage3 | INFO | Checkpoint written at optimizer step 14000.
+2026-07-28T02:11:14 | train_stage3 | INFO | Step 16000 | Tokens 1001.3M | Val Loss: 5.7364 | PP: 309.95
+2026-07-28T02:11:15 | train_stage3 | INFO | Checkpoint written at optimizer step 16000.
+2026-07-28T02:18:10 | train_stage3 | INFO | Step 18000 | Tokens 1126.5M | Val Loss: 5.7199 | PP: 304.88
+2026-07-28T02:18:11 | train_stage3 | INFO | Checkpoint written at optimizer step 18000.
+2026-07-28T02:25:06 | train_stage3 | INFO | Step 20000 | Tokens 1251.6M | Val Loss: 5.6701 | PP: 290.07
+2026-07-28T02:25:07 | train_stage3 | INFO | Checkpoint written at optimizer step 20000.
+2026-07-28T02:32:03 | train_stage3 | INFO | Step 22000 | Tokens 1376.8M | Val Loss: 5.3055 | PP: 201.44
+2026-07-28T02:32:04 | train_stage3 | INFO | Checkpoint written at optimizer step 22000.
+2026-07-28T02:39:00 | train_stage3 | INFO | Step 24000 | Tokens 1502.0M | Val Loss: 3.1407 | PP: 23.12
+2026-07-28T02:39:00 | train_stage3 | INFO | Iso-loss band 5.0 crossed! (Prev: 5.3055, Curr: 3.1407)
+2026-07-28T02:39:00 | train_stage3 | INFO | Interpolated crossing step: 22282
+2026-07-28T02:39:00 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_5p00
+2026-07-28T02:39:01 | train_stage3 | INFO | Iso-loss band 4.0 crossed! (Prev: 5.3055, Curr: 3.1407)
+2026-07-28T02:39:01 | train_stage3 | INFO | Interpolated crossing step: 23206
+2026-07-28T02:39:01 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_4p00
+2026-07-28T02:39:01 | train_stage3 | INFO | Iso-loss band 3.4 crossed! (Prev: 5.3055, Curr: 3.1407)
+2026-07-28T02:39:01 | train_stage3 | INFO | Interpolated crossing step: 23760
+2026-07-28T02:39:01 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p40
+2026-07-28T02:39:03 | train_stage3 | INFO | Checkpoint written at optimizer step 24000.
+2026-07-28T02:40:48 | train_stage3 | INFO | Step 24500 | Tokens 1533.4M | Val Loss: 2.9676 | PP: 19.44
+2026-07-28T02:40:48 | train_stage3 | INFO | Iso-loss band 3.0 crossed! (Prev: 3.1407, Curr: 2.9676)
+2026-07-28T02:40:48 | train_stage3 | INFO | Interpolated crossing step: 24406
+2026-07-28T02:40:48 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p00
+2026-07-28T02:46:00 | train_stage3 | INFO | Step 26000 | Tokens 1627.2M | Val Loss: 2.6882 | PP: 14.71
+2026-07-28T02:46:00 | train_stage3 | INFO | Iso-loss band 2.7 crossed! (Prev: 2.9676, Curr: 2.6882)
+2026-07-28T02:46:00 | train_stage3 | INFO | Interpolated crossing step: 25936
+2026-07-28T02:46:00 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p70
+2026-07-28T02:46:02 | train_stage3 | INFO | Checkpoint written at optimizer step 26000.
+2026-07-28T02:52:58 | train_stage3 | INFO | Step 28000 | Tokens 1752.4M | Val Loss: 2.4717 | PP: 11.84
+2026-07-28T02:52:59 | train_stage3 | INFO | Checkpoint written at optimizer step 28000.
+2026-07-28T02:54:44 | train_stage3 | INFO | Step 28500 | Tokens 1783.7M | Val Loss: 2.4332 | PP: 11.40
+2026-07-28T02:56:29 | train_stage3 | INFO | Step 29000 | Tokens 1815.0M | Val Loss: 2.3959 | PP: 10.98
+2026-07-28T02:56:29 | train_stage3 | INFO | Iso-loss band 2.4 crossed! (Prev: 2.4332, Curr: 2.3959)
+2026-07-28T02:56:29 | train_stage3 | INFO | Interpolated crossing step: 28945
+2026-07-28T02:56:29 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p40
+2026-07-28T02:59:58 | train_stage3 | INFO | Step 30000 | Tokens 1877.6M | Val Loss: 2.3292 | PP: 10.27
+2026-07-28T02:59:59 | train_stage3 | INFO | Checkpoint written at optimizer step 30000.
+2026-07-28T03:01:44 | train_stage3 | INFO | Step 30500 | Tokens 1908.9M | Val Loss: 2.3117 | PP: 10.09
+2026-07-28T03:03:29 | train_stage3 | INFO | Step 31000 | Tokens 1940.2M | Val Loss: 2.2832 | PP: 9.81
+2026-07-28T03:05:13 | train_stage3 | INFO | Step 31500 | Tokens 1971.5M | Val Loss: 2.2544 | PP: 9.53
+2026-07-28T03:07:00 | train_stage3 | INFO | Step 32000 | Tokens 2002.8M | Val Loss: 2.2371 | PP: 9.37
+2026-07-28T03:07:01 | train_stage3 | INFO | Checkpoint written at optimizer step 32000.
+2026-07-28T03:08:46 | train_stage3 | INFO | Step 32500 | Tokens 2034.1M | Val Loss: 2.2069 | PP: 9.09
+2026-07-28T03:10:30 | train_stage3 | INFO | Step 33000 | Tokens 2065.4M | Val Loss: 2.1917 | PP: 8.95
+2026-07-28T03:10:30 | train_stage3 | INFO | Iso-loss band 2.2 crossed! (Prev: 2.2069, Curr: 2.1917)
+2026-07-28T03:10:30 | train_stage3 | INFO | Interpolated crossing step: 32727
+2026-07-28T03:10:30 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p20
+2026-07-28T03:13:59 | train_stage3 | INFO | Step 34000 | Tokens 2128.0M | Val Loss: 2.1618 | PP: 8.69
+2026-07-28T03:14:00 | train_stage3 | INFO | Checkpoint written at optimizer step 34000.
+2026-07-28T03:20:56 | train_stage3 | INFO | Step 36000 | Tokens 2253.1M | Val Loss: 2.0963 | PP: 8.14
+2026-07-28T03:20:58 | train_stage3 | INFO | Checkpoint written at optimizer step 36000.
+2026-07-28T03:27:53 | train_stage3 | INFO | Step 38000 | Tokens 2378.4M | Val Loss: 2.0420 | PP: 7.71
+2026-07-28T03:27:55 | train_stage3 | INFO | Checkpoint written at optimizer step 38000.
+2026-07-28T03:34:50 | train_stage3 | INFO | Step 40000 | Tokens 2503.6M | Val Loss: 2.0138 | PP: 7.49
+2026-07-28T03:34:52 | train_stage3 | INFO | Checkpoint written at optimizer step 40000.
+2026-07-28T03:41:47 | train_stage3 | INFO | Step 42000 | Tokens 2628.8M | Val Loss: 1.9613 | PP: 7.11
+2026-07-28T03:41:49 | train_stage3 | INFO | Checkpoint written at optimizer step 42000.
+2026-07-28T03:48:44 | train_stage3 | INFO | Step 44000 | Tokens 2753.9M | Val Loss: 1.9404 | PP: 6.96
+2026-07-28T03:48:46 | train_stage3 | INFO | Checkpoint written at optimizer step 44000.
+2026-07-28T03:55:41 | train_stage3 | INFO | Step 46000 | Tokens 2878.9M | Val Loss: 1.9062 | PP: 6.73
+2026-07-28T03:55:43 | train_stage3 | INFO | Checkpoint written at optimizer step 46000.
+2026-07-28T04:02:38 | train_stage3 | INFO | Step 48000 | Tokens 3004.1M | Val Loss: 1.8828 | PP: 6.57
+2026-07-28T04:02:39 | train_stage3 | INFO | Checkpoint written at optimizer step 48000.
+2026-07-28T04:09:35 | train_stage3 | INFO | Step 50000 | Tokens 3129.2M | Val Loss: 1.8539 | PP: 6.38
+2026-07-28T04:09:36 | train_stage3 | INFO | Checkpoint written at optimizer step 50000.
+2026-07-28T04:16:32 | train_stage3 | INFO | Step 52000 | Tokens 3254.4M | Val Loss: 1.8328 | PP: 6.25
+2026-07-28T04:16:33 | train_stage3 | INFO | Checkpoint written at optimizer step 52000.
+2026-07-28T04:23:28 | train_stage3 | INFO | Step 54000 | Tokens 3379.6M | Val Loss: 1.8169 | PP: 6.15
+2026-07-28T04:23:30 | train_stage3 | INFO | Checkpoint written at optimizer step 54000.
+2026-07-28T04:30:25 | train_stage3 | INFO | Step 56000 | Tokens 3504.8M | Val Loss: 1.7977 | PP: 6.04
+2026-07-28T04:30:27 | train_stage3 | INFO | Checkpoint written at optimizer step 56000.
+2026-07-28T04:37:22 | train_stage3 | INFO | Step 58000 | Tokens 3629.9M | Val Loss: 1.7842 | PP: 5.95
+2026-07-28T04:37:23 | train_stage3 | INFO | Checkpoint written at optimizer step 58000.
+2026-07-28T04:44:19 | train_stage3 | INFO | Step 60000 | Tokens 3755.2M | Val Loss: 1.7829 | PP: 5.95
+2026-07-28T04:44:20 | train_stage3 | INFO | Checkpoint written at optimizer step 60000.
+2026-07-28T04:51:15 | train_stage3 | INFO | Step 62000 | Tokens 3880.4M | Val Loss: 1.7499 | PP: 5.75
+2026-07-28T04:51:17 | train_stage3 | INFO | Checkpoint written at optimizer step 62000.
+2026-07-28T04:58:14 | train_stage3 | INFO | Step 64000 | Tokens 4005.6M | Val Loss: 1.7334 | PP: 5.66
+2026-07-28T04:58:15 | train_stage3 | INFO | Checkpoint written at optimizer step 64000.
+2026-07-28T05:05:10 | train_stage3 | INFO | Step 66000 | Tokens 4130.7M | Val Loss: 1.7166 | PP: 5.57
+2026-07-28T05:05:11 | train_stage3 | INFO | Checkpoint written at optimizer step 66000.
+2026-07-28T05:12:07 | train_stage3 | INFO | Step 68000 | Tokens 4256.0M | Val Loss: 1.7008 | PP: 5.48
+2026-07-28T05:12:08 | train_stage3 | INFO | Checkpoint written at optimizer step 68000.
+2026-07-28T05:19:04 | train_stage3 | INFO | Step 70000 | Tokens 4381.2M | Val Loss: 1.6954 | PP: 5.45
+2026-07-28T05:19:05 | train_stage3 | INFO | Checkpoint written at optimizer step 70000.
+2026-07-28T05:26:01 | train_stage3 | INFO | Step 72000 | Tokens 4506.4M | Val Loss: 1.6819 | PP: 5.38
+2026-07-28T05:26:02 | train_stage3 | INFO | Checkpoint written at optimizer step 72000.
+2026-07-28T05:32:58 | train_stage3 | INFO | Step 74000 | Tokens 4631.5M | Val Loss: 1.6750 | PP: 5.34
+2026-07-28T05:32:59 | train_stage3 | INFO | Checkpoint written at optimizer step 74000.
+2026-07-28T05:39:55 | train_stage3 | INFO | Step 76000 | Tokens 4756.6M | Val Loss: 1.6544 | PP: 5.23
+2026-07-28T05:39:57 | train_stage3 | INFO | Checkpoint written at optimizer step 76000.
+2026-07-28T05:46:53 | train_stage3 | INFO | Step 78000 | Tokens 4881.7M | Val Loss: 1.6500 | PP: 5.21
+2026-07-28T05:46:54 | train_stage3 | INFO | Checkpoint written at optimizer step 78000.
+2026-07-28T05:53:50 | train_stage3 | INFO | Step 80000 | Tokens 5006.9M | Val Loss: 1.6322 | PP: 5.12
+2026-07-28T05:53:51 | train_stage3 | INFO | Checkpoint written at optimizer step 80000.
+2026-07-28T06:00:46 | train_stage3 | INFO | Step 82000 | Tokens 5132.0M | Val Loss: 1.6252 | PP: 5.08
+2026-07-28T06:00:47 | train_stage3 | INFO | Checkpoint written at optimizer step 82000.
+2026-07-28T06:07:43 | train_stage3 | INFO | Step 84000 | Tokens 5257.3M | Val Loss: 1.6141 | PP: 5.02
+2026-07-28T06:07:44 | train_stage3 | INFO | Checkpoint written at optimizer step 84000.
+2026-07-28T06:14:40 | train_stage3 | INFO | Step 86000 | Tokens 5382.4M | Val Loss: 1.6150 | PP: 5.03
+2026-07-28T06:14:41 | train_stage3 | INFO | Checkpoint written at optimizer step 86000.
+2026-07-28T06:21:37 | train_stage3 | INFO | Step 88000 | Tokens 5507.6M | Val Loss: 1.5976 | PP: 4.94
+2026-07-28T06:21:38 | train_stage3 | INFO | Checkpoint written at optimizer step 88000.
+2026-07-28T06:28:34 | train_stage3 | INFO | Step 90000 | Tokens 5632.8M | Val Loss: 1.5917 | PP: 4.91
+2026-07-28T06:28:35 | train_stage3 | INFO | Checkpoint written at optimizer step 90000.
+2026-07-28T06:35:31 | train_stage3 | INFO | Step 92000 | Tokens 5758.0M | Val Loss: 1.5859 | PP: 4.88
+2026-07-28T06:35:32 | train_stage3 | INFO | Checkpoint written at optimizer step 92000.
+2026-07-28T06:42:28 | train_stage3 | INFO | Step 94000 | Tokens 5883.2M | Val Loss: 1.5744 | PP: 4.83
+2026-07-28T06:42:30 | train_stage3 | INFO | Checkpoint written at optimizer step 94000.
+2026-07-28T06:49:26 | train_stage3 | INFO | Step 96000 | Tokens 6008.3M | Val Loss: 1.5648 | PP: 4.78
+2026-07-28T06:49:27 | train_stage3 | INFO | Checkpoint written at optimizer step 96000.
+2026-07-28T06:56:23 | train_stage3 | INFO | Step 98000 | Tokens 6133.6M | Val Loss: 1.5550 | PP: 4.73
+2026-07-28T06:56:24 | train_stage3 | INFO | Checkpoint written at optimizer step 98000.
+2026-07-28T07:03:20 | train_stage3 | INFO | Step 100000 | Tokens 6258.7M | Val Loss: 1.5502 | PP: 4.71
+2026-07-28T07:03:21 | train_stage3 | INFO | Checkpoint written at optimizer step 100000.
+2026-07-28T07:10:17 | train_stage3 | INFO | Step 102000 | Tokens 6384.0M | Val Loss: 1.5419 | PP: 4.67
+2026-07-28T07:10:18 | train_stage3 | INFO | Checkpoint written at optimizer step 102000.
+2026-07-28T07:17:14 | train_stage3 | INFO | Step 104000 | Tokens 6509.1M | Val Loss: 1.5364 | PP: 4.65
+2026-07-28T07:17:15 | train_stage3 | INFO | Checkpoint written at optimizer step 104000.
+2026-07-28T07:24:11 | train_stage3 | INFO | Step 106000 | Tokens 6634.2M | Val Loss: 1.5302 | PP: 4.62
+2026-07-28T07:24:13 | train_stage3 | INFO | Checkpoint written at optimizer step 106000.
+2026-07-28T07:31:08 | train_stage3 | INFO | Step 108000 | Tokens 6759.3M | Val Loss: 1.5285 | PP: 4.61
+2026-07-28T07:31:10 | train_stage3 | INFO | Checkpoint written at optimizer step 108000.
+2026-07-28T07:38:05 | train_stage3 | INFO | Step 110000 | Tokens 6884.5M | Val Loss: 1.5188 | PP: 4.57
+2026-07-28T07:38:07 | train_stage3 | INFO | Checkpoint written at optimizer step 110000.
+2026-07-28T07:44:31 | train_stage3 | INFO | Finished LoopedBERT_base_seed42: 7000.0M tokens, bands crossed: [5.0, 4.0, 3.4, 3.0, 2.7, 2.4, 2.2]
+2026-07-28T07:44:31 | train_stage3 | INFO | --- Starting training for ALBERTLoopedBERT_base_seed42 ---
+2026-07-28T07:44:33 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 32147514, 'Total_Parameters': 32147514, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.9166666666666666}
+2026-07-28T07:44:33 | train_stage3 | INFO | Active attention path: flash
+2026-07-28T07:44:33 | train_stage3 | INFO | Using PRE-TOKENIZED corpus: /root/HyperloopBert/Codes/data/fineweb-edu/train_128.bin
+2026-07-28T07:51:28 | train_stage3 | INFO | Step 2000 | Tokens 125.2M | Val Loss: 6.9712 | PP: 1065.52
+2026-07-28T07:51:29 | train_stage3 | INFO | Checkpoint written at optimizer step 2000.
+2026-07-28T07:58:25 | train_stage3 | INFO | Step 4000 | Tokens 250.3M | Val Loss: 6.4925 | PP: 660.19
+2026-07-28T07:58:26 | train_stage3 | INFO | Checkpoint written at optimizer step 4000.
+2026-07-28T08:05:22 | train_stage3 | INFO | Step 6000 | Tokens 375.5M | Val Loss: 6.1357 | PP: 462.08
+2026-07-28T08:05:23 | train_stage3 | INFO | Checkpoint written at optimizer step 6000.
+2026-07-28T08:12:20 | train_stage3 | INFO | Step 8000 | Tokens 500.8M | Val Loss: 5.9969 | PP: 402.17
+2026-07-28T08:12:21 | train_stage3 | INFO | Checkpoint written at optimizer step 8000.
+2026-07-28T08:19:17 | train_stage3 | INFO | Step 10000 | Tokens 626.0M | Val Loss: 5.9390 | PP: 379.54
+2026-07-28T08:19:18 | train_stage3 | INFO | Checkpoint written at optimizer step 10000.
+2026-07-28T08:26:14 | train_stage3 | INFO | Step 12000 | Tokens 751.2M | Val Loss: 3.6274 | PP: 37.61
+2026-07-28T08:26:14 | train_stage3 | INFO | Iso-loss band 5.0 crossed! (Prev: 5.9390, Curr: 3.6274)
+2026-07-28T08:26:14 | train_stage3 | INFO | Interpolated crossing step: 10812
+2026-07-28T08:26:14 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_5p00
+2026-07-28T08:26:14 | train_stage3 | INFO | Iso-loss band 4.0 crossed! (Prev: 5.9390, Curr: 3.6274)
+2026-07-28T08:26:14 | train_stage3 | INFO | Interpolated crossing step: 11677
+2026-07-28T08:26:14 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_4p00
+2026-07-28T08:26:15 | train_stage3 | INFO | Checkpoint written at optimizer step 12000.
+2026-07-28T08:33:12 | train_stage3 | INFO | Step 14000 | Tokens 876.3M | Val Loss: 2.9226 | PP: 18.59
+2026-07-28T08:33:12 | train_stage3 | INFO | Iso-loss band 3.4 crossed! (Prev: 3.6274, Curr: 2.9226)
+2026-07-28T08:33:12 | train_stage3 | INFO | Interpolated crossing step: 12645
+2026-07-28T08:33:12 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p40
+2026-07-28T08:33:12 | train_stage3 | INFO | Iso-loss band 3.0 crossed! (Prev: 3.6274, Curr: 2.9226)
+2026-07-28T08:33:12 | train_stage3 | INFO | Interpolated crossing step: 13780
+2026-07-28T08:33:12 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p00
+2026-07-28T08:33:13 | train_stage3 | INFO | Checkpoint written at optimizer step 14000.
+2026-07-28T08:40:09 | train_stage3 | INFO | Step 16000 | Tokens 1001.3M | Val Loss: 2.6474 | PP: 14.12
+2026-07-28T08:40:09 | train_stage3 | INFO | Iso-loss band 2.7 crossed! (Prev: 2.9226, Curr: 2.6474)
+2026-07-28T08:40:09 | train_stage3 | INFO | Interpolated crossing step: 15617
+2026-07-28T08:40:09 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p70
+2026-07-28T08:40:10 | train_stage3 | INFO | Checkpoint written at optimizer step 16000.
+2026-07-28T08:47:07 | train_stage3 | INFO | Step 18000 | Tokens 1126.5M | Val Loss: 2.5088 | PP: 12.29
+2026-07-28T08:47:07 | train_stage3 | INFO | Checkpoint written at optimizer step 18000.
+2026-07-28T08:48:52 | train_stage3 | INFO | Step 18500 | Tokens 1157.8M | Val Loss: 2.4780 | PP: 11.92
+2026-07-28T08:50:37 | train_stage3 | INFO | Step 19000 | Tokens 1189.1M | Val Loss: 2.4564 | PP: 11.66
+2026-07-28T08:52:22 | train_stage3 | INFO | Step 19500 | Tokens 1220.4M | Val Loss: 2.4368 | PP: 11.44
+2026-07-28T08:54:07 | train_stage3 | INFO | Step 20000 | Tokens 1251.6M | Val Loss: 2.4193 | PP: 11.24
+2026-07-28T08:54:08 | train_stage3 | INFO | Checkpoint written at optimizer step 20000.
+2026-07-28T08:55:53 | train_stage3 | INFO | Step 20500 | Tokens 1283.0M | Val Loss: 2.3877 | PP: 10.89
+2026-07-28T08:55:53 | train_stage3 | INFO | Iso-loss band 2.4 crossed! (Prev: 2.4193, Curr: 2.3877)
+2026-07-28T08:55:53 | train_stage3 | INFO | Interpolated crossing step: 20305
+2026-07-28T08:55:53 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p40
+2026-07-28T09:01:04 | train_stage3 | INFO | Step 22000 | Tokens 1376.8M | Val Loss: 2.3330 | PP: 10.31
+2026-07-28T09:01:05 | train_stage3 | INFO | Checkpoint written at optimizer step 22000.
+2026-07-28T09:02:49 | train_stage3 | INFO | Step 22500 | Tokens 1408.2M | Val Loss: 2.3229 | PP: 10.21
+2026-07-28T09:04:34 | train_stage3 | INFO | Step 23000 | Tokens 1439.5M | Val Loss: 2.3196 | PP: 10.17
+2026-07-28T09:06:18 | train_stage3 | INFO | Step 23500 | Tokens 1470.8M | Val Loss: 2.2904 | PP: 9.88
+2026-07-28T09:08:03 | train_stage3 | INFO | Step 24000 | Tokens 1502.0M | Val Loss: 2.2863 | PP: 9.84
+2026-07-28T09:08:04 | train_stage3 | INFO | Checkpoint written at optimizer step 24000.
+2026-07-28T09:09:48 | train_stage3 | INFO | Step 24500 | Tokens 1533.4M | Val Loss: 2.2752 | PP: 9.73
+2026-07-28T09:11:33 | train_stage3 | INFO | Step 25000 | Tokens 1564.6M | Val Loss: 2.2561 | PP: 9.55
+2026-07-28T09:13:18 | train_stage3 | INFO | Step 25500 | Tokens 1595.9M | Val Loss: 2.2473 | PP: 9.46
+2026-07-28T09:15:03 | train_stage3 | INFO | Step 26000 | Tokens 1627.2M | Val Loss: 2.2353 | PP: 9.35
+2026-07-28T09:15:03 | train_stage3 | INFO | Checkpoint written at optimizer step 26000.
+2026-07-28T09:16:48 | train_stage3 | INFO | Step 26500 | Tokens 1658.5M | Val Loss: 2.2218 | PP: 9.22
+2026-07-28T09:18:33 | train_stage3 | INFO | Step 27000 | Tokens 1689.8M | Val Loss: 5.7834 | PP: 324.87
+2026-07-28T09:22:01 | train_stage3 | INFO | Step 28000 | Tokens 1752.4M | Val Loss: 2.2030 | PP: 9.05
+2026-07-28T09:22:02 | train_stage3 | INFO | Checkpoint written at optimizer step 28000.
+2026-07-28T09:23:46 | train_stage3 | INFO | Step 28500 | Tokens 1783.7M | Val Loss: 2.3745 | PP: 10.75
+2026-07-28T09:28:58 | train_stage3 | INFO | Step 30000 | Tokens 1877.6M | Val Loss: 2.1627 | PP: 8.69
+2026-07-28T09:28:58 | train_stage3 | INFO | Iso-loss band 2.2 crossed! (Prev: 2.3745, Curr: 2.1627)
+2026-07-28T09:28:58 | train_stage3 | INFO | Interpolated crossing step: 29735
+2026-07-28T09:28:58 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p20
+2026-07-28T09:28:59 | train_stage3 | INFO | Checkpoint written at optimizer step 30000.
+2026-07-28T09:35:55 | train_stage3 | INFO | Step 32000 | Tokens 2002.8M | Val Loss: 2.1380 | PP: 8.48
+2026-07-28T09:35:56 | train_stage3 | INFO | Checkpoint written at optimizer step 32000.
+2026-07-28T09:42:51 | train_stage3 | INFO | Step 34000 | Tokens 2128.0M | Val Loss: 2.1081 | PP: 8.23
+2026-07-28T09:42:52 | train_stage3 | INFO | Checkpoint written at optimizer step 34000.
+2026-07-28T09:49:47 | train_stage3 | INFO | Step 36000 | Tokens 2253.1M | Val Loss: 2.0835 | PP: 8.03
+2026-07-28T09:49:48 | train_stage3 | INFO | Checkpoint written at optimizer step 36000.
+2026-07-28T09:56:43 | train_stage3 | INFO | Step 38000 | Tokens 2378.4M | Val Loss: 2.0627 | PP: 7.87
+2026-07-28T09:56:44 | train_stage3 | INFO | Checkpoint written at optimizer step 38000.
+2026-07-28T10:03:39 | train_stage3 | INFO | Step 40000 | Tokens 2503.6M | Val Loss: 2.0486 | PP: 7.76
+2026-07-28T10:03:40 | train_stage3 | INFO | Checkpoint written at optimizer step 40000.
+2026-07-28T10:10:35 | train_stage3 | INFO | Step 42000 | Tokens 2628.8M | Val Loss: 2.0197 | PP: 7.54
+2026-07-28T10:10:36 | train_stage3 | INFO | Checkpoint written at optimizer step 42000.
+2026-07-28T10:17:31 | train_stage3 | INFO | Step 44000 | Tokens 2753.9M | Val Loss: 2.0153 | PP: 7.50
+2026-07-28T10:17:31 | train_stage3 | INFO | Checkpoint written at optimizer step 44000.
+2026-07-28T10:24:26 | train_stage3 | INFO | Step 46000 | Tokens 2878.9M | Val Loss: 1.9911 | PP: 7.32
+2026-07-28T10:24:27 | train_stage3 | INFO | Checkpoint written at optimizer step 46000.
+2026-07-28T10:31:22 | train_stage3 | INFO | Step 48000 | Tokens 3004.1M | Val Loss: 1.9854 | PP: 7.28
+2026-07-28T10:31:23 | train_stage3 | INFO | Checkpoint written at optimizer step 48000.
+2026-07-28T10:38:17 | train_stage3 | INFO | Step 50000 | Tokens 3129.2M | Val Loss: 1.9677 | PP: 7.15
+2026-07-28T10:38:18 | train_stage3 | INFO | Checkpoint written at optimizer step 50000.
+2026-07-28T10:45:13 | train_stage3 | INFO | Step 52000 | Tokens 3254.4M | Val Loss: 1.9463 | PP: 7.00
+2026-07-28T10:45:13 | train_stage3 | INFO | Checkpoint written at optimizer step 52000.
+2026-07-28T10:52:08 | train_stage3 | INFO | Step 54000 | Tokens 3379.6M | Val Loss: 1.9412 | PP: 6.97
+2026-07-28T10:52:09 | train_stage3 | INFO | Checkpoint written at optimizer step 54000.
+2026-07-28T10:59:03 | train_stage3 | INFO | Step 56000 | Tokens 3504.8M | Val Loss: 1.9299 | PP: 6.89
+2026-07-28T10:59:04 | train_stage3 | INFO | Checkpoint written at optimizer step 56000.
+2026-07-28T11:05:58 | train_stage3 | INFO | Step 58000 | Tokens 3629.9M | Val Loss: 1.9201 | PP: 6.82
+2026-07-28T11:05:59 | train_stage3 | INFO | Checkpoint written at optimizer step 58000.
+2026-07-28T11:12:54 | train_stage3 | INFO | Step 60000 | Tokens 3755.2M | Val Loss: 1.9048 | PP: 6.72
+2026-07-28T11:12:55 | train_stage3 | INFO | Checkpoint written at optimizer step 60000.
+2026-07-28T11:19:49 | train_stage3 | INFO | Step 62000 | Tokens 3880.4M | Val Loss: 1.8973 | PP: 6.67
+2026-07-28T11:19:50 | train_stage3 | INFO | Checkpoint written at optimizer step 62000.
+2026-07-28T11:26:47 | train_stage3 | INFO | Step 64000 | Tokens 4005.6M | Val Loss: 1.8816 | PP: 6.56
+2026-07-28T11:26:47 | train_stage3 | INFO | Checkpoint written at optimizer step 64000.
+2026-07-28T11:33:42 | train_stage3 | INFO | Step 66000 | Tokens 4130.7M | Val Loss: 1.8754 | PP: 6.52
+2026-07-28T11:33:43 | train_stage3 | INFO | Checkpoint written at optimizer step 66000.
+2026-07-28T11:40:38 | train_stage3 | INFO | Step 68000 | Tokens 4256.0M | Val Loss: 1.8684 | PP: 6.48
+2026-07-28T11:40:39 | train_stage3 | INFO | Checkpoint written at optimizer step 68000.
+2026-07-28T11:47:36 | train_stage3 | INFO | Step 70000 | Tokens 4381.2M | Val Loss: 1.8652 | PP: 6.46
+2026-07-28T11:47:37 | train_stage3 | INFO | Checkpoint written at optimizer step 70000.
+2026-07-28T11:54:33 | train_stage3 | INFO | Step 72000 | Tokens 4506.4M | Val Loss: 1.8510 | PP: 6.37
+2026-07-28T11:54:34 | train_stage3 | INFO | Checkpoint written at optimizer step 72000.
+2026-07-28T12:01:29 | train_stage3 | INFO | Step 74000 | Tokens 4631.5M | Val Loss: 1.8425 | PP: 6.31
+2026-07-28T12:01:30 | train_stage3 | INFO | Checkpoint written at optimizer step 74000.
+2026-07-28T12:08:26 | train_stage3 | INFO | Step 76000 | Tokens 4756.6M | Val Loss: 1.8287 | PP: 6.23
+2026-07-28T12:08:26 | train_stage3 | INFO | Checkpoint written at optimizer step 76000.
+2026-07-28T12:15:22 | train_stage3 | INFO | Step 78000 | Tokens 4881.7M | Val Loss: 1.8300 | PP: 6.23
+2026-07-28T12:15:22 | train_stage3 | INFO | Checkpoint written at optimizer step 78000.
+2026-07-28T12:22:17 | train_stage3 | INFO | Step 80000 | Tokens 5006.9M | Val Loss: 1.8174 | PP: 6.16
+2026-07-28T12:22:18 | train_stage3 | INFO | Checkpoint written at optimizer step 80000.
+2026-07-28T12:29:13 | train_stage3 | INFO | Step 82000 | Tokens 5132.0M | Val Loss: 1.8076 | PP: 6.10
+2026-07-28T12:29:13 | train_stage3 | INFO | Checkpoint written at optimizer step 82000.
+2026-07-28T12:36:08 | train_stage3 | INFO | Step 84000 | Tokens 5257.3M | Val Loss: 1.8022 | PP: 6.06
+2026-07-28T12:36:08 | train_stage3 | INFO | Checkpoint written at optimizer step 84000.
+2026-07-28T12:42:59 | train_stage3 | INFO | Step 86000 | Tokens 5382.4M | Val Loss: 1.8018 | PP: 6.06
+2026-07-28T12:42:59 | train_stage3 | INFO | Checkpoint written at optimizer step 86000.
+2026-07-28T12:49:50 | train_stage3 | INFO | Step 88000 | Tokens 5507.6M | Val Loss: 1.7864 | PP: 5.97
+2026-07-28T12:49:50 | train_stage3 | INFO | Checkpoint written at optimizer step 88000.
+2026-07-28T12:56:41 | train_stage3 | INFO | Step 90000 | Tokens 5632.8M | Val Loss: 1.7810 | PP: 5.94
+2026-07-28T12:56:41 | train_stage3 | INFO | Checkpoint written at optimizer step 90000.
+2026-07-28T13:03:32 | train_stage3 | INFO | Step 92000 | Tokens 5758.0M | Val Loss: 1.7766 | PP: 5.91
+2026-07-28T13:03:32 | train_stage3 | INFO | Checkpoint written at optimizer step 92000.
+2026-07-28T13:10:23 | train_stage3 | INFO | Step 94000 | Tokens 5883.2M | Val Loss: 1.7665 | PP: 5.85
+2026-07-28T13:10:23 | train_stage3 | INFO | Checkpoint written at optimizer step 94000.
+2026-07-28T13:17:14 | train_stage3 | INFO | Step 96000 | Tokens 6008.3M | Val Loss: 1.7592 | PP: 5.81
+2026-07-28T13:17:15 | train_stage3 | INFO | Checkpoint written at optimizer step 96000.
+2026-07-28T13:24:05 | train_stage3 | INFO | Step 98000 | Tokens 6133.6M | Val Loss: 1.7528 | PP: 5.77
+2026-07-28T13:24:05 | train_stage3 | INFO | Checkpoint written at optimizer step 98000.
+2026-07-28T13:30:55 | train_stage3 | INFO | Step 100000 | Tokens 6258.7M | Val Loss: 1.7465 | PP: 5.73
+2026-07-28T13:30:56 | train_stage3 | INFO | Checkpoint written at optimizer step 100000.
+2026-07-28T13:37:46 | train_stage3 | INFO | Step 102000 | Tokens 6384.0M | Val Loss: 1.7395 | PP: 5.69
+2026-07-28T13:37:47 | train_stage3 | INFO | Checkpoint written at optimizer step 102000.
+2026-07-28T13:44:38 | train_stage3 | INFO | Step 104000 | Tokens 6509.1M | Val Loss: 1.7337 | PP: 5.66
+2026-07-28T13:44:39 | train_stage3 | INFO | Checkpoint written at optimizer step 104000.
+2026-07-28T13:51:33 | train_stage3 | INFO | Step 106000 | Tokens 6634.2M | Val Loss: 1.7304 | PP: 5.64
+2026-07-28T13:51:34 | train_stage3 | INFO | Checkpoint written at optimizer step 106000.
+2026-07-28T13:58:29 | train_stage3 | INFO | Step 108000 | Tokens 6759.3M | Val Loss: 1.7282 | PP: 5.63
+2026-07-28T13:58:30 | train_stage3 | INFO | Checkpoint written at optimizer step 108000.
+2026-07-28T14:05:25 | train_stage3 | INFO | Step 110000 | Tokens 6884.5M | Val Loss: 1.7210 | PP: 5.59
+2026-07-28T14:05:26 | train_stage3 | INFO | Checkpoint written at optimizer step 110000.
+2026-07-28T14:11:49 | train_stage3 | INFO | Finished ALBERTLoopedBERT_base_seed42: 7000.0M tokens, bands crossed: [5.0, 4.0, 3.4, 3.0, 2.7, 2.4, 2.2]
+2026-07-28T14:11:49 | train_stage3 | INFO | --- Starting training for HyperloopBERT_base_seed42_streams4 ---
+2026-07-28T14:11:57 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 86471227, 'Total_Parameters': 86471227, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.5}
+2026-07-28T14:11:57 | train_stage3 | INFO | Active attention path: flash
+2026-07-28T14:11:57 | train_stage3 | INFO | Using PRE-TOKENIZED corpus: /root/HyperloopBert/Codes/data/fineweb-edu/train_128.bin
+2026-07-28T14:20:12 | train_stage3 | INFO | Step 2000 | Tokens 125.2M | Val Loss: 6.3653 | PP: 581.32
+2026-07-28T14:20:14 | train_stage3 | INFO | Checkpoint written at optimizer step 2000.
+2026-07-28T14:28:29 | train_stage3 | INFO | Step 4000 | Tokens 250.3M | Val Loss: 6.0831 | PP: 438.37
+2026-07-28T14:28:30 | train_stage3 | INFO | Checkpoint written at optimizer step 4000.
+2026-07-28T14:36:44 | train_stage3 | INFO | Step 6000 | Tokens 375.5M | Val Loss: 5.9470 | PP: 382.62
+2026-07-28T14:36:45 | train_stage3 | INFO | Checkpoint written at optimizer step 6000.
+2026-07-28T14:45:00 | train_stage3 | INFO | Step 8000 | Tokens 500.8M | Val Loss: 3.6541 | PP: 38.63
+2026-07-28T14:45:00 | train_stage3 | INFO | Iso-loss band 5.0 crossed! (Prev: 5.9470, Curr: 3.6541)
+2026-07-28T14:45:00 | train_stage3 | INFO | Interpolated crossing step: 6826
+2026-07-28T14:45:00 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_5p00
+2026-07-28T14:45:00 | train_stage3 | INFO | Iso-loss band 4.0 crossed! (Prev: 5.9470, Curr: 3.6541)
+2026-07-28T14:45:00 | train_stage3 | INFO | Interpolated crossing step: 7698
+2026-07-28T14:45:00 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_4p00
+2026-07-28T14:45:02 | train_stage3 | INFO | Checkpoint written at optimizer step 8000.
+2026-07-28T14:53:17 | train_stage3 | INFO | Step 10000 | Tokens 626.0M | Val Loss: 2.9043 | PP: 18.25
+2026-07-28T14:53:17 | train_stage3 | INFO | Iso-loss band 3.4 crossed! (Prev: 3.6541, Curr: 2.9043)
+2026-07-28T14:53:17 | train_stage3 | INFO | Interpolated crossing step: 8677
+2026-07-28T14:53:17 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p40
+2026-07-28T14:53:18 | train_stage3 | INFO | Iso-loss band 3.0 crossed! (Prev: 3.6541, Curr: 2.9043)
+2026-07-28T14:53:18 | train_stage3 | INFO | Interpolated crossing step: 9744
+2026-07-28T14:53:18 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p00
+2026-07-28T14:53:19 | train_stage3 | INFO | Checkpoint written at optimizer step 10000.
+2026-07-28T15:01:34 | train_stage3 | INFO | Step 12000 | Tokens 751.2M | Val Loss: 2.6536 | PP: 14.21
+2026-07-28T15:01:34 | train_stage3 | INFO | Iso-loss band 2.7 crossed! (Prev: 2.9043, Curr: 2.6536)
+2026-07-28T15:01:34 | train_stage3 | INFO | Interpolated crossing step: 11629
+2026-07-28T15:01:34 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p70
+2026-07-28T15:01:36 | train_stage3 | INFO | Checkpoint written at optimizer step 12000.
+2026-07-28T15:09:50 | train_stage3 | INFO | Step 14000 | Tokens 876.3M | Val Loss: 2.5250 | PP: 12.49
+2026-07-28T15:09:52 | train_stage3 | INFO | Checkpoint written at optimizer step 14000.
+2026-07-28T15:11:56 | train_stage3 | INFO | Step 14500 | Tokens 907.5M | Val Loss: 6.8584 | PP: 951.81
+2026-07-28T15:18:07 | train_stage3 | INFO | Step 16000 | Tokens 1001.3M | Val Loss: nan | PP: inf
+2026-07-28T15:18:08 | train_stage3 | INFO | Checkpoint written at optimizer step 16000.
+2026-07-28T15:26:07 | train_stage3 | INFO | Step 18000 | Tokens 1126.5M | Val Loss: nan | PP: inf
+2026-07-28T15:26:08 | train_stage3 | INFO | Checkpoint written at optimizer step 18000.
+2026-07-28T15:34:08 | train_stage3 | INFO | Step 20000 | Tokens 1251.6M | Val Loss: nan | PP: inf
+2026-07-28T15:34:09 | train_stage3 | INFO | Checkpoint written at optimizer step 20000.
+2026-07-28T15:42:09 | train_stage3 | INFO | Step 22000 | Tokens 1376.8M | Val Loss: nan | PP: inf
+2026-07-28T15:42:10 | train_stage3 | INFO | Checkpoint written at optimizer step 22000.
+2026-07-28T15:50:09 | train_stage3 | INFO | Step 24000 | Tokens 1502.0M | Val Loss: nan | PP: inf
+2026-07-28T15:50:10 | train_stage3 | INFO | Checkpoint written at optimizer step 24000.
+2026-07-28T15:58:09 | train_stage3 | INFO | Step 26000 | Tokens 1627.2M | Val Loss: nan | PP: inf
+2026-07-28T15:58:11 | train_stage3 | INFO | Checkpoint written at optimizer step 26000.
+2026-07-28T16:06:10 | train_stage3 | INFO | Step 28000 | Tokens 1752.4M | Val Loss: nan | PP: inf
+2026-07-28T16:06:11 | train_stage3 | INFO | Checkpoint written at optimizer step 28000.
+2026-07-28T16:14:10 | train_stage3 | INFO | Step 30000 | Tokens 1877.6M | Val Loss: nan | PP: inf
+2026-07-28T16:14:11 | train_stage3 | INFO | Checkpoint written at optimizer step 30000.
+2026-07-28T16:22:12 | train_stage3 | INFO | Step 32000 | Tokens 2002.8M | Val Loss: nan | PP: inf
+2026-07-28T16:22:14 | train_stage3 | INFO | Checkpoint written at optimizer step 32000.
+2026-07-28T16:30:14 | train_stage3 | INFO | Step 34000 | Tokens 2128.0M | Val Loss: nan | PP: inf
+2026-07-28T16:30:15 | train_stage3 | INFO | Checkpoint written at optimizer step 34000.
+2026-07-28T16:38:15 | train_stage3 | INFO | Step 36000 | Tokens 2253.1M | Val Loss: nan | PP: inf
+2026-07-28T16:38:16 | train_stage3 | INFO | Checkpoint written at optimizer step 36000.
+2026-07-28T16:46:16 | train_stage3 | INFO | Step 38000 | Tokens 2378.4M | Val Loss: nan | PP: inf
+2026-07-28T16:46:18 | train_stage3 | INFO | Checkpoint written at optimizer step 38000.
+2026-07-28T16:54:18 | train_stage3 | INFO | Step 40000 | Tokens 2503.6M | Val Loss: nan | PP: inf
+2026-07-28T16:54:19 | train_stage3 | INFO | Checkpoint written at optimizer step 40000.
+2026-07-28T17:02:19 | train_stage3 | INFO | Step 42000 | Tokens 2628.8M | Val Loss: nan | PP: inf
+2026-07-28T17:02:20 | train_stage3 | INFO | Checkpoint written at optimizer step 42000.
+2026-07-28T17:10:20 | train_stage3 | INFO | Step 44000 | Tokens 2753.9M | Val Loss: nan | PP: inf
+2026-07-28T17:10:21 | train_stage3 | INFO | Checkpoint written at optimizer step 44000.
+2026-07-28T17:18:21 | train_stage3 | INFO | Step 46000 | Tokens 2878.9M | Val Loss: nan | PP: inf
+2026-07-28T17:18:22 | train_stage3 | INFO | Checkpoint written at optimizer step 46000.
+2026-07-28T17:26:22 | train_stage3 | INFO | Step 48000 | Tokens 3004.1M | Val Loss: nan | PP: inf
+2026-07-28T17:26:23 | train_stage3 | INFO | Checkpoint written at optimizer step 48000.
+2026-07-28T17:34:22 | train_stage3 | INFO | Step 50000 | Tokens 3129.2M | Val Loss: nan | PP: inf
+2026-07-28T17:34:23 | train_stage3 | INFO | Checkpoint written at optimizer step 50000.
+2026-07-28T17:42:23 | train_stage3 | INFO | Step 52000 | Tokens 3254.4M | Val Loss: nan | PP: inf
+2026-07-28T17:42:24 | train_stage3 | INFO | Checkpoint written at optimizer step 52000.
+2026-07-28T17:50:24 | train_stage3 | INFO | Step 54000 | Tokens 3379.6M | Val Loss: nan | PP: inf
+2026-07-28T17:50:25 | train_stage3 | INFO | Checkpoint written at optimizer step 54000.
+2026-07-28T17:58:25 | train_stage3 | INFO | Step 56000 | Tokens 3504.8M | Val Loss: nan | PP: inf
+2026-07-28T17:58:27 | train_stage3 | INFO | Checkpoint written at optimizer step 56000.
+2026-07-28T18:06:27 | train_stage3 | INFO | Step 58000 | Tokens 3629.9M | Val Loss: nan | PP: inf
+2026-07-28T18:06:29 | train_stage3 | INFO | Checkpoint written at optimizer step 58000.
+2026-07-28T18:14:29 | train_stage3 | INFO | Step 60000 | Tokens 3755.2M | Val Loss: nan | PP: inf
+2026-07-28T18:14:30 | train_stage3 | INFO | Checkpoint written at optimizer step 60000.
+2026-07-28T18:22:29 | train_stage3 | INFO | Step 62000 | Tokens 3880.4M | Val Loss: nan | PP: inf
+2026-07-28T18:22:31 | train_stage3 | INFO | Checkpoint written at optimizer step 62000.
+2026-07-28T18:30:32 | train_stage3 | INFO | Step 64000 | Tokens 4005.6M | Val Loss: nan | PP: inf
+2026-07-28T18:30:34 | train_stage3 | INFO | Checkpoint written at optimizer step 64000.
+2026-07-28T18:38:34 | train_stage3 | INFO | Step 66000 | Tokens 4130.7M | Val Loss: nan | PP: inf
+2026-07-28T18:38:35 | train_stage3 | INFO | Checkpoint written at optimizer step 66000.
+2026-07-28T18:46:35 | train_stage3 | INFO | Step 68000 | Tokens 4256.0M | Val Loss: nan | PP: inf
+2026-07-28T18:46:37 | train_stage3 | INFO | Checkpoint written at optimizer step 68000.
+2026-07-28T18:54:38 | train_stage3 | INFO | Step 70000 | Tokens 4381.2M | Val Loss: nan | PP: inf
+2026-07-28T18:54:39 | train_stage3 | INFO | Checkpoint written at optimizer step 70000.
+2026-07-28T19:02:40 | train_stage3 | INFO | Step 72000 | Tokens 4506.4M | Val Loss: nan | PP: inf
+2026-07-28T19:02:41 | train_stage3 | INFO | Checkpoint written at optimizer step 72000.
+2026-07-28T19:10:41 | train_stage3 | INFO | Step 74000 | Tokens 4631.5M | Val Loss: nan | PP: inf
+2026-07-28T19:10:42 | train_stage3 | INFO | Checkpoint written at optimizer step 74000.
+2026-07-28T19:18:43 | train_stage3 | INFO | Step 76000 | Tokens 4756.6M | Val Loss: nan | PP: inf
+2026-07-28T19:18:44 | train_stage3 | INFO | Checkpoint written at optimizer step 76000.
+2026-07-28T19:26:44 | train_stage3 | INFO | Step 78000 | Tokens 4881.7M | Val Loss: nan | PP: inf
+2026-07-28T19:26:46 | train_stage3 | INFO | Checkpoint written at optimizer step 78000.
+2026-07-28T19:34:46 | train_stage3 | INFO | Step 80000 | Tokens 5006.9M | Val Loss: nan | PP: inf
+2026-07-28T19:34:47 | train_stage3 | INFO | Checkpoint written at optimizer step 80000.
+2026-07-28T19:42:47 | train_stage3 | INFO | Step 82000 | Tokens 5132.0M | Val Loss: nan | PP: inf
+2026-07-28T19:42:49 | train_stage3 | INFO | Checkpoint written at optimizer step 82000.
+2026-07-28T19:50:48 | train_stage3 | INFO | Step 84000 | Tokens 5257.3M | Val Loss: nan | PP: inf
+2026-07-28T19:50:50 | train_stage3 | INFO | Checkpoint written at optimizer step 84000.
+2026-07-28T19:58:51 | train_stage3 | INFO | Step 86000 | Tokens 5382.4M | Val Loss: nan | PP: inf
+2026-07-28T19:58:53 | train_stage3 | INFO | Checkpoint written at optimizer step 86000.
+2026-07-28T20:06:52 | train_stage3 | INFO | Step 88000 | Tokens 5507.6M | Val Loss: nan | PP: inf
+2026-07-28T20:06:54 | train_stage3 | INFO | Checkpoint written at optimizer step 88000.
+2026-07-28T20:14:54 | train_stage3 | INFO | Step 90000 | Tokens 5632.8M | Val Loss: nan | PP: inf
+2026-07-28T20:14:55 | train_stage3 | INFO | Checkpoint written at optimizer step 90000.
+2026-07-28T20:22:56 | train_stage3 | INFO | Step 92000 | Tokens 5758.0M | Val Loss: nan | PP: inf
+2026-07-28T20:22:57 | train_stage3 | INFO | Checkpoint written at optimizer step 92000.
+2026-07-28T20:30:58 | train_stage3 | INFO | Step 94000 | Tokens 5883.2M | Val Loss: nan | PP: inf
+2026-07-28T20:30:59 | train_stage3 | INFO | Checkpoint written at optimizer step 94000.
+2026-07-28T20:38:59 | train_stage3 | INFO | Step 96000 | Tokens 6008.3M | Val Loss: nan | PP: inf
+2026-07-28T20:39:01 | train_stage3 | INFO | Checkpoint written at optimizer step 96000.
+2026-07-28T20:47:01 | train_stage3 | INFO | Step 98000 | Tokens 6133.6M | Val Loss: nan | PP: inf
+2026-07-28T20:47:02 | train_stage3 | INFO | Checkpoint written at optimizer step 98000.
+2026-07-28T20:55:04 | train_stage3 | INFO | Step 100000 | Tokens 6258.7M | Val Loss: nan | PP: inf
+2026-07-28T20:55:06 | train_stage3 | INFO | Checkpoint written at optimizer step 100000.
+2026-07-28T21:03:07 | train_stage3 | INFO | Step 102000 | Tokens 6384.0M | Val Loss: nan | PP: inf
+2026-07-28T21:03:08 | train_stage3 | INFO | Checkpoint written at optimizer step 102000.
+2026-07-28T21:11:10 | train_stage3 | INFO | Step 104000 | Tokens 6509.1M | Val Loss: nan | PP: inf
+2026-07-28T21:11:11 | train_stage3 | INFO | Checkpoint written at optimizer step 104000.
+2026-07-28T21:19:12 | train_stage3 | INFO | Step 106000 | Tokens 6634.2M | Val Loss: nan | PP: inf
+2026-07-28T21:19:13 | train_stage3 | INFO | Checkpoint written at optimizer step 106000.
+2026-07-28T21:27:15 | train_stage3 | INFO | Step 108000 | Tokens 6759.3M | Val Loss: nan | PP: inf
+2026-07-28T21:27:16 | train_stage3 | INFO | Checkpoint written at optimizer step 108000.
+2026-07-28T21:35:17 | train_stage3 | INFO | Step 110000 | Tokens 6884.5M | Val Loss: nan | PP: inf
+2026-07-28T21:35:19 | train_stage3 | INFO | Checkpoint written at optimizer step 110000.
+2026-07-28T21:42:44 | train_stage3 | INFO | Finished HyperloopBERT_base_seed42_streams4: 7000.0M tokens, bands crossed: [5.0, 4.0, 3.4, 3.0, 2.7]
+=== [2026-07-28T21:42:46Z] 2/6 BIAS EVAL (Multi-CrowS-Pairs, FP32 PLL, all iso-band snapshots) ===
+2026-07-28T21:42:50 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_5p00
+Traceback (most recent call last):
+  File "/root/HyperloopBert/Codes/Stage3/eval_bias_stage3.py", line 176, in <module>
+    main()
+  File "/root/HyperloopBert/Codes/Stage3/eval_bias_stage3.py", line 164, in main
+    res_df = process_dataset(df, ds_name, model, tokenizer, device, meta,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/HyperloopBert/Codes/Stage2/eval_bias_stage2.py", line 100, in process_dataset
+    append_df.to_csv(out_progress_path, mode=mode, header=header, index=False)
+  File "/opt/conda/lib/python3.11/site-packages/pandas/util/_decorators.py", line 333, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/pandas/core/generic.py", line 3967, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/pandas/io/formats/format.py", line 1014, in to_csv
+    csv_formatter.save()
+  File "/opt/conda/lib/python3.11/site-packages/pandas/io/formats/csvs.py", line 251, in save
+    with get_handle(
+         ^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/pandas/io/common.py", line 749, in get_handle
+    check_parent_directory(str(handle))
+  File "/opt/conda/lib/python3.11/site-packages/pandas/io/common.py", line 616, in check_parent_directory
+    raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+OSError: Cannot save file into a non-existent directory: '/root/HyperloopBert/Codes/results/stage3/bias'
+FAILED at: eval_bias
+=== [2026-07-28T21:49:42Z] RESUMED after host outage -- continuing from last checkpoint ===
+=== [2026-07-28T21:49:42Z] 1/6 TRAIN (resume) -- Vanilla+Looped done; ALBERT resumes mid-run, then Hyperloop ===
+2026-07-28T21:49:55 | train_stage3 | INFO | Data integrity check PASSED (tokenizer MD5 + corpus row counts match manifest).
+2026-07-28T21:49:55 | train_stage3 | INFO | Loading validation set (fixed masking, seq=128)...
+2026-07-28T21:50:18 | train_stage3 | INFO | Fixed masked validation set: 5000 sequences, 93960 masked target tokens (mask seed 1234).
+2026-07-28T21:50:18 | train_stage3 | INFO | Using device: cuda
+2026-07-28T21:50:18 | train_stage3 | INFO | Skipping VanillaBERT_base_seed42 - already complete.
+2026-07-28T21:50:18 | train_stage3 | INFO | Skipping LoopedBERT_base_seed42 - already complete.
+2026-07-28T21:50:18 | train_stage3 | INFO | Skipping ALBERTLoopedBERT_base_seed42 - already complete.
+2026-07-28T21:50:18 | train_stage3 | INFO | --- Starting training for HyperloopBERT_base_seed42_streams4 ---
+2026-07-28T21:50:24 | train_stage3 | INFO | Model specs: {'Unique_Parameters': 86471227, 'Total_Parameters': 86471227, 'Effective_Depth': 12, 'Hidden_Size': 768, 'Shared_Ratio': 0.5}
+2026-07-28T21:50:25 | train_stage3 | INFO | Active attention path: flash
+2026-07-28T21:50:25 | train_stage3 | INFO | Peak LR override for HyperloopBERT: 0.00015 (default 0.0003)
+2026-07-28T21:50:26 | train_stage3 | INFO | Using PRE-TOKENIZED corpus: /root/HyperloopBert/Codes/data/fineweb-edu/train_128.bin
+2026-07-28T21:58:42 | train_stage3 | INFO | Step 2000 | Tokens 125.2M | Val Loss: 6.5388 | PP: 691.43
+2026-07-28T21:58:44 | train_stage3 | INFO | Checkpoint written at optimizer step 2000.
+2026-07-28T22:06:59 | train_stage3 | INFO | Step 4000 | Tokens 250.3M | Val Loss: 6.1791 | PP: 482.54
+2026-07-28T22:07:01 | train_stage3 | INFO | Checkpoint written at optimizer step 4000.
+2026-07-28T22:15:17 | train_stage3 | INFO | Step 6000 | Tokens 375.5M | Val Loss: 6.0349 | PP: 417.76
+2026-07-28T22:15:18 | train_stage3 | INFO | Checkpoint written at optimizer step 6000.
+2026-07-28T22:23:34 | train_stage3 | INFO | Step 8000 | Tokens 500.8M | Val Loss: 5.9313 | PP: 376.65
+2026-07-28T22:23:36 | train_stage3 | INFO | Checkpoint written at optimizer step 8000.
+2026-07-28T22:31:51 | train_stage3 | INFO | Step 10000 | Tokens 626.0M | Val Loss: 4.0370 | PP: 56.66
+2026-07-28T22:31:51 | train_stage3 | INFO | Iso-loss band 5.0 crossed! (Prev: 5.9313, Curr: 4.0370)
+2026-07-28T22:31:51 | train_stage3 | INFO | Interpolated crossing step: 8983
+2026-07-28T22:31:51 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_5p00
+2026-07-28T22:31:53 | train_stage3 | INFO | Checkpoint written at optimizer step 10000.
+2026-07-28T22:33:58 | train_stage3 | INFO | Step 10500 | Tokens 657.3M | Val Loss: 3.7005 | PP: 40.47
+2026-07-28T22:33:58 | train_stage3 | INFO | Iso-loss band 4.0 crossed! (Prev: 4.0370, Curr: 3.7005)
+2026-07-28T22:33:58 | train_stage3 | INFO | Interpolated crossing step: 10054
+2026-07-28T22:33:58 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_4p00
+2026-07-28T22:40:10 | train_stage3 | INFO | Step 12000 | Tokens 751.2M | Val Loss: 3.1085 | PP: 22.39
+2026-07-28T22:40:10 | train_stage3 | INFO | Iso-loss band 3.4 crossed! (Prev: 3.7005, Curr: 3.1085)
+2026-07-28T22:40:10 | train_stage3 | INFO | Interpolated crossing step: 11261
+2026-07-28T22:40:10 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p40
+2026-07-28T22:40:12 | train_stage3 | INFO | Checkpoint written at optimizer step 12000.
+2026-07-28T22:42:17 | train_stage3 | INFO | Step 12500 | Tokens 782.4M | Val Loss: 2.9707 | PP: 19.51
+2026-07-28T22:42:17 | train_stage3 | INFO | Iso-loss band 3.0 crossed! (Prev: 3.1085, Curr: 2.9707)
+2026-07-28T22:42:17 | train_stage3 | INFO | Interpolated crossing step: 12393
+2026-07-28T22:42:17 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p00
+2026-07-28T22:48:30 | train_stage3 | INFO | Step 14000 | Tokens 876.3M | Val Loss: 2.7268 | PP: 15.28
+2026-07-28T22:48:32 | train_stage3 | INFO | Checkpoint written at optimizer step 14000.
+2026-07-28T22:50:36 | train_stage3 | INFO | Step 14500 | Tokens 907.5M | Val Loss: 2.6588 | PP: 14.28
+2026-07-28T22:50:36 | train_stage3 | INFO | Iso-loss band 2.7 crossed! (Prev: 2.7268, Curr: 2.6588)
+2026-07-28T22:50:36 | train_stage3 | INFO | Interpolated crossing step: 14197
+2026-07-28T22:50:36 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p70
+2026-07-28T22:56:49 | train_stage3 | INFO | Step 16000 | Tokens 1001.3M | Val Loss: 2.5266 | PP: 12.51
+2026-07-28T22:56:51 | train_stage3 | INFO | Checkpoint written at optimizer step 16000.
+2026-07-28T22:58:56 | train_stage3 | INFO | Step 16500 | Tokens 1032.6M | Val Loss: 2.4956 | PP: 12.13
+2026-07-28T23:01:00 | train_stage3 | INFO | Step 17000 | Tokens 1063.9M | Val Loss: 2.4584 | PP: 11.69
+2026-07-28T23:03:05 | train_stage3 | INFO | Step 17500 | Tokens 1095.2M | Val Loss: 2.4249 | PP: 11.30
+2026-07-28T23:05:10 | train_stage3 | INFO | Step 18000 | Tokens 1126.5M | Val Loss: 2.4021 | PP: 11.05
+2026-07-28T23:05:12 | train_stage3 | INFO | Checkpoint written at optimizer step 18000.
+2026-07-28T23:07:17 | train_stage3 | INFO | Step 18500 | Tokens 1157.8M | Val Loss: 2.3833 | PP: 10.84
+2026-07-28T23:07:17 | train_stage3 | INFO | Iso-loss band 2.4 crossed! (Prev: 2.4021, Curr: 2.3833)
+2026-07-28T23:07:17 | train_stage3 | INFO | Interpolated crossing step: 18054
+2026-07-28T23:07:17 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p40
+2026-07-28T23:13:29 | train_stage3 | INFO | Step 20000 | Tokens 1251.6M | Val Loss: 2.3223 | PP: 10.20
+2026-07-28T23:13:31 | train_stage3 | INFO | Checkpoint written at optimizer step 20000.
+2026-07-28T23:15:36 | train_stage3 | INFO | Step 20500 | Tokens 1283.0M | Val Loss: 2.3008 | PP: 9.98
+2026-07-28T23:17:41 | train_stage3 | INFO | Step 21000 | Tokens 1314.2M | Val Loss: 2.2762 | PP: 9.74
+2026-07-28T23:19:46 | train_stage3 | INFO | Step 21500 | Tokens 1345.5M | Val Loss: 2.2712 | PP: 9.69
+2026-07-28T23:21:51 | train_stage3 | INFO | Step 22000 | Tokens 1376.8M | Val Loss: 2.2499 | PP: 9.49
+2026-07-28T23:21:52 | train_stage3 | INFO | Checkpoint written at optimizer step 22000.
+2026-07-28T23:23:57 | train_stage3 | INFO | Step 22500 | Tokens 1408.2M | Val Loss: 2.2344 | PP: 9.34
+2026-07-28T23:26:02 | train_stage3 | INFO | Step 23000 | Tokens 1439.5M | Val Loss: 2.2328 | PP: 9.33
+2026-07-28T23:28:07 | train_stage3 | INFO | Step 23500 | Tokens 1470.8M | Val Loss: 2.2076 | PP: 9.09
+2026-07-28T23:30:11 | train_stage3 | INFO | Step 24000 | Tokens 1502.0M | Val Loss: 2.2050 | PP: 9.07
+2026-07-28T23:30:13 | train_stage3 | INFO | Checkpoint written at optimizer step 24000.
+2026-07-28T23:32:18 | train_stage3 | INFO | Step 24500 | Tokens 1533.4M | Val Loss: 2.1963 | PP: 8.99
+2026-07-28T23:32:18 | train_stage3 | INFO | Iso-loss band 2.2 crossed! (Prev: 2.2050, Curr: 2.1963)
+2026-07-28T23:32:18 | train_stage3 | INFO | Interpolated crossing step: 24287
+2026-07-28T23:32:18 | train_stage3 | INFO | Saving snapshot to: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p20
+2026-07-28T23:38:30 | train_stage3 | INFO | Step 26000 | Tokens 1627.2M | Val Loss: 2.1561 | PP: 8.64
+2026-07-28T23:38:32 | train_stage3 | INFO | Checkpoint written at optimizer step 26000.
+2026-07-28T23:46:48 | train_stage3 | INFO | Step 28000 | Tokens 1752.4M | Val Loss: 2.1347 | PP: 8.45
+2026-07-28T23:46:49 | train_stage3 | INFO | Checkpoint written at optimizer step 28000.
+2026-07-28T23:55:05 | train_stage3 | INFO | Step 30000 | Tokens 1877.6M | Val Loss: 2.1216 | PP: 8.34
+2026-07-28T23:55:06 | train_stage3 | INFO | Checkpoint written at optimizer step 30000.
+2026-07-29T00:03:24 | train_stage3 | INFO | Step 32000 | Tokens 2002.8M | Val Loss: 3.4848 | PP: 32.62
+2026-07-29T00:03:25 | train_stage3 | INFO | Checkpoint written at optimizer step 32000.
+2026-07-29T00:08:10 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33153 (total skipped 1, consecutive 1) -- update SKIPPED
+2026-07-29T00:08:11 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33154 (total skipped 2, consecutive 1) -- update SKIPPED
+2026-07-29T00:08:11 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33154 (total skipped 3, consecutive 2) -- update SKIPPED
+2026-07-29T00:08:11 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33154 (total skipped 4, consecutive 3) -- update SKIPPED
+2026-07-29T00:08:12 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33155 (total skipped 9, consecutive 1) -- update SKIPPED
+2026-07-29T00:08:13 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33155 (total skipped 10, consecutive 2) -- update SKIPPED
+2026-07-29T00:08:13 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33155 (total skipped 11, consecutive 3) -- update SKIPPED
+2026-07-29T00:08:21 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33156 (total skipped 41, consecutive 1) -- update SKIPPED
+2026-07-29T00:08:21 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33156 (total skipped 42, consecutive 2) -- update SKIPPED
+2026-07-29T00:08:21 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33156 (total skipped 43, consecutive 3) -- update SKIPPED
+2026-07-29T00:08:25 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33157 (total skipped 58, consecutive 1) -- update SKIPPED
+2026-07-29T00:08:25 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33157 (total skipped 59, consecutive 2) -- update SKIPPED
+2026-07-29T00:08:25 | train_stage3 | WARNING | NON-FINITE grad norm at optimizer step ~33157 (total skipped 60, consecutive 3) -- update SKIPPED
+2026-07-29T00:08:37 | train_stage3 | ERROR | ABORTING HyperloopBERT_base_seed42_streams4: 50 consecutive non-finite gradient norms -- weights are unrecoverable. Lower LEARNING_RATE_OVERRIDES['HyperloopBERT'] and rerun.
+Traceback (most recent call last):
+  File "/root/HyperloopBert/Codes/Stage3/train_stage3.py", line 232, in <module>
+    main()
+  File "/root/HyperloopBert/Codes/Stage3/train_stage3.py", line 181, in main
+    run_mlm_training(
+  File "/root/HyperloopBert/Codes/common/train_loop.py", line 615, in run_mlm_training
+    raise RuntimeError(
+RuntimeError: training diverged (non-finite gradients) in HyperloopBERT_base_seed42_streams4
+FAILED at: training
+=== [2026-07-29T00:50:50Z] RESUMED after host outage -- continuing from last checkpoint ===
+=== [2026-07-29T00:50:50Z] 2/6 BIAS EVAL (Multi-CrowS-Pairs, FP32 PLL, all iso-band snapshots) ===
+2026-07-29T00:51:07 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_5p00
+2026-07-29T00:54:17 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T00:54:38 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_4p00
+2026-07-29T00:57:48 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T00:58:07 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p40
+2026-07-29T01:01:26 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:01:44 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_3p00
+2026-07-29T01:04:37 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:04:44 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p70
+2026-07-29T01:05:52 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:05:59 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p40
+2026-07-29T01:07:05 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:07:12 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed42/band_2p20
+2026-07-29T01:08:19 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:08:25 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_5p00
+2026-07-29T01:09:33 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:09:40 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_4p00
+2026-07-29T01:10:48 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:10:54 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p40
+2026-07-29T01:12:02 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:12:09 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_3p00
+2026-07-29T01:13:17 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:13:24 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p70
+2026-07-29T01:14:31 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:14:38 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p40
+2026-07-29T01:15:45 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:15:52 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed42/band_2p20
+2026-07-29T01:16:59 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:17:05 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_5p00
+2026-07-29T01:18:18 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:18:25 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_4p00
+2026-07-29T01:19:38 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:19:45 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p40
+2026-07-29T01:20:58 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:21:05 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_3p00
+2026-07-29T01:22:17 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:22:24 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p70
+2026-07-29T01:23:36 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:23:43 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p40
+2026-07-29T01:24:55 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:25:02 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/ALBERTLoopedBERT_base_seed42/band_2p20
+2026-07-29T01:26:14 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:26:21 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_5p00
+2026-07-29T01:27:40 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:27:47 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_4p00
+2026-07-29T01:29:06 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:29:14 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p40
+2026-07-29T01:30:32 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:30:40 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_3p00
+2026-07-29T01:32:02 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:32:10 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p70
+2026-07-29T01:33:29 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:33:36 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p40
+2026-07-29T01:34:56 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:35:04 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/iso_band_models/HyperloopBERT_base_seed42_streams4/band_2p20
+2026-07-29T01:36:25 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:36:33 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/VanillaBERT_base_seed42/tokens_2000000000
+2026-07-29T01:37:35 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:37:42 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/VanillaBERT_base_seed42/tokens_4000000000
+2026-07-29T01:38:48 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:38:54 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/VanillaBERT_base_seed42/tokens_7000000000
+2026-07-29T01:40:01 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:40:08 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/LoopedBERT_base_seed42/tokens_2000000000
+2026-07-29T01:41:18 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:41:24 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/LoopedBERT_base_seed42/tokens_4000000000
+2026-07-29T01:42:31 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:42:37 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/LoopedBERT_base_seed42/tokens_7000000000
+2026-07-29T01:43:44 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:43:50 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/ALBERTLoopedBERT_base_seed42/tokens_2000000000
+2026-07-29T01:45:01 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:45:08 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/ALBERTLoopedBERT_base_seed42/tokens_4000000000
+2026-07-29T01:46:19 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+2026-07-29T01:46:26 | eval_bias_stage3 | INFO | Evaluating model: /root/HyperloopBert/Codes/models/stage3/token_marker_models/ALBERTLoopedBERT_base_seed42/tokens_7000000000
+2026-07-29T01:47:39 | eval_bias_stage2 | INFO | Scoring WinoBias (masked-pronoun protocol)...
+=== [2026-07-29T01:47:47Z] 3/6 GLUE (capability evidence) ===
+Traceback (most recent call last):
+  File "/root/HyperloopBert/Codes/Stage3/eval_glue_stage3.py", line 108, in <module>
+    main()
+  File "/root/HyperloopBert/Codes/Stage3/eval_glue_stage3.py", line 72, in main
+    temp_model = build_model(meta['Architecture'], meta['Model_Size'], num_streams=num_streams)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/HyperloopBert/Codes/common/architectures.py", line 1410, in build_model
+    return cls(size=size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: VanillaBERT.__init__() got an unexpected keyword argument 'num_streams'
+GLUE non-fatal failure (continuing)
+=== [2026-07-29T01:47:53Z] 4/6 MECHANISTIC SUITE (stream disagreement, CKA, early-merge, drift, hyper-connection stability) ===
+2026-07-29T01:47:58 | stream_analysis_stage3 | INFO | Mechanistic suite on LoopedBERT seed 42 (band 2.2)...
+2026-07-29T01:48:03 | stream_analysis_stage3 | INFO | Computing loop-wise CKA...
+2026-07-29T01:48:05 | stream_analysis_stage3 | INFO | CKA: wrote 15 depth-pair rows.
+2026-07-29T01:48:05 | stream_analysis_stage3 | INFO | Analyzing demographic token drift...
+2026-07-29T01:48:07 | stream_analysis_stage3 | INFO | Token drift: wrote 125 rows.
+2026-07-29T01:48:07 | stream_analysis_stage3 | INFO | Mechanistic suite on HyperloopBERT seed 42 (band 2.2)...
+2026-07-29T01:48:18 | stream_analysis_stage3 | INFO | Computing hyper-connection matrix statistics...
+2026-07-29T02:06:52 | stream_analysis_stage3 | INFO | Hyper-connection stats: 32 rows; max spectral norm 4.445 (report vs the MHC instability criterion in the paper).
+2026-07-29T02:06:52 | stream_analysis_stage3 | INFO | Analyzing stream disagreement (per loop)...
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Loop 0: disagreement=0.0000, signed r=0.036 (p=0.7219) [CORRELATIONAL]
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Loop 1: disagreement=0.0602, signed r=-0.110 (p=0.2763) [CORRELATIONAL]
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Loop 2: disagreement=0.1938, signed r=-0.159 (p=0.1152) [CORRELATIONAL]
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Loop 3: disagreement=0.3874, signed r=-0.092 (p=0.3646) [CORRELATIONAL]
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Loop 4: disagreement=0.4000, signed r=0.071 (p=0.4837) [CORRELATIONAL]
+2026-07-29T02:06:57 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=1 (OOD, eval-time)...
+2026-07-29T02:07:08 | stream_analysis_stage3 | INFO | merge_at=1: preference=0.4200 (n=100) [OOD INTERVENTION]
+2026-07-29T02:07:08 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=2 (OOD, eval-time)...
+2026-07-29T02:07:24 | stream_analysis_stage3 | INFO | merge_at=2: preference=0.4400 (n=100) [OOD INTERVENTION]
+2026-07-29T02:07:24 | stream_analysis_stage3 | INFO | Early-merge intervention: merge_at=3 (OOD, eval-time)...
+2026-07-29T02:07:34 | stream_analysis_stage3 | INFO | merge_at=3: preference=0.4800 (n=100) [OOD INTERVENTION]
+2026-07-29T02:07:34 | stream_analysis_stage3 | INFO | Computing loop-wise CKA...
+2026-07-29T02:07:35 | stream_analysis_stage3 | INFO | CKA: wrote 15 depth-pair rows.
+2026-07-29T02:07:35 | stream_analysis_stage3 | INFO | Analyzing demographic token drift...
+2026-07-29T02:07:37 | stream_analysis_stage3 | INFO | Token drift: wrote 125 rows.
+2026-07-29T02:07:42 | loop_trajectory_stage2 | INFO | Loop trajectory running against STAGE 3 models/results.
+2026-07-29T02:07:43 | loop_trajectory_stage2 | INFO | Trajectory primary band (base): 2.2
+2026-07-29T02:07:51 | loop_trajectory_stage2 | INFO | Running trajectory analysis for VanillaBERT base Seed 42
+2026-07-29T02:08:01 | loop_trajectory_stage2 | INFO | Running trajectory analysis for LoopedBERT base Seed 42
+2026-07-29T02:08:08 | loop_trajectory_stage2 | INFO | Running trajectory analysis for ALBERTLoopedBERT base Seed 42
+2026-07-29T02:08:26 | loop_trajectory_stage2 | INFO | Running trajectory analysis for HyperloopBERT base Seed 42
+=== [2026-07-29T02:08:33Z] 5/6 QUALITATIVE MLM OUTPUT (reviewer-facing predictions) ===
+2026-07-29T02:08:37 | qualitative_stage3 | INFO | Common primary band for qualitative comparison: 2.2
+2026-07-29T02:08:45 | qualitative_stage3 | INFO | Qualitative output written for VanillaBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:08:50 | qualitative_stage3 | INFO | Qualitative output written for LoopedBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:08:52 | qualitative_stage3 | INFO | Qualitative output written for ALBERTLoopedBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:09:01 | qualitative_stage3 | INFO | Qualitative output written for HyperloopBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:09:01 | qualitative_stage3 | INFO | Qualitative dump complete over 4 snapshots -> /root/HyperloopBert/Codes/results/stage3/qualitative/examples.md
+=== [2026-07-29T02:09:02Z] 6/6 ANALYSIS -- confirmatory family + GO/NO-GO ===
+2026-07-29T02:09:03 | analyze_stage3 | INFO | Primary band for size base: 2.2
+2026-07-29T02:09:04 | analyze_stage3 | INFO | Stage 3 decision inputs: [primary_holds=True, hyperloop_better=False, not_worse=True, dose_response=False, monotone(n)=None (rates n1/n2/n4=None/None/0.5570291777188329), n1~Looped=None (looped=0.5537135278514589), signed_r=-0.05063507699135091]
+2026-07-29T02:09:04 | analyze_stage3 | INFO | === STAGE 3 VERDICT: PUBLISH-NULL (Looped ~= Hyperloop within tolerance; null Hyperloop result, publishable per pre-registration) [primary_holds=True, hyperloop_better=False, not_worse=True, dose_response=False, monotone(n)=None (rates n1/n2/n4=None/None/0.5570291777188329), n1~Looped=None (looped=0.5537135278514589), signed_r=-0.05063507699135091] ===
+2026-07-29T02:09:04 | analyze_stage3 | INFO | Paper outline written to /root/HyperloopBert/Codes/results/stage3/stage3_paper_outline.md
+2026-07-29T02:09:06 | analyze_stage3 | INFO | Stage 3 Analysis complete.
+=== [2026-07-29T02:09:06Z] MAIN RUN COMPLETE ===
+=== [2026-07-29T02:11:06Z] RESUMED after host outage -- continuing from last checkpoint ===
+=== [2026-07-29T02:11:06Z] 3/6 GLUE (capability evidence) ===
+2026-07-29T02:11:14 | eval_glue_stage2 | INFO | Fine-tuning VanillaBERT on GLUE/sst2...
+Map:   0%|          | 0/67349 [00:00<?, ? examples/s]Map:   1%|▏         | 1000/67349 [00:00<00:07, 8554.25 examples/s]Map:   4%|▍         | 3000/67349 [00:00<00:05, 10922.34 examples/s]Map:   7%|▋         | 5000/67349 [00:00<00:05, 11788.63 examples/s]Map:  10%|█         | 7000/67349 [00:00<00:04, 12340.51 examples/s]Map:  13%|█▎        | 9000/67349 [00:00<00:04, 12474.83 examples/s]Map:  16%|█▋        | 11000/67349 [00:01<00:06, 9001.88 examples/s]Map:  19%|█▉        | 13000/67349 [00:01<00:05, 9862.38 examples/s]Map:  22%|██▏       | 15000/67349 [00:01<00:05, 10297.47 examples/s]Map:  25%|██▌       | 17000/67349 [00:01<00:04, 10810.39 examples/s]Map:  28%|██▊       | 19000/67349 [00:01<00:04, 11269.27 examples/s]Map:  31%|███       | 21000/67349 [00:01<00:03, 11648.64 examples/s]Map:  34%|███▍      | 23000/67349 [00:02<00:03, 11874.14 examples/s]Map:  37%|███▋      | 25000/67349 [00:02<00:03, 12047.55 examples/s]Map:  40%|████      | 27000/67349 [00:02<00:04, 9362.39 examples/s] Map:  43%|████▎     | 29000/67349 [00:02<00:03, 10054.79 examples/s]Map:  46%|████▌     | 31000/67349 [00:02<00:03, 10636.37 examples/s]Map:  49%|████▉     | 33000/67349 [00:03<00:03, 11074.44 examples/s]Map:  52%|█████▏    | 35000/67349 [00:03<00:02, 11319.70 examples/s]Map:  55%|█████▍    | 37000/67349 [00:03<00:02, 11564.42 examples/s]Map:  58%|█████▊    | 39000/67349 [00:03<00:02, 11709.75 examples/s]Map:  61%|██████    | 41000/67349 [00:03<00:02, 11859.63 examples/s]Map:  64%|██████▍   | 43000/67349 [00:03<00:01, 12180.66 examples/s]Map:  67%|██████▋   | 45000/67349 [00:04<00:01, 12234.06 examples/s]Map:  70%|██████▉   | 47000/67349 [00:04<00:01, 10200.60 examples/s]Map:  73%|███████▎  | 49000/67349 [00:04<00:01, 10682.95 examples/s]Map:  76%|███████▌  | 51000/67349 [00:04<00:01, 11094.42 examples/s]Map:  79%|███████▊  | 53000/67349 [00:04<00:01, 11466.19 examples/s]Map:  82%|████████▏ | 55000/67349 [00:04<00:01, 11738.90 examples/s]Map:  85%|████████▍ | 57000/67349 [00:05<00:00, 11891.11 examples/s]Map:  88%|████████▊ | 59000/67349 [00:05<00:00, 11906.45 examples/s]Map:  91%|█████████ | 61000/67349 [00:05<00:00, 11975.67 examples/s]Map:  94%|█████████▎| 63000/67349 [00:05<00:00, 12048.96 examples/s]Map:  97%|█████████▋| 65000/67349 [00:05<00:00, 10195.33 examples/s]Map:  99%|█████████▉| 67000/67349 [00:06<00:00, 10773.12 examples/s]Map: 100%|██████████| 67349/67349 [00:06<00:00, 11092.67 examples/s]
+Map:   0%|          | 0/872 [00:00<?, ? examples/s]Map: 100%|██████████| 872/872 [00:00<00:00, 11357.01 examples/s]
+Map:   0%|          | 0/1821 [00:00<?, ? examples/s]Map: 100%|██████████| 1821/1821 [00:00<00:00, 11567.52 examples/s]Map: 100%|██████████| 1821/1821 [00:00<00:00, 11320.01 examples/s]
+Traceback (most recent call last):
+  File "/root/HyperloopBert/Codes/Stage3/eval_glue_stage3.py", line 118, in <module>
+    main()
+  File "/root/HyperloopBert/Codes/Stage3/eval_glue_stage3.py", line 89, in main
+    metrics = train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/HyperloopBert/Codes/Stage2/eval_glue_stage2.py", line 124, in train_and_eval_glue
+    logits = model(input_ids, attention_mask)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/HyperloopBert/Codes/Stage2/eval_glue_stage2.py", line 36, in forward
+    hidden_states = outputs.get('last_hidden_state', outputs[0])
+                                                     ~~~~~~~^^^
+KeyError: 0
+GLUE non-fatal failure (continuing)
+=== [2026-07-29T02:11:35Z] 5/6 QUALITATIVE MLM OUTPUT (reviewer-facing predictions) ===
+2026-07-29T02:11:40 | qualitative_stage3 | INFO | Common primary band for qualitative comparison: 2.2
+2026-07-29T02:11:47 | qualitative_stage3 | INFO | Qualitative output written for VanillaBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:11:51 | qualitative_stage3 | INFO | Qualitative output written for LoopedBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:11:54 | qualitative_stage3 | INFO | Qualitative output written for ALBERTLoopedBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:12:04 | qualitative_stage3 | INFO | Qualitative output written for HyperloopBERT / base / seed 42 / band 2.2 (60 top-k rows, 4 contrast rows).
+2026-07-29T02:12:04 | qualitative_stage3 | INFO | Qualitative dump complete over 4 snapshots -> /root/HyperloopBert/Codes/results/stage3/qualitative/examples.md
+=== [2026-07-29T02:12:05Z] 6/6 ANALYSIS -- confirmatory family + GO/NO-GO ===
+2026-07-29T02:12:06 | analyze_stage3 | INFO | Primary band for size base: 2.2
+2026-07-29T02:12:08 | analyze_stage3 | INFO | Stage 3 decision inputs: [primary_holds=True, hyperloop_better=False, not_worse=True, dose_response=False, monotone(n)=None (rates n1/n2/n4=None/None/0.5570291777188329), n1~Looped=None (looped=0.5537135278514589), signed_r=-0.05063507699135091]
+2026-07-29T02:12:08 | analyze_stage3 | INFO | === STAGE 3 VERDICT: PUBLISH-NULL (Looped ~= Hyperloop within tolerance; null Hyperloop result, publishable per pre-registration) [primary_holds=True, hyperloop_better=False, not_worse=True, dose_response=False, monotone(n)=None (rates n1/n2/n4=None/None/0.5570291777188329), n1~Looped=None (looped=0.5537135278514589), signed_r=-0.05063507699135091] ===
+2026-07-29T02:12:08 | analyze_stage3 | INFO | Paper outline written to /root/HyperloopBert/Codes/results/stage3/stage3_paper_outline.md
+2026-07-29T02:12:09 | analyze_stage3 | INFO | Stage 3 Analysis complete.
+=== [2026-07-29T02:12:10Z] MAIN RUN COMPLETE ===
