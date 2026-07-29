@@ -1,8 +1,11 @@
 # HyperloopBERT — Findings, Evidence, and Honest Assessment
 
-**Status:** LIVE DOCUMENT — updated during the experiment, finalised on completion.
-**Last updated:** 2026-07-28 08:15 UTC / 13:45 IST
-(VanillaBERT ✅ · LoopedBERT ✅ · ALBERTLoopedBERT training · HyperloopBERT queued)
+**Status:** FINAL — experiment complete, VM destroyed, artifacts archived.
+**Last updated:** 2026-07-29 04:30 UTC / 10:00 IST
+(VanillaBERT ✅ · LoopedBERT ✅ · ALBERTLoopedBERT ✅ · HyperloopBERT ⚠️ bands salvaged)
+
+**Final verdict: PUBLISH-NULL.** See §10 for the confirmatory family, the caveats,
+and the mechanism check.
 
 This document records what was actually found, with the data behind each claim, and an
 honest accounting of strengths and weaknesses. It is written so a reviewer (or future-you)
@@ -14,11 +17,12 @@ can distinguish **what is established**, **what is provisional**, and **what is 
 
 | | |
 |---|---|
-| **Strongest result so far** | A measurement-validity finding (§3) that holds regardless of whether SCH is true |
-| **Core hypothesis (SCH)** | Not yet testable — pending completion of all four architectures |
-| **Biggest risk resolved** | Models now reach **PP 4.39** (bert-base class). The pilot's models sat at PP 868 and could measure nothing. |
-| **Biggest risk remaining** | Architectures are tracking so closely in quality that the bias contrast may be null (§6.2) |
-| **Bugs found and fixed** | **16**, six of which would have produced no data or silently wrong data (§2) |
+| **Core hypothesis (SCH)** | **Supported directionally.** Both shared arms below the unshared baseline at matched loss, both survive Holm correction (§10.1) |
+| **The novel architecture** | **Null.** HyperloopBERT ≈ LoopedBERT (Δ = 0.0005, p = 0.47), and it diverged twice (§5.4) |
+| **Strongest transferable result** | The measurement-validity finding (§3), which holds regardless of whether SCH is true |
+| **Biggest caveat** | **The capability gate FAILS** — WinoBias is at chance for all four arms, so the result is about PLL association, not downstream behaviour (§10.3) |
+| **Bugs found and fixed** | **22**, of which #19 (no NaN guard) cost 8 h of GPU silently (§10.5) |
+| **Cost discipline** | VM destroyed, zero instances, $23.35 retained; all artifacts on HF + GitHub before teardown |
 
 ---
 
@@ -285,28 +289,65 @@ shared model is *not* meaningfully capacity-starved at this budget — which wea
 mechanism SCH proposes, and is a reason my estimate of a significant bias effect stays
 modest (§6.3).
 
-### 5.3 ALBERTLoopedBERT (architecture 3 of 4) — IN PROGRESS
+### 5.3 ALBERTLoopedBERT (architecture 3 of 4) — COMPLETE
 
-Started 07:44 UTC / 13:14 IST. Early trajectory is visibly worse at matched steps, as
-expected for a single shared layer applied 12 times:
+Finished 14:11:49 UTC at the full 7B tokens, all 7 iso-bands crossed.
+Final validation loss **1.7148** (PP 5.556). The dose-response across the sharing
+axis at 7B is clean and strongly non-linear:
 
-| Step | Tokens | ALBERT loss | (Vanilla at same step) |
+| Unique blocks | Architecture | Final loss | Δ vs previous |
 |---|---|---|---|
-| 2000 | 125M | 6.9712 | 6.4649 |
-| 4000 | 250M | 6.4925 | 6.0744 |
-| 6000 | 375M | 6.1357 | 5.9649 |
-| 8000 | 501M | 5.9969 | 5.8844 |
+| 12 | VanillaBERT | 1.4800 | — |
+| 6 | LoopedBERT | 1.5158 | +0.036 |
+| 1 | ALBERTLoopedBERT | 1.7148 | +0.199 |
 
-This is the arm most at risk of failing to reach the deepest common band, and the arm where
-SCH predicts the **largest** effect. Both make it the most informative of the four.
+Halving the depth-unique blocks (12→6) costs 0.036 nats. Collapsing 6→1 costs a
+further 0.199, roughly **5.6× more for a smaller absolute reduction in blocks**.
+LoopedBERT is therefore not under real capacity pressure at this scale; ALBERT is.
 
-### 5.3 Data integrity (verified computationally every hour)
+ALBERT also showed one **transient loss spike** at step 27000 (2.2218 → 5.7834 →
+2.2030 by step 28000), which recovered fully within 1000 steps. No band snapshot
+was taken during the spike, so no released checkpoint is contaminated.
 
-- `Validation_Loss`: no NaN, all > 0
-- `Pseudo_Perplexity` vs `exp(Validation_Loss)`: max relative error **6.0×10⁻¹⁶**
-  (floating-point exact — confirms both metrics derive from the same tensor)
-- Monotone descent: VanillaBERT 7 checkpoints **0 upticks**; LoopedBERT 6 checkpoints **0 upticks**
-- Zero errors, zero OOM across the entire run
+### 5.4 HyperloopBERT (architecture 4 of 4) — DIVERGED TWICE, BANDS SALVAGED
+
+This arm did not complete 7B tokens. It diverged to NaN at peak LR 3e-4 after
+0.91B tokens, and again at 1.5e-4 after ~2.0B tokens. Both divergences began
+shortly after the model's fastest descent.
+
+Critically, **all 7 iso-band snapshots were written before the second divergence**
+(last band at 23:32, first non-finite gradient at 00:08 — a 36-minute margin), and
+`band_2p20` was loaded and verified tensor-by-tensor as fully finite. The
+iso-loss design is therefore fully supported: all four arms have all seven bands.
+
+A third retrain was **not** attempted. The primary analysis is iso-loss, the bands
+already existed, and a retrain would have cost ~7.7 h and ~$18 of a shrinking
+budget for token-marker checkpoints that feed only the secondary matched-token
+analysis.
+
+### 5.5 The convergence-speed finding
+
+HyperloopBERT escapes the unigram plateau far earlier than the unshared arms.
+Loss at matched token counts, before its first divergence:
+
+| Tokens | Vanilla | Looped | ALBERT | Hyperloop |
+|---|---|---|---|---|
+| 0.50B | 5.8844 | 5.8962 | 5.9969 | **3.6541** |
+| 0.75B | 5.8099 | 5.8094 | 3.6274 | **2.6536** |
+| 0.88B | 5.7708 | 5.7769 | 2.9226 | **2.5250** |
+
+It also reaches the primary comparison band with **1.53B tokens vs 2.03B for
+Vanilla**, about a quarter fewer. The same property that makes it fast appears to
+be what makes it unstable: both divergences followed the steepest descent.
+
+### 5.6 Data integrity (verified computationally throughout)
+
+- `Validation_Loss`: no NaN, all > 0 in the released set
+- `Pseudo_Perplexity` vs `exp(Validation_Loss)`: max relative error **2.1×10⁻¹⁶**
+- Monotone descent: **0 upticks** in the released summary for all four arms
+- 37 rows, 0 invalid, verified both on the VM and again after download
+- Diverged rows and the mid-divergence 2B token marker (loss 4.5129, worse than
+  band 5.0) were **quarantined, not deleted**
 
 ---
 
@@ -490,3 +531,108 @@ In priority order, and this is a real recommendation rather than a wish list:
 
 *Sections 5, 6.3 and 7 will be revised when all four architectures and the full evaluation
 suite complete.*
+
+---
+
+## 10. FINAL RESULT AND VERDICT (run completed 2026-07-29)
+
+### 10.1 The confirmatory family
+
+Primary comparison at the deepest common band (all four snapshots within
+**0.034 nats** of each other), item-level paired permutation test over 1508
+Multi-CrowS-Pairs items, Holm-corrected:
+
+| Contrast | Δ effect size | p_raw | p_Holm | Cohen's d | Holds |
+|---|---|---|---|---|---|
+| Vanilla vs **Looped** | 0.0237 | 0.0001 | **0.0003** | 0.115 | **yes** |
+| Vanilla vs **Hyperloop** | 0.0241 | 0.0002 | **0.0004** | 0.098 | **yes** |
+| Looped vs Hyperloop | 0.0005 | 0.4668 | 0.4668 | 0.002 | no |
+
+Effect sizes at the comparison band:
+
+| Architecture | Val. loss | Effect size | 95% CI |
+|---|---|---|---|
+| VanillaBERT | 2.183 | 0.0707 | [0.046, 0.097] |
+| LoopedBERT | 2.192 | 0.0471 | [0.023, 0.073] |
+| ALBERTLoopedBERT | 2.163 | 0.0591 | [0.034, 0.085] |
+| HyperloopBERT | 2.196 | 0.0466 | [0.022, 0.072] |
+
+**VERDICT: PUBLISH-NULL.** `primary_holds=True, hyperloop_better=False,
+not_worse=True, dose_response=False`.
+
+### 10.2 What was actually established
+
+1. **Weight sharing reduces measured stereotype association at matched quality.**
+   Both shared arms sit below the unshared baseline, both survive Holm correction.
+   This is the SCH prediction, confirmed directionally.
+2. **HyperloopBERT adds nothing.** Δ = 0.0005, p = 0.47. The multi-stream + CWSA
+   machinery — the intended novel contribution — buys nothing for bias, while
+   costing 19M extra parameters over LoopedBERT and diverging twice.
+3. **Bias grows with capability.** For every arm the effect size rises as loss
+   falls. The association is acquired *along with* the language, not present from
+   initialisation.
+
+### 10.3 The honest caveats — these are not minor
+
+- **The capability gate FAILS.** WinoBias pro-stereotype accuracy is at chance for
+  every arm (0.489–0.503, pro-minus-anti gap within 0.03 of zero). The models
+  cannot do pronoun coreference at all. GLUE (leg 1) never produced usable numbers.
+  Only leg 2 (baseline CI excludes zero) passes. The bias result is therefore a
+  statement about **PLL association in the MLM head**, not about downstream
+  behaviour.
+- **n = 1 seed.** The intervals capture item variation, not run variation.
+- **Effect sizes are small** (d ≈ 0.1).
+- **No dose-response.** `NUM_STREAMS_ABLATION=[4]` was set to fit budget, so there
+  is no 1/2/4-stream curve. This limitation is self-inflicted.
+- **English only.** The India-centric instrument was dropped (Bengali mirror,
+  unusable by an English-only tokeniser).
+
+### 10.4 Mechanism check — why the streams do not help
+
+- Stream disagreement rises with loop depth (0.00 → 0.06 → 0.19 → 0.39 → 0.40), so
+  the streams genuinely differentiate; the extension is **not** inert.
+- But disagreement does **not** predict per-item bias: |r| ≤ 0.17 across depths,
+  no correlation significant at 0.05.
+- LoopedBERT CKA falls with depth distance (2–4: 0.578 → 2–12: 0.252), confirming
+  the shared block does different work at different depths.
+
+Reading: the reduction follows from **sharing weights across depth**, not from how
+information is routed once shared. That is a clean mechanistic explanation of the
+null and is the most useful thing the Hyperloop arm produced.
+
+### 10.5 Bugs found and fixed during this run (#17–#22)
+
+| # | Bug | Consequence if unfixed |
+|---|---|---|
+| 17 | `upload_to_hf.py` shared temp model-card path | Concurrent uploads crash after all artifacts land |
+| 18 | `results/stage3/bias` directory never created | `eval_bias` aborts on first write |
+| 19 | **No non-finite gradient guard** | 8 h of NaN training went undetected; guard later caught the second divergence in 27 s |
+| 20 | `eval_glue` forwarded `num_streams` to all architectures | GLUE dies on the first checkpoint |
+| 21 | `outputs.get('last_hidden_state', outputs[0])` — eager default | `KeyError: 0` on every dict output; GLUE never ran in this codebase |
+| 22 | GLUE summary schema mismatch | **Still unfixed.** Capability-gate leg 1 has no evidence |
+
+Bug 19 is the expensive one and the lesson worth carrying forward: a watchdog that
+checks *liveness* cannot detect a process that is alive and producing NaN.
+
+### 10.6 Infrastructure notes worth keeping
+
+- A 70-minute Vast.ai host outage was **cosmetic**: SSH and Vast's own monitor lost
+  the host while training continued at full speed. Billing stopped, so it produced
+  ~70 minutes of free H100 time. The `$0.00` billing reading initially looked like
+  a dead instance; the GPU-utilisation field was correct and the inference from
+  billing was wrong.
+- Final teardown verified: zero instances, SSH refused, $23.35 credit retained.
+- All 93 artifacts on HF, 53 result files + 13 pilot-provenance files on GitHub,
+  secret guard clean (no `.env`, `.pem`, `.key`, or token patterns).
+
+### 10.7 Recommended paper framing (implemented in `Submission/`)
+
+Title: *Does Weight Sharing Reduce Stereotype Association? An Iso-Loss Comparison
+of Looped Transformer Encoders.*
+
+Lead with the **protocol** (iso-loss matching + capability gate) as the
+methodological contribution, report the sharing effect as the empirical result,
+and report the Hyperloop null and the instability openly. Do not claim a fairness
+improvement — the capability gate does not permit it. A reviewer who checks the
+WinoBias numbers will find them at chance, so stating it first is both honest and
+strategically correct.

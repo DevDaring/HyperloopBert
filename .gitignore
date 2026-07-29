@@ -52,3 +52,11 @@ logs/
 # Dry-run QA sandbox (never mix into real results history)
 **/dry_run/
 Codes/Dry_Run/dry_run_report.json
+
+# LaTeX build artefacts
+Submission/*.aux
+Submission/*.bbl
+Submission/*.blg
+Submission/*.log
+Submission/*.out
+Submission/*.bib.bak
