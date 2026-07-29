@@ -22,7 +22,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry-run', action='store_true', help='Delegate to Dry_Run')
     parser.add_argument('--resume', action='store_true', help='Resume existing eval')
+    parser.add_argument('--bands', type=str, default=None,
+                        help='Comma-separated iso-loss bands to evaluate, e.g. "2.2". '
+                             'Default: every band. GLUE fine-tunes 4 tasks x 3 epochs per '
+                             'checkpoint, so restricting to the comparison band keeps the '
+                             'capability gate affordable.')
     args = parser.parse_args()
+    band_filter = None
+    if args.bands:
+        band_filter = {float(b) for b in args.bands.split(',') if b.strip()}
+        logger.info(f'GLUE restricted to bands: {sorted(band_filter)}')
     
     if args.dry_run:
         logger.info("Dry run flag detected. Use python Dry_Run/dry_run_stage3.py directly instead.")
@@ -46,12 +55,20 @@ def main():
             if 'pytorch_model.bin' in files:
                 checkpoints.append(root)
                 
+    os.makedirs(os.path.join(results_dir, 'glue'), exist_ok=True)
     summary_path = os.path.join(results_dir, 'glue', 'summary_table.csv')
     
     for cp_dir in checkpoints:
         meta = extract_model_metadata(cp_dir)
         if not meta:
             continue
+
+        if band_filter is not None:
+            try:
+                if float(meta.get('Band')) not in band_filter:
+                    continue
+            except (TypeError, ValueError):
+                continue
             
         num_streams = cfg.DEFAULT_NUM_STREAMS
         if 'streams' in meta['Run_ID']:

@@ -32,8 +32,14 @@ class SequenceClassificationModel(nn.Module):
         
     def forward(self, input_ids, attention_mask):
         outputs = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
-        # Use last hidden state for pooling
-        hidden_states = outputs.get('last_hidden_state', outputs[0])
+        # Use last hidden state for pooling.
+        # NOTE: do NOT write outputs.get('last_hidden_state', outputs[0]) -- the
+        # default is evaluated eagerly, and our encoders return a dict keyed by
+        # strings, so outputs[0] raises KeyError: 0 before .get() can return.
+        if isinstance(outputs, dict):
+            hidden_states = outputs['last_hidden_state']
+        else:
+            hidden_states = outputs[0]
         pooled_output = self.pooler(hidden_states)
         pooled_output = self.dropout(pooled_output)
         logits = self.classifier(pooled_output)

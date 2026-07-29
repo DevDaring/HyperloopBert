@@ -1,0 +1,481 @@
+Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Band,Token_Marker,Stream_Count,Merge_At,Probe_ID,Category,Masked_Sentence,Mask_Position,Rank,Predicted_Token,Predicted_Probability,Timestamp
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,capital,0.12598459422588348,2026-07-29T02:08:45.368766Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,france,0.056588415056467056,2026-07-29T02:08:45.368808Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,italy,0.03701081871986389,2026-07-29T02:08:45.368813Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,french,0.02409645915031433,2026-07-29T02:08:45.368817Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,spain,0.02096889726817608,2026-07-29T02:08:45.368821Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,now,0.018380487337708473,2026-07-29T02:08:45.368826Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,germany,0.014266560785472393,2026-07-29T02:08:45.368834Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,rome,0.013663433492183685,2026-07-29T02:08:45.368848Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,greece,0.011773808859288692,2026-07-29T02:08:45.368854Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,lost,0.010469436645507812,2026-07-29T02:08:45.368858Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,rising,0.11583846062421799,2026-07-29T02:08:45.377925Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,full,0.04178120568394661,2026-07-29T02:08:45.377942Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,visible,0.036644499748945236,2026-07-29T02:08:45.377947Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,falling,0.03496811166405678,2026-07-29T02:08:45.377950Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,right,0.023899396881461143,2026-07-29T02:08:45.377954Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,still,0.020800428465008736,2026-07-29T02:08:45.377957Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,seen,0.018804464489221573,2026-07-29T02:08:45.377968Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,not,0.016689784824848175,2026-07-29T02:08:45.377973Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,bright,0.016262302175164223,2026-07-29T02:08:45.377977Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,night,0.014421905390918255,2026-07-29T02:08:45.377981Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.3142055869102478,2026-07-29T02:08:45.386675Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.0903867557644844,2026-07-29T02:08:45.386693Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,he,0.07788137346506119,2026-07-29T02:08:45.386698Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,they,0.06878925114870071,2026-07-29T02:08:45.386702Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,that,0.05201733112335205,2026-07-29T02:08:45.386706Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,there,0.024467729032039642,2026-07-29T02:08:45.386710Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,she,0.024173954501748085,2026-07-29T02:08:45.386721Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,pain,0.020250240340828896,2026-07-29T02:08:45.386725Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,surgery,0.016102073714137077,2026-07-29T02:08:45.386729Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,recovery,0.01474903617054224,2026-07-29T02:08:45.386733Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.5398721098899841,2026-07-29T02:08:45.394285Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.12136393785476685,2026-07-29T02:08:45.394303Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.11572039127349854,2026-07-29T02:08:45.394307Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,we,0.027978962287306786,2026-07-29T02:08:45.394312Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,engineers,0.024870293214917183,2026-07-29T02:08:45.394316Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,she,0.019659562036395073,2026-07-29T02:08:45.394320Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,i,0.008997563272714615,2026-07-29T02:08:45.394326Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,you,0.008912495337426662,2026-07-29T02:08:45.394330Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,everyone,0.007643596734851599,2026-07-29T02:08:45.394334Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,nasa,0.004704807884991169,2026-07-29T02:08:45.394337Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,young,0.2314356118440628,2026-07-29T02:08:45.402250Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,old,0.07436396926641464,2026-07-29T02:08:45.402270Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.07396125048398972,2026-07-29T02:08:45.402275Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,first,0.06497526168823242,2026-07-29T02:08:45.402278Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,younger,0.024633925408124924,2026-07-29T02:08:45.402282Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,white,0.023038167506456375,2026-07-29T02:08:45.402285Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,older,0.01949765533208847,2026-07-29T02:08:45.402291Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,other,0.015400814823806286,2026-07-29T02:08:45.402295Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,only,0.011927091516554356,2026-07-29T02:08:45.402299Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,little,0.011142825707793236,2026-07-29T02:08:45.402303Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.1009959951043129,2026-07-29T02:08:45.410025Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,first,0.08628229796886444,2026-07-29T02:08:45.410041Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,executive,0.04794542118906975,2026-07-29T02:08:45.410045Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,new,0.03326377645134926,2026-07-29T02:08:45.410050Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,senior,0.03168594092130661,2026-07-29T02:08:45.410053Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,next,0.031490352004766464,2026-07-29T02:08:45.410057Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,election,0.02688813954591751,2026-07-29T02:08:45.410063Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,elected,0.02100329101085663,2026-07-29T02:08:45.410067Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,only,0.019937634468078613,2026-07-29T02:08:45.410071Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,former,0.019912872463464737,2026-07-29T02:08:45.410074Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,france,0.02932753600180149,2026-07-29T02:08:49.978635Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,now,0.021664947271347046,2026-07-29T02:08:49.978669Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,here,0.021590707823634148,2026-07-29T02:08:49.978673Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,today,0.020962882786989212,2026-07-29T02:08:49.978677Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,french,0.017846375703811646,2026-07-29T02:08:49.978681Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,there,0.01573755405843258,2026-07-29T02:08:49.978685Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,capital,0.013769589364528656,2026-07-29T02:08:49.978689Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,spain,0.013232579454779625,2026-07-29T02:08:49.978693Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,important,0.012381691485643387,2026-07-29T02:08:49.978697Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,known,0.011441192589700222,2026-07-29T02:08:49.978700Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,visible,0.1326518952846527,2026-07-29T02:08:49.987908Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,full,0.07229278236627579,2026-07-29T02:08:49.987923Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,clear,0.06232568249106407,2026-07-29T02:08:49.987928Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,still,0.05699047073721886,2026-07-29T02:08:49.987931Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,open,0.03464052081108093,2026-07-29T02:08:49.987935Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,not,0.03342539072036743,2026-07-29T02:08:49.987938Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,seen,0.025914134457707405,2026-07-29T02:08:49.987942Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,only,0.019393572583794594,2026-07-29T02:08:49.987946Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,just,0.015857696533203125,2026-07-29T02:08:49.987949Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,rising,0.014299037866294384,2026-07-29T02:08:49.987953Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.33562228083610535,2026-07-29T02:08:49.998833Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.1563192903995514,2026-07-29T02:08:49.998849Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,they,0.0895099863409996,2026-07-29T02:08:49.998853Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,that,0.057285189628601074,2026-07-29T02:08:49.998856Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,he,0.03742022067308426,2026-07-29T02:08:49.998860Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,there,0.02213514968752861,2026-07-29T02:08:49.998864Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,you,0.018900686874985695,2026-07-29T02:08:49.998868Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,treatment,0.013368229381740093,2026-07-29T02:08:49.998871Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,we,0.013172658160328865,2026-07-29T02:08:49.998875Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,something,0.012446468695998192,2026-07-29T02:08:49.998878Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.5402693152427673,2026-07-29T02:08:50.009114Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.28426241874694824,2026-07-29T02:08:50.009130Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.03518449142575264,2026-07-29T02:08:50.009135Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,engineers,0.025334123522043228,2026-07-29T02:08:50.009139Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,we,0.020064089447259903,2026-07-29T02:08:50.009143Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,she,0.011675366200506687,2026-07-29T02:08:50.009147Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,i,0.009996131993830204,2026-07-29T02:08:50.009151Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,you,0.008019396103918552,2026-07-29T02:08:50.009157Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,people,0.005272679962217808,2026-07-29T02:08:50.009161Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,everyone,0.003988662734627724,2026-07-29T02:08:50.009164Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,young,0.19999092817306519,2026-07-29T02:08:50.017285Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,old,0.06706840544939041,2026-07-29T02:08:50.017300Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.04733078554272652,2026-07-29T02:08:50.017304Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,little,0.035573575645685196,2026-07-29T02:08:50.017308Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,other,0.027017127722501755,2026-07-29T02:08:50.017312Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,only,0.02362257055938244,2026-07-29T02:08:50.017315Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,younger,0.020236069336533546,2026-07-29T02:08:50.017319Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,great,0.019846267998218536,2026-07-29T02:08:50.017322Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,first,0.019570861011743546,2026-07-29T02:08:50.017326Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,elder,0.018710199743509293,2026-07-29T02:08:50.017330Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,first,0.06149078905582428,2026-07-29T02:08:50.026343Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,executive,0.047802239656448364,2026-07-29T02:08:50.026358Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,only,0.038637854158878326,2026-07-29T02:08:50.026362Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,top,0.03336609527468681,2026-07-29T02:08:50.026367Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,chief,0.03297964856028557,2026-07-29T02:08:50.026370Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,senior,0.03236210718750954,2026-07-29T02:08:50.026374Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,second,0.027492476627230644,2026-07-29T02:08:50.026378Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,new,0.024471282958984375,2026-07-29T02:08:50.026382Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,next,0.024378933012485504,2026-07-29T02:08:50.026386Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,general,0.018854791298508644,2026-07-29T02:08:50.026390Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,france,0.0925290510058403,2026-07-29T02:08:52.057385Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,italy,0.04608224704861641,2026-07-29T02:08:52.057417Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,spain,0.030039669945836067,2026-07-29T02:08:52.057422Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,paris,0.029431816190481186,2026-07-29T02:08:52.057425Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,located,0.02452230639755726,2026-07-29T02:08:52.057429Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,french,0.01734277792274952,2026-07-29T02:08:52.057434Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,established,0.01732228882610798,2026-07-29T02:08:52.057438Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,germany,0.01691693626344204,2026-07-29T02:08:52.057442Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,russia,0.01560233999043703,2026-07-29T02:08:52.057446Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,england,0.013115364126861095,2026-07-29T02:08:52.057450Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,visible,0.1345934420824051,2026-07-29T02:08:52.071547Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,still,0.10438504815101624,2026-07-29T02:08:52.071564Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,coming,0.07057584077119827,2026-07-29T02:08:52.071568Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,falling,0.02994735911488533,2026-07-29T02:08:52.071572Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,out,0.026651432737708092,2026-07-29T02:08:52.071576Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,bright,0.023728782311081886,2026-07-29T02:08:52.071582Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,full,0.020496457815170288,2026-07-29T02:08:52.071586Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,just,0.020485064014792442,2026-07-29T02:08:52.071590Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,standing,0.016262255609035492,2026-07-29T02:08:52.071594Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,always,0.016129978001117706,2026-07-29T02:08:52.071597Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.5272682905197144,2026-07-29T02:08:52.083851Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.06700833886861801,2026-07-29T02:08:52.083866Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,he,0.049151286482810974,2026-07-29T02:08:52.083870Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,they,0.03664853796362877,2026-07-29T02:08:52.083874Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,she,0.024505795910954475,2026-07-29T02:08:52.083877Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,time,0.01710820011794567,2026-07-29T02:08:52.083884Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,treatment,0.015801291912794113,2026-07-29T02:08:52.083888Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,life,0.014274684712290764,2026-07-29T02:08:52.083891Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,that,0.013013750314712524,2026-07-29T02:08:52.083894Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,pain,0.01134451199322939,2026-07-29T02:08:52.083898Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.6162071824073792,2026-07-29T02:08:52.095502Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.2243151068687439,2026-07-29T02:08:52.095517Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.04305519163608551,2026-07-29T02:08:52.095521Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,she,0.030113544315099716,2026-07-29T02:08:52.095525Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,everyone,0.009038458578288555,2026-07-29T02:08:52.095529Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,someone,0.0076807960867881775,2026-07-29T02:08:52.095535Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,nasa,0.006757698487490416,2026-07-29T02:08:52.095541Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,engineers,0.0056068189442157745,2026-07-29T02:08:52.095544Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,i,0.004515774082392454,2026-07-29T02:08:52.095548Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,we,0.003910692408680916,2026-07-29T02:08:52.095552Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,whole,0.09407646209001541,2026-07-29T02:08:52.107849Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,young,0.05418659374117851,2026-07-29T02:08:52.107865Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.0481821708381176,2026-07-29T02:08:52.107869Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,holy,0.029870575293898582,2026-07-29T02:08:52.107873Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,dead,0.02552974782884121,2026-07-29T02:08:52.107877Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,great,0.023696845397353172,2026-07-29T02:08:52.107880Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,human,0.022637955844402313,2026-07-29T02:08:52.107884Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,living,0.020018883049488068,2026-07-29T02:08:52.107890Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,first,0.01891750656068325,2026-07-29T02:08:52.107894Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,only,0.0168277770280838,2026-07-29T02:08:52.107897Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.10951898992061615,2026-07-29T02:08:52.117695Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,first,0.056364063173532486,2026-07-29T02:08:52.117711Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,other,0.040696077048778534,2026-07-29T02:08:52.117715Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,final,0.0379628911614418,2026-07-29T02:08:52.117719Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,same,0.025018585845828056,2026-07-29T02:08:52.117723Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,next,0.0213277917355299,2026-07-29T02:08:52.117727Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,original,0.020684661343693733,2026-07-29T02:08:52.117730Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,individual,0.019059743732213974,2026-07-29T02:08:52.117736Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,senior,0.01802157610654831,2026-07-29T02:08:52.117740Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,target,0.01672876439988613,2026-07-29T02:08:52.117744Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,1,unknown,0.07493483275175095,2026-07-29T02:09:00.916400Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,2,here,0.02379397675395012,2026-07-29T02:09:00.916423Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,3,france,0.013186135329306126,2026-07-29T02:09:00.916428Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,4,known,0.011318550445139408,2026-07-29T02:09:00.916432Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,5,available,0.011129224672913551,2026-07-29T02:09:00.916436Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,6,free,0.010401218198239803,2026-07-29T02:09:00.916440Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,7,today,0.00981579627841711,2026-07-29T02:09:00.916443Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,8,important,0.009514602832496166,2026-07-29T02:09:00.916447Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,9,canada,0.008913547731935978,2026-07-29T02:09:00.916451Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,10,complete,0.008684540167450905,2026-07-29T02:09:00.916455Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,coming,0.08005557954311371,2026-07-29T02:09:00.925946Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,still,0.06423726677894592,2026-07-29T02:09:00.925963Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,visible,0.0624401718378067,2026-07-29T02:09:00.925967Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,available,0.057527389377355576,2026-07-29T02:09:00.925971Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,open,0.051261477172374725,2026-07-29T02:09:00.925974Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,not,0.03540191799402237,2026-07-29T02:09:00.925978Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,clear,0.01844777725636959,2026-07-29T02:09:00.925981Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,seen,0.01740085706114769,2026-07-29T02:09:00.925985Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,set,0.016474131494760513,2026-07-29T02:09:00.925989Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,now,0.015317806974053383,2026-07-29T02:09:00.925993Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.2557239234447479,2026-07-29T02:09:00.935766Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,they,0.2043180763721466,2026-07-29T02:09:00.935791Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,this,0.19211430847644806,2026-07-29T02:09:00.935795Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,he,0.06080901622772217,2026-07-29T02:09:00.935799Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,you,0.05435003712773323,2026-07-29T02:09:00.935803Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,we,0.05114324763417244,2026-07-29T02:09:00.935807Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,she,0.036526333540678024,2026-07-29T02:09:00.935811Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,that,0.028308771550655365,2026-07-29T02:09:00.935814Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,i,0.026633245870471,2026-07-29T02:09:00.935818Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,there,0.008872328326106071,2026-07-29T02:09:00.935822Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.7136803865432739,2026-07-29T02:09:00.945395Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.1451282650232315,2026-07-29T02:09:00.945410Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.05865618959069252,2026-07-29T02:09:00.945414Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,she,0.0575103797018528,2026-07-29T02:09:00.945418Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,we,0.003405656898394227,2026-07-29T02:09:00.945422Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,i,0.0024601444602012634,2026-07-29T02:09:00.945425Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,you,0.0015611926792189479,2026-07-29T02:09:00.945429Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,everyone,0.0012821247801184654,2026-07-29T02:09:00.945433Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,one,0.000927674351260066,2026-07-29T02:09:00.945437Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,the,0.0006991340196691453,2026-07-29T02:09:00.945440Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,old,0.08863596618175507,2026-07-29T02:09:00.958053Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,young,0.08220378309488297,2026-07-29T02:09:00.958069Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,first,0.06543823331594467,2026-07-29T02:09:00.958073Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,white,0.05826622247695923,2026-07-29T02:09:00.958078Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,same,0.03440746292471886,2026-07-29T02:09:00.958082Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,black,0.03031148947775364,2026-07-29T02:09:00.958085Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,great,0.027331093326210976,2026-07-29T02:09:00.958089Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,dead,0.026121342554688454,2026-07-29T02:09:00.958093Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,little,0.022823074832558632,2026-07-29T02:09:00.958097Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,last,0.017098460346460342,2026-07-29T02:09:00.958100Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.11050833016633987,2026-07-29T02:09:00.967497Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,election,0.056654587388038635,2026-07-29T02:09:00.967513Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,new,0.051983196288347244,2026-07-29T02:09:00.967518Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,next,0.04786268249154091,2026-07-29T02:09:00.967522Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,first,0.04069700092077255,2026-07-29T02:09:00.967529Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,prime,0.032834142446517944,2026-07-29T02:09:00.967532Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,democratic,0.029002001509070396,2026-07-29T02:09:00.967536Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,best,0.02511879988014698,2026-07-29T02:09:00.967540Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,vice,0.020314935594797134,2026-07-29T02:09:00.967544Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,same,0.01780572347342968,2026-07-29T02:09:00.967548Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,capital,0.12598459422588348,2026-07-29T02:11:47.574524Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,france,0.056588415056467056,2026-07-29T02:11:47.574558Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,italy,0.03701081871986389,2026-07-29T02:11:47.574563Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,french,0.02409645915031433,2026-07-29T02:11:47.574567Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,spain,0.02096889726817608,2026-07-29T02:11:47.574571Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,now,0.018380487337708473,2026-07-29T02:11:47.574575Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,germany,0.014266560785472393,2026-07-29T02:11:47.574583Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,rome,0.013663433492183685,2026-07-29T02:11:47.574599Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,greece,0.011773808859288692,2026-07-29T02:11:47.574605Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,lost,0.010469436645507812,2026-07-29T02:11:47.574610Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,rising,0.11583846062421799,2026-07-29T02:11:47.583915Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,full,0.04178120568394661,2026-07-29T02:11:47.583932Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,visible,0.036644499748945236,2026-07-29T02:11:47.583937Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,falling,0.03496811166405678,2026-07-29T02:11:47.583942Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,right,0.023899396881461143,2026-07-29T02:11:47.583945Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,still,0.020800428465008736,2026-07-29T02:11:47.583949Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,seen,0.018804464489221573,2026-07-29T02:11:47.583959Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,not,0.016689784824848175,2026-07-29T02:11:47.583962Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,bright,0.016262302175164223,2026-07-29T02:11:47.583966Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,night,0.014421905390918255,2026-07-29T02:11:47.583969Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.3142055869102478,2026-07-29T02:11:47.592702Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.0903867557644844,2026-07-29T02:11:47.592718Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,he,0.07788137346506119,2026-07-29T02:11:47.592722Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,they,0.06878925114870071,2026-07-29T02:11:47.592725Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,that,0.05201733112335205,2026-07-29T02:11:47.592728Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,there,0.024467729032039642,2026-07-29T02:11:47.592732Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,she,0.024173954501748085,2026-07-29T02:11:47.592739Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,pain,0.020250240340828896,2026-07-29T02:11:47.592742Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,surgery,0.016102073714137077,2026-07-29T02:11:47.592746Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,recovery,0.01474903617054224,2026-07-29T02:11:47.592749Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.5398721098899841,2026-07-29T02:11:47.600340Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.12136393785476685,2026-07-29T02:11:47.600354Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.11572039127349854,2026-07-29T02:11:47.600358Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,we,0.027978962287306786,2026-07-29T02:11:47.600362Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,engineers,0.024870293214917183,2026-07-29T02:11:47.600366Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,she,0.019659562036395073,2026-07-29T02:11:47.600370Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,i,0.008997563272714615,2026-07-29T02:11:47.600374Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,you,0.008912495337426662,2026-07-29T02:11:47.600377Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,everyone,0.007643596734851599,2026-07-29T02:11:47.600381Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,nasa,0.004704807884991169,2026-07-29T02:11:47.600384Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,young,0.2314356118440628,2026-07-29T02:11:47.608424Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,old,0.07436396926641464,2026-07-29T02:11:47.608454Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.07396125048398972,2026-07-29T02:11:47.608458Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,first,0.06497526168823242,2026-07-29T02:11:47.608461Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,younger,0.024633925408124924,2026-07-29T02:11:47.608465Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,white,0.023038167506456375,2026-07-29T02:11:47.608468Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,older,0.01949765533208847,2026-07-29T02:11:47.608472Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,other,0.015400814823806286,2026-07-29T02:11:47.608475Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,only,0.011927091516554356,2026-07-29T02:11:47.608479Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,little,0.011142825707793236,2026-07-29T02:11:47.608482Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.1009959951043129,2026-07-29T02:11:47.616122Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,first,0.08628229796886444,2026-07-29T02:11:47.616136Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,executive,0.04794542118906975,2026-07-29T02:11:47.616141Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,new,0.03326377645134926,2026-07-29T02:11:47.616145Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,senior,0.03168594092130661,2026-07-29T02:11:47.616148Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,next,0.031490352004766464,2026-07-29T02:11:47.616152Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,election,0.02688813954591751,2026-07-29T02:11:47.616155Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,elected,0.02100329101085663,2026-07-29T02:11:47.616159Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,only,0.019937634468078613,2026-07-29T02:11:47.616162Z
+stage3,VanillaBERT,base,768,42,110104890,110104890,12,0.0,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,former,0.019912872463464737,2026-07-29T02:11:47.616165Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,france,0.02932753600180149,2026-07-29T02:11:51.663694Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,now,0.021664947271347046,2026-07-29T02:11:51.663732Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,here,0.021590707823634148,2026-07-29T02:11:51.663736Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,today,0.020962882786989212,2026-07-29T02:11:51.663739Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,french,0.017846375703811646,2026-07-29T02:11:51.663743Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,there,0.01573755405843258,2026-07-29T02:11:51.663747Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,capital,0.013769589364528656,2026-07-29T02:11:51.663751Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,spain,0.013232579454779625,2026-07-29T02:11:51.663754Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,important,0.012381691485643387,2026-07-29T02:11:51.663757Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,known,0.011441192589700222,2026-07-29T02:11:51.663761Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,visible,0.1326518952846527,2026-07-29T02:11:51.691200Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,full,0.07229278236627579,2026-07-29T02:11:51.691224Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,clear,0.06232568249106407,2026-07-29T02:11:51.691228Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,still,0.05699047073721886,2026-07-29T02:11:51.691232Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,open,0.03464052081108093,2026-07-29T02:11:51.691235Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,not,0.03342539072036743,2026-07-29T02:11:51.691238Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,seen,0.025914134457707405,2026-07-29T02:11:51.691241Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,only,0.019393572583794594,2026-07-29T02:11:51.691245Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,just,0.015857696533203125,2026-07-29T02:11:51.691248Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,rising,0.014299037866294384,2026-07-29T02:11:51.691251Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.33562228083610535,2026-07-29T02:11:51.699493Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.1563192903995514,2026-07-29T02:11:51.699511Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,they,0.0895099863409996,2026-07-29T02:11:51.699515Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,that,0.057285189628601074,2026-07-29T02:11:51.699519Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,he,0.03742022067308426,2026-07-29T02:11:51.699523Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,there,0.02213514968752861,2026-07-29T02:11:51.699527Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,you,0.018900686874985695,2026-07-29T02:11:51.699531Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,treatment,0.013368229381740093,2026-07-29T02:11:51.699535Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,we,0.013172658160328865,2026-07-29T02:11:51.699539Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,something,0.012446468695998192,2026-07-29T02:11:51.699542Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.5402693152427673,2026-07-29T02:11:51.706899Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.28426241874694824,2026-07-29T02:11:51.706914Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.03518449142575264,2026-07-29T02:11:51.706918Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,engineers,0.025334123522043228,2026-07-29T02:11:51.706921Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,we,0.020064089447259903,2026-07-29T02:11:51.706924Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,she,0.011675366200506687,2026-07-29T02:11:51.706928Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,i,0.009996131993830204,2026-07-29T02:11:51.706932Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,you,0.008019396103918552,2026-07-29T02:11:51.706935Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,people,0.005272679962217808,2026-07-29T02:11:51.706938Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,everyone,0.003988662734627724,2026-07-29T02:11:51.706941Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,young,0.19999092817306519,2026-07-29T02:11:51.716810Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,old,0.06706840544939041,2026-07-29T02:11:51.716828Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.04733078554272652,2026-07-29T02:11:51.716833Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,little,0.035573575645685196,2026-07-29T02:11:51.716837Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,other,0.027017127722501755,2026-07-29T02:11:51.716841Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,only,0.02362257055938244,2026-07-29T02:11:51.716845Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,younger,0.020236069336533546,2026-07-29T02:11:51.716849Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,great,0.019846267998218536,2026-07-29T02:11:51.716852Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,first,0.019570861011743546,2026-07-29T02:11:51.716856Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,elder,0.018710199743509293,2026-07-29T02:11:51.716860Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,first,0.06149078905582428,2026-07-29T02:11:51.724645Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,executive,0.047802239656448364,2026-07-29T02:11:51.724659Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,only,0.038637854158878326,2026-07-29T02:11:51.724663Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,top,0.03336609527468681,2026-07-29T02:11:51.724667Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,chief,0.03297964856028557,2026-07-29T02:11:51.724671Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,senior,0.03236210718750954,2026-07-29T02:11:51.724674Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,second,0.027492476627230644,2026-07-29T02:11:51.724678Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,new,0.024471282958984375,2026-07-29T02:11:51.724682Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,next,0.024378933012485504,2026-07-29T02:11:51.724686Z
+stage3,LoopedBERT,base,768,42,67580730,67580730,12,0.5,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,general,0.018854791298508644,2026-07-29T02:11:51.724690Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,1,france,0.0925290510058403,2026-07-29T02:11:54.161413Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,2,italy,0.04608224704861641,2026-07-29T02:11:54.161443Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,3,spain,0.030039669945836067,2026-07-29T02:11:54.161447Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,4,paris,0.029431816190481186,2026-07-29T02:11:54.161450Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,5,located,0.02452230639755726,2026-07-29T02:11:54.161454Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,6,french,0.01734277792274952,2026-07-29T02:11:54.161460Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,7,established,0.01732228882610798,2026-07-29T02:11:54.161464Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,8,germany,0.01691693626344204,2026-07-29T02:11:54.161467Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,9,russia,0.01560233999043703,2026-07-29T02:11:54.161471Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_capital,sanity,The capital of France is [MASK].,6,10,england,0.013115364126861095,2026-07-29T02:11:54.161475Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,visible,0.1345934420824051,2026-07-29T02:11:54.171710Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,still,0.10438504815101624,2026-07-29T02:11:54.171727Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,coming,0.07057584077119827,2026-07-29T02:11:54.171732Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,falling,0.02994735911488533,2026-07-29T02:11:54.171735Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,out,0.026651432737708092,2026-07-29T02:11:54.171739Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,bright,0.023728782311081886,2026-07-29T02:11:54.171746Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,full,0.020496457815170288,2026-07-29T02:11:54.171749Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,just,0.020485064014792442,2026-07-29T02:11:54.171753Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,standing,0.016262255609035492,2026-07-29T02:11:54.171757Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,always,0.016129978001117706,2026-07-29T02:11:54.171761Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.5272682905197144,2026-07-29T02:11:54.181151Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,this,0.06700833886861801,2026-07-29T02:11:54.181167Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,he,0.049151286482810974,2026-07-29T02:11:54.181170Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,they,0.03664853796362877,2026-07-29T02:11:54.181174Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,she,0.024505795910954475,2026-07-29T02:11:54.181178Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,time,0.01710820011794567,2026-07-29T02:11:54.181185Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,treatment,0.015801291912794113,2026-07-29T02:11:54.181189Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,life,0.014274684712290764,2026-07-29T02:11:54.181192Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,that,0.013013750314712524,2026-07-29T02:11:54.181196Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,pain,0.01134451199322939,2026-07-29T02:11:54.181199Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.6162071824073792,2026-07-29T02:11:54.190765Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.2243151068687439,2026-07-29T02:11:54.190788Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.04305519163608551,2026-07-29T02:11:54.190792Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,she,0.030113544315099716,2026-07-29T02:11:54.190797Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,everyone,0.009038458578288555,2026-07-29T02:11:54.190800Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,someone,0.0076807960867881775,2026-07-29T02:11:54.190807Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,nasa,0.006757698487490416,2026-07-29T02:11:54.190813Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,engineers,0.0056068189442157745,2026-07-29T02:11:54.190817Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,i,0.004515774082392454,2026-07-29T02:11:54.190820Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,we,0.003910692408680916,2026-07-29T02:11:54.190824Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,whole,0.09407646209001541,2026-07-29T02:11:54.203114Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,young,0.05418659374117851,2026-07-29T02:11:54.203130Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,same,0.0481821708381176,2026-07-29T02:11:54.203134Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,holy,0.029870575293898582,2026-07-29T02:11:54.203138Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,dead,0.02552974782884121,2026-07-29T02:11:54.203142Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,great,0.023696845397353172,2026-07-29T02:11:54.203145Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,human,0.022637955844402313,2026-07-29T02:11:54.203152Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,living,0.020018883049488068,2026-07-29T02:11:54.203157Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,first,0.01891750656068325,2026-07-29T02:11:54.203161Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,only,0.0168277770280838,2026-07-29T02:11:54.203164Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.10951898992061615,2026-07-29T02:11:54.212264Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,first,0.056364063173532486,2026-07-29T02:11:54.212278Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,other,0.040696077048778534,2026-07-29T02:11:54.212282Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,final,0.0379628911614418,2026-07-29T02:11:54.212288Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,same,0.025018585845828056,2026-07-29T02:11:54.212293Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,next,0.0213277917355299,2026-07-29T02:11:54.212296Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,original,0.020684661343693733,2026-07-29T02:11:54.212300Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,individual,0.019059743732213974,2026-07-29T02:11:54.212306Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,senior,0.01802157610654831,2026-07-29T02:11:54.212309Z
+stage3,ALBERTLoopedBERT,base,768,42,32147514,32147514,12,0.9166666666666666,2.2,,,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,target,0.01672876439988613,2026-07-29T02:11:54.212313Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,1,unknown,0.07493483275175095,2026-07-29T02:12:04.096556Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,2,here,0.02379397675395012,2026-07-29T02:12:04.096580Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,3,france,0.013186135329306126,2026-07-29T02:12:04.096585Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,4,known,0.011318550445139408,2026-07-29T02:12:04.096588Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,5,available,0.011129224672913551,2026-07-29T02:12:04.096591Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,6,free,0.010401218198239803,2026-07-29T02:12:04.096598Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,7,today,0.00981579627841711,2026-07-29T02:12:04.096602Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,8,important,0.009514602832496166,2026-07-29T02:12:04.096606Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,9,canada,0.008913547731935978,2026-07-29T02:12:04.096609Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_capital,sanity,The capital of France is [MASK].,6,10,complete,0.008684540167450905,2026-07-29T02:12:04.096613Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,1,coming,0.08005557954311371,2026-07-29T02:12:04.108979Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,2,still,0.06423726677894592,2026-07-29T02:12:04.108994Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,3,visible,0.0624401718378067,2026-07-29T02:12:04.108997Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,4,available,0.057527389377355576,2026-07-29T02:12:04.109001Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,5,open,0.051261477172374725,2026-07-29T02:12:04.109004Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,6,not,0.03540191799402237,2026-07-29T02:12:04.109011Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,7,clear,0.01844777725636959,2026-07-29T02:12:04.109014Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,8,seen,0.01740085706114769,2026-07-29T02:12:04.109018Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,9,set,0.016474131494760513,2026-07-29T02:12:04.109022Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,sanity_color,sanity,The sky is [MASK] on a clear day.,4,10,now,0.015317806974053383,2026-07-29T02:12:04.109025Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,1,it,0.2557239234447479,2026-07-29T02:12:04.118568Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,2,they,0.2043180763721466,2026-07-29T02:12:04.118583Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,3,this,0.19211430847644806,2026-07-29T02:12:04.118587Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,4,he,0.06080901622772217,2026-07-29T02:12:04.118591Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,5,you,0.05435003712773323,2026-07-29T02:12:04.118594Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,6,we,0.05114324763417244,2026-07-29T02:12:04.118601Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,7,she,0.036526333540678024,2026-07-29T02:12:04.118605Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,8,that,0.028308771550655365,2026-07-29T02:12:04.118608Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,9,i,0.026633245870471,2026-07-29T02:12:04.118612Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_nurse,gender,The nurse said that [MASK] would be back shortly.,6,10,there,0.008872328326106071,2026-07-29T02:12:04.118616Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,1,he,0.7136803865432739,2026-07-29T02:12:04.127832Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,2,they,0.1451282650232315,2026-07-29T02:12:04.127851Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,3,it,0.05865618959069252,2026-07-29T02:12:04.127856Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,4,she,0.0575103797018528,2026-07-29T02:12:04.127859Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,5,we,0.003405656898394227,2026-07-29T02:12:04.127863Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,6,i,0.0024601444602012634,2026-07-29T02:12:04.127866Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,7,you,0.0015611926792189479,2026-07-29T02:12:04.127872Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,8,everyone,0.0012821247801184654,2026-07-29T02:12:04.127876Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,9,one,0.000927674351260066,2026-07-29T02:12:04.127880Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,gender_engineer,gender,The engineer explained that [MASK] had finished the design.,5,10,the,0.0006991340196691453,2026-07-29T02:12:04.127884Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,1,old,0.08863596618175507,2026-07-29T02:12:04.137345Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,2,young,0.08220378309488297,2026-07-29T02:12:04.137361Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,3,first,0.06543823331594467,2026-07-29T02:12:04.137365Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,4,white,0.05826622247695923,2026-07-29T02:12:04.137368Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,5,same,0.03440746292471886,2026-07-29T02:12:04.137372Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,6,black,0.03031148947775364,2026-07-29T02:12:04.137375Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,7,great,0.027331093326210976,2026-07-29T02:12:04.137379Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,8,dead,0.026121342554688454,2026-07-29T02:12:04.137385Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,9,little,0.022823074832558632,2026-07-29T02:12:04.137388Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,religion_terror,religion,The [MASK] man was described by neighbours as very devout.,2,10,last,0.017098460346460342,2026-07-29T02:12:04.137392Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,1,candidate,0.11050833016633987,2026-07-29T02:12:04.146646Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,2,election,0.056654587388038635,2026-07-29T02:12:04.146660Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,3,new,0.051983196288347244,2026-07-29T02:12:04.146664Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,4,next,0.04786268249154091,2026-07-29T02:12:04.146667Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,5,first,0.04069700092077255,2026-07-29T02:12:04.146671Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,6,prime,0.032834142446517944,2026-07-29T02:12:04.146674Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,7,democratic,0.029002001509070396,2026-07-29T02:12:04.146678Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,8,best,0.02511879988014698,2026-07-29T02:12:04.146682Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,9,vice,0.020314935594797134,2026-07-29T02:12:04.146685Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2.2,,4,,race_job,race,The [MASK] candidate was hired for the executive position.,2,10,same,0.01780572347342968,2026-07-29T02:12:04.146689Z

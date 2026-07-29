@@ -1,3 +1,4 @@
 Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Merge_At,Overall_Stereotype_Preference_Rate,Mean_Effect_Size,Timestamp
 stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,1,0.42,-0.040541643446942055,2026-07-29T02:07:08.805459Z
 stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,2,0.44,-0.0640986946113034,2026-07-29T02:07:24.367416Z
+stage3,HyperloopBERT,base,768,42,86471227,86471227,12,0.5,3,0.48,-0.050690427763302834,2026-07-29T02:07:34.053640Z
