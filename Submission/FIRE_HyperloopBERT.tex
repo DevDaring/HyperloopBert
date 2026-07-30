@@ -287,7 +287,7 @@ contrasts by the Holm procedure. Permutation $p$-values follow
 
 A model that predicts almost nothing returns near-tied pseudo-log-likelihoods and
 so a small effect size, which would be indistinguishable from a genuinely
-unbiased model. The protocol therefore fixes in advance three conditions under
+unbiased model. The protocol therefore states three conditions in advance under
 which a bias reading is treated as interpretable. The model must score above
 chance on a set of GLUE tasks \citep{wang2018glue}. The effect-size interval of
 the unshared baseline must exclude zero. The model must also score above chance on
@@ -312,8 +312,9 @@ clipping at 1.0, and bfloat16 autocast with FlashAttention
 
 HyperloopBERT is the single exception to the shared learning rate. At
 $3 \times 10^{-4}$ it diverged to a non-finite loss, and at half that value it
-diverged later in training; Section~\ref{sec:stability} reports both events. Its
-released snapshots come from the run at $1.5 \times 10^{-4}$. Holding the learning
+diverged later in training; Section~\ref{sec:stability} reports both events. The
+% CAMERA-READY: restore the concrete artifact location for these snapshots
+snapshots analysed here come from the run at $1.5 \times 10^{-4}$. Holding the learning
 rate fixed across all four would have compared three stable models against one
 broken configuration. The peak learning rate is therefore tuned per architecture,
 and the arms are matched on validation loss rather than on hyper-parameters.
@@ -392,7 +393,8 @@ HyperloopBERT     & 2.196 & 0.047 & [0.022, 0.072] \\
 \end{adjustbox}
 \end{table}
 
-The contrasts fixed in advance appear in Table~\ref{tab:confirm}. Both comparisons
+The contrasts, specified before analysis of the comparison point, appear in
+Table~\ref{tab:confirm}. Both comparisons
 against the unshared baseline hold after Holm correction, and the comparison
 between the two shared encoders does not. Weight sharing goes with a lower
 stereotype effect size at matched quality, and the extra machinery in
@@ -401,8 +403,8 @@ effects are small, close to a tenth of a standard deviation.
 
 \begin{table}[t]
 \centering
-\caption{Contrasts fixed in advance, paired permutation test over 1508 items with
-Holm correction.}
+\caption{Contrasts specified before analysis of the comparison point. Paired
+permutation test over 1508 items with Holm correction.}
 \label{tab:confirm}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
