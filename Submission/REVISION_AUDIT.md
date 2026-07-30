@@ -30,6 +30,8 @@ Python 3.10.12, NumPy 2.2.6, pandas 2.3.3, SciPy 1.15.3, statsmodels 0.14.6.
 | 15 | scientist probe strongest | §5.4 | ALBERT secretary +3.80 > scientist +3.65 | **Invalid** | table dropped in revision | — | mlm_targeted_contrast.csv |
 | 16 | "same 7 billion tokens" vs "quarter fewer tokens" | §4 / §5.1 | same corpus; matched point reached at 1.53–2.07 B | **Internally inconsistent** | say "same corpus", give token range | — | summary_table.csv |
 | 17 | 8 unalignable items | not reported | 4–9 words differ per pair, 5/8 differ in length; drop-vs-impute changes Δ by <0.0006 | **New** | report as benchmark-quality evidence | exploratory | unaligned_items.csv |
+| 18 | second instrument | not addressed | StereoSet intrasentence, 2106 items, identical protocol: direction agrees 3/3, significance carries 1/3 (Hyperloop p_Holm 0.0009; Looped and ALBERT 0.084). StereoSet's own SS score is at chance (49.7–51.4) where CrowS-Pairs gives ~55.5 | **New — partial replication** | add §5.6 + table | exploratory | `stereoset_contrasts.csv` |
+| 19 | PLL definition in the Method | `PLL` defined as a raw sum, effect divided by *T* | implementation normalises **each sentence by its own** token count, then subtracts; the two differ for unequal-length pairs | **Invalid as written** | equation corrected | — | `bias_metrics.py:113`, verified numerically to 1.3e-15 |
 
 ## Summary
 
@@ -38,3 +40,17 @@ built on them does not: the untested third shared encoder is null, the contrast
 reverses across matched points, it vanishes under continuous loss adjustment, and
 it does not survive the benchmark's own scoring formulation. The revision keeps
 the reproduced numbers and withdraws the generalisation.
+
+## Addendum — second instrument
+
+StereoSet was scored after the audit table above was written. It does not change
+any verdict. The direction of all three contrasts agrees with CrowS-Pairs, which
+is mild support for a small underlying difference, but only one contrast is
+significant and it is a **different** architecture from the two that were
+significant on CrowS-Pairs. That is consistent with the paper's conclusion:
+the identity of the separating architecture is instrument-dependent.
+
+The replication also served as an end-to-end check on the whole pipeline. Loading
+the released checkpoints and re-running the scorer on CPU reproduced stored
+CrowS-Pairs item effects to within 1e-6, confirming that the archived artifacts
+and the analysis code agree.

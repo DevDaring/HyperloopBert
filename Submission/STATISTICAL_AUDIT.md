@@ -35,8 +35,10 @@ capability gate.
 
 **Exploratory** (run after the single-point instability was found): all-band
 recomputation, continuous loss adjustment, scoring-formulation comparison,
-per-category analysis, leave-one-category-out, TOST equivalence and its ±0.0118
-margin. The paper says so in the Limitations.
+per-category analysis, leave-one-category-out, the StereoSet replication, and
+TOST equivalence with its ±0.0118 margin. The paper says so in the Limitations.
+The StereoSet direction rule was, however, committed to in writing before the
+numbers were computed, and is reported under that rule whichever way it fell.
 
 ## Known statistical limitations
 

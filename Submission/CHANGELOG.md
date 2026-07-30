@@ -21,3 +21,6 @@
 | 17 | no reproducibility section | Reproducibility section added | FIRE requests verification information | Rule 17 |
 | 18 | qualitative probe table with an incorrect reading | table removed | the text claimed the scientist probe was strongest; ALBERT's secretary probe is higher | `mlm_targeted_contrast.csv` |
 | 19 | no IR framing | one Discussion paragraph + two verified IR-fairness citations | venue fit without overclaiming deployment | Rule 24 |
+| 20 | single benchmark | StereoSet intrasentence added (2106 items, same protocol, CPU, $0) | answers the "one benchmark" objection; direction agrees 3/3, significance 1/3 | `stereoset_contrasts.csv`, Table 4 |
+| 21 | PLL defined as a raw sum with the difference divided by *T* | PLL defined as the **mean** log-probability per scoreable token; effect is the plain difference | the stated equation did not match the code, and the two differ for unequal-length pairs | `bias_metrics.py:113`; verified numerically to 1.3e-15 |
+

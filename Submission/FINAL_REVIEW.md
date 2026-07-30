@@ -39,8 +39,11 @@ model continuously.
 **Benchmark choice — "CrowS-Pairs is known to be flawed."**
 Acknowledged, cited, and used as evidence: the eight pairs the changed-token
 formulation cannot align differ in four to nine words, which is a concrete
-instance of the documented item-quality problem. *Not fully answered:* a second
-benchmark would strengthen this. StereoSet scoring was scoped but not run.
+instance of the documented item-quality problem. **Now answered:** StereoSet
+intrasentence (2106 items) was scored on the same snapshots with the same
+protocol. Direction agrees on all three contrasts; significance carries for only
+one, and for a different architecture. *Residual:* both benchmarks are
+correlation-type and read the same MLM head, so they are not independent tests.
 
 **Architecture attribution — "the arms differ in more than sharing."**
 Conceded in the Method and the Limitations: the bundles differ in parameter
@@ -94,7 +97,8 @@ abstract is 246 words.
 ## Five strongest contributions
 
 1. A concrete demonstration that an architecture bias contrast can reverse sign
-   across matched-loss points that differ by hundredths of a nat.
+   across matched-loss points that differ by hundredths of a nat, and that the
+   architecture which separates from the baseline changes with the benchmark.
 2. A continuous loss-adjusted model showing capability, not architecture,
    accounts for the apparent effect.
 3. Evidence that two defensible PLL scoring rules disagree enough to change the
@@ -107,7 +111,9 @@ abstract is 246 words.
 ## Five remaining weaknesses
 
 1. One training seed; the encoder ordering may not survive re-training.
-2. A single benchmark; StereoSet replication was scoped but not executed.
+2. Both benchmarks are correlation-type and read the same masked language
+   modelling head, so their agreement is weaker evidence than independent
+   paradigms would give.
 3. Models are far from fully trained, and effect sizes are still moving.
 4. Most robustness analyses are exploratory, run after the instability appeared.
 5. The GLUE leg of the gate is unmeasured, so the gate is incomplete as well as
@@ -125,6 +131,6 @@ abstract is 246 words.
 
 ## Indispensable work before submission
 
-Nothing blocking. Two items are worth the remaining time if it exists: a
-second-benchmark replication on the existing checkpoints (inference only), and
-keeping the public model repository private until after notification.
+Nothing blocking. The second-benchmark replication is now done. The one
+remaining action is operational: keep the public model repository private until
+after notification on 2026-10-15.
