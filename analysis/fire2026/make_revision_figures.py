@@ -69,6 +69,7 @@ print("wrote fig3_delta_across_loss  (points: "
 # --------------------------------- Fig 4: scorer sensitivity + category spread
 full = pd.read_csv(os.path.join(DAT, "contrasts_band2.2.csv"))
 chg = pd.read_csv(os.path.join(DAT, "contrasts_changed_token_scorer.csv"))
+off = pd.read_csv(os.path.join(DAT, "official_contrasts_2p20.csv"))
 cat = pd.read_csv(os.path.join(DAT, "per_category_contrasts.csv"))
 
 fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
@@ -79,19 +80,22 @@ names = ["Vanilla vs Looped", "Vanilla vs ALBERT", "Vanilla vs Hyperloop"]
 y = np.arange(len(names))
 f = full.set_index("Contrast").reindex(names)
 c = chg.set_index("Contrast").reindex(names)
-ax.errorbar(f.Delta, y + 0.13,
+ax.errorbar(f.Delta, y + 0.16,
             xerr=[f.Delta - f.CI_Low, f.CI_High - f.Delta],
             fmt="o", color="#000000", ms=3.6, capsize=2, elinewidth=0.8,
             label="full-sentence PLL", zorder=3)
-ax.errorbar(c.Delta, y - 0.13,
-            xerr=[c.Delta - c.CI_Low, c.CI_High - c.Delta],
+ax.errorbar(c.Delta, y, xerr=[c.Delta - c.CI_Low, c.CI_High - c.Delta],
             fmt="s", color="#CC79A7", ms=3.6, capsize=2, elinewidth=0.8,
-            mfc="none", label="changed-token", zorder=3)
+            mfc="none", label="shared-token", zorder=3)
+o = off.set_index("Contrast").reindex(names)
+ax.errorbar(o.Delta, y - 0.16, xerr=[o.Delta - o.CI_Low, o.CI_High - o.Delta],
+            fmt="^", color="#56B4E9", ms=3.8, capsize=2, elinewidth=0.8,
+            mfc="none", label="official", zorder=3)
 ax.axvline(0.0, color="black", lw=1.0, zorder=2)
 ax.set_yticks(y)
 ax.set_yticklabels([n.replace("Vanilla vs ", "vs ") for n in names])
 ax.set_xlabel(r"Contrast $\Delta$ at the matched point")
-ax.set_title("(a) scoring formulation", loc="left", fontsize=8)
+ax.set_title("(a) scoring rule", loc="left", fontsize=8)
 ax.invert_yaxis()               # read top-to-bottom in the same order as the tables
 ax.legend(loc="upper left", frameon=False, bbox_to_anchor=(0.02, 0.98))
 ax.margins(y=0.22)

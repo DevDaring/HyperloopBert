@@ -1,869 +1,830 @@
 
-You are acting as the lead research scientist, statistical reviewer, LaTeX editor,
-and reproducibility auditor for my FIRE 2026 submission.
+I need a final scientific audit and correction of my FIRE 2026 paper.
 
-This is a high-stakes revision. Do NOT optimise for preserving the existing story.
-Optimise for scientific correctness, reviewer defensibility, reproducibility,
-FIRE 2026 fit, and acceptance probability.
+You have access to:
 
-You have access to the entire repository, including:
-
-- FIRE_HyperloopBERT.tex and all LaTeX source
-- reference.bib
-- code
-- checkpoints
-- cached predictions
+- the current LaTeX manuscript and PDF
+- all source code
+- all checkpoints
+- all cached logits / scores / result files
 - training logs
-- experimental results
-- figures
-- phase2_reanalysis.py
-- phase2b_allband.py
-- CRITICAL_FINDING.md
-- FIRE2026_REQUIREMENTS.md
-- any preregistration/specification documents
-- GPU access through the environment variable PHD_VAST_AI_KEY
+- statistical-analysis scripts
+- CPU/GPU environment
+- Vast.ai access through PHD_VAST_AI_KEY
 
-IMPORTANT SECURITY RULE:
-PHD_VAST_AI_KEY is a secret.
-Never print it, echo it, write it to a file, place it in commands shown in reports,
-commit it, put it into LaTeX, or expose it in logs.
-Read it only from the environment if GPU access is absolutely required.
+DO NOT rewrite the paper cosmetically first.
 
-============================================================
-PRIMARY OBJECTIVE
-=================
+There are several scientific and consistency issues that must be resolved.
+Some are potentially blocking for submission.
 
-Transform the existing manuscript into the strongest scientifically honest FIRE
-2026 submission supported by the actual evidence.
+=========================================================
+BLOCKING ISSUE 1 — CROWS-PAIRS OFFICIAL SCORER IS MISDESCRIBED
+===============================================================
 
-The current manuscript's headline claim appears to have failed subsequent
-robustness analysis.
+The current paper says that the CrowS-Pairs reference implementation uses a
+"changed-token" scorer, i.e. it scores the tokens that DIFFER between the
+stereotypical and anti-stereotypical sentences.
 
-DO NOT attempt to rescue the statement:
+This appears to be incorrect.
 
-    "weight sharing reduces stereotype association"
+Verify this yourself from BOTH:
 
-unless new analysis genuinely demonstrates that it is robust.
-
-The new candidate thesis is:
+1. Nangia et al. 2020 CrowS-Pairs paper
+2. official repository:
+   https://github.com/nyu-mll/crows-pairs
+   especially metric.py
 
-    Architecture-level conclusions about stereotype association are fragile when
-    drawn from a single capability-matched checkpoint and a single benchmark
-    scoring definition. Across the full set of distinct matched-loss comparisons,
-    the apparent reduction associated with looping is inconsistent, and the
-    architecture contrast largely disappears under the changed-token CrowS-Pairs
-    scoring rule. Therefore bias comparisons across neural architectures should
-    test robustness across capability levels and scoring formulations rather than
-    report a single matched operating point.
+The official implementation appears to:
 
-Treat that as a hypothesis to verify, NOT as text that must be preserved.
+- use difflib.SequenceMatcher
+- identify spans with operation == "equal"
+- treat these as shared/non-changing tokens
+- mask and score the NON-CHANGING / UNMODIFIED tokens
+- condition them on the modified demographic tokens
 
-============================================================
-RULE 1 — REPRODUCE EVERYTHING FIRST
-====================================
+It also appears to SUM the relevant log probabilities rather than use the
+length-normalised mean currently described in Eq. 2.
 
-Do not trust either the current paper or CRITICAL_FINDING.md merely because they
-contain numerical values.
+Do not trust this instruction blindly.
+Inspect the official paper and source code directly and document exactly what
+the official metric computes.
 
-Before editing the paper:
+Create:
 
-1. Identify every script/data/checkpoint producing the reported numbers.
-2. Re-run all CPU-feasible analyses.
-3. Reproduce every critical statistic independently from raw/cached outputs.
-4. Record the exact scripts, input files, seeds, item counts, excluded items and
-   software versions.
-5. Compare reproduced numbers against:
+CROWS_SCORER_AUDIT.md
 
-   - FIRE_HyperloopBERT.tex
-   - CRITICAL_FINDING.md
-6. Create:
+with:
 
-   REVISION_AUDIT.md
+- original CrowS-Pairs mathematical definition
+- official metric.py behaviour
+- our current full-sentence PLL definition
+- our current changed-token definition
+- differences in:
+  * scored token set
+  * normalisation
+  * handling of unequal tokenisation
+  * sentence alignment
+  * resulting stereotype score
 
-with columns:
-
-Claim
-Current paper statement
-Reproduced evidence
-Valid / Invalid / Too strong
-Required revision
-Confirmatory or exploratory
-Source script/file
-
-Do not modify the scientific narrative until this audit is complete.
-
-============================================================
-RULE 2 — WITHDRAW UNSUPPORTED CLAIMS
-=====================================
-
-Explicitly search the complete LaTeX source for every occurrence or paraphrase of:
-
-- weight sharing reduces stereotype association
-- weight sharing lowers bias
-- shared encoders record lower stereotype effects
-- both weight-shared encoders
-- direction is consistent
-- for every encoder the effect increases
-- differences cannot be explained by training quality
-- reduction follows from sharing weights
-- Hyperloop proves...
-- fairness improvement
-- debiasing
-- downstream fairness
-
-Check title, abstract, introduction, contributions, Results, figure captions,
-Discussion, Limitations and Conclusion.
-
-Delete or rewrite every unsupported occurrence.
-
-There are THREE architectures with cross-depth weight sharing:
-LoopedBERT, HyperloopBERT and ALBERTLoopedBERT.
-
-Never refer to LoopedBERT and HyperloopBERT as "both weight-shared encoders" when
-ALBERTLoopedBERT is also part of the experiment.
-
-============================================================
-RULE 3 — REBUILD THE PRIMARY ANALYSIS ACROSS ALL ISO-LOSS POINTS
-=================================================================
-
-Do not use the 2.183-vs-2.192 comparison as the sole headline result.
-
-Bands that map to the same snapshot must NOT be treated as independent
-observations.
-
-Build a canonical table of DISTINCT model snapshots / matched comparisons.
-
-For every distinct matched-loss comparison calculate:
-
-- realised validation loss for each architecture
-- absolute loss gap
-- mean stereotype effect
-- bootstrap 95% CI
-- paired architecture Δ
-- paired permutation p-value
-- corrected p-value where inferentially appropriate
-- Cohen's d or the existing paired standardised effect
-- number of items
-
-At minimum compare:
-
-Vanilla vs Looped
-Vanilla vs Hyperloop
-Vanilla vs ALBERT
-
-Do not omit ALBERT merely because its result is inconvenient.
-
-Also analyse Looped vs Hyperloop separately as an equivalence question.
-
-Produce a compact figure showing architecture Δ across realised validation loss.
-
-Zero must be clearly visible.
-
-The figure should make sign reversals obvious.
-
-============================================================
-RULE 4 — MODEL VALIDATION LOSS CONTINUOUSLY
-============================================
-
-The existing manuscript makes the claim that matching within approximately
-0.034 nats removes training-progress confounding.
-
-Do not assume this.
-
-Use the repeated measurements across distinct snapshots to test whether residual
-validation-loss differences are associated with architecture effect differences.
-
-Use an appropriate repeated-measure / clustered analysis, considering:
-
-- mixed-effects modelling,
-- cluster-robust regression,
-- GEE,
-- or another statistically defensible model.
-
-Items are repeatedly measured across checkpoints, so do not treat all
-checkpoint-item observations as independent.
-
-Estimate architecture effects while adjusting continuously for realised validation
-loss.
-
-Test architecture × validation-loss interaction where justified.
-
-Report diagnostics and uncertainty.
-
-If the data are insufficient for a reliable mixed model, explicitly state that and
-use a simpler sensitivity analysis rather than pretending otherwise.
-
-Rewrite "iso-loss removes the confound" to the weaker scientifically justified
-claim:
-
-    iso-loss matching reduces training-progress confounding but approximate
-    checkpoint matching may leave residual capability differences.
-
-============================================================
-RULE 5 — SCORER ROBUSTNESS IS A CENTRAL EXPERIMENT
-===================================================
-
-Evaluate BOTH scoring formulations:
-
-A. length-normalised full-sentence pseudo-log-likelihood used in the original paper
-B. changed-token scoring corresponding to the CrowS-Pairs evaluation implementation
-
-Verify exactly what each scorer computes and document the difference.
-
-For each architecture comparison report:
-
-- Δ
-- raw p
-- corrected p
-- CI
-- effect size
-- scorer
-
-Report item-level rank agreement between scorers.
-
-Investigate the 8 items reported as unalignable:
-
-- identify them
-- explain why alignment failed
-- verify that dropping them does not create the conclusion
-- give a sensitivity result with an appropriate treatment if possible
-
-Do not call either scorer "the correct scorer" unless justified by the benchmark
-documentation.
-
-Use terminology such as:
-"full-sentence PLL formulation" and "changed-token CrowS-Pairs formulation."
-
-The scientific point is scorer sensitivity, not accusing one implementation of
-being wrong.
-
-============================================================
-RULE 6 — CATEGORY HETEROGENEITY
-================================
-
-The aggregate score appears to hide substantial category heterogeneity.
-
-Generate per-bias-category analyses for all sufficiently populated CrowS-Pairs
-categories.
-
-For each category report:
-
-- item count
-- architecture effect estimates
-- bootstrap CIs
-- paired differences where meaningful
-
-Create one compact figure showing category-level effects and sign reversals.
-
-Do not overinterpret very small categories.
-
-Apply correction if category-wise significance tests are reported.
-
-Distinguish descriptive heterogeneity from confirmatory hypothesis testing.
-
-Discuss how an aggregate bias number can hide opposing category patterns.
-
-============================================================
-RULE 7 — LOOPED vs HYPERLOOP EQUIVALENCE
+=========================================================
+RECOMPUTE THE OFFICIAL CROWS-PAIRS RESULT
 =========================================
 
-Reproduce the TOST result between LoopedBERT and HyperloopBERT.
+Implement a scorer reproducing the official CrowS-Pairs metric as faithfully as
+possible for our custom BERT architectures.
 
-A reported result is:
+Validate the implementation first.
 
-equivalence bound ±0.0118
-TOST p ≈ 0.0233
+If possible:
 
-Verify it from source data.
+- run official BERT-base through both the original metric.py and our
+  reimplementation on a subset/full benchmark;
+- confirm numerical or preference-level agreement.
 
-CRITICAL:
-Search timestamped preregistration/specification/git history to determine whether
-±0.0118 was defined BEFORE examining this outcome.
+Then score our architectures.
 
-If genuinely pre-specified:
-call it a pre-specified equivalence margin.
+At minimum evaluate the four models at the deepest common matched point:
 
-If it was defined after seeing the result:
-call it an exploratory equivalence analysis.
+VanillaBERT
+LoopedBERT
+ALBERTLoopedBERT
+HyperloopBERT
 
-Never falsely use "pre-registered", "pre-specified", or "fixed in advance."
+Preferably evaluate ALL existing distinct snapshots because no retraining is
+needed.
 
-Also test whether the equivalence conclusion is sensitive to:
+Use existing per-token outputs if they contain enough information.
+Otherwise perform inference from saved checkpoints.
 
-- matched-loss point
-- scoring formulation
+NO MODEL PRETRAINING IS REQUIRED.
 
-if this can be done from existing cached results.
+If GPU is required, use the cheapest suitable instance and terminate it
+immediately when inference is complete. Never expose PHD_VAST_AI_KEY.
 
-Do not generalise equivalence beyond the conditions actually supported.
+For the official metric report:
 
-============================================================
-RULE 8 — CAPABILITY GATE
-=========================
+- conventional CrowS-Pairs stereotype score
+- continuous per-item statistic if a defensible continuous form exists
+- paired architecture contrasts
+- bootstrap intervals
+- permutation tests
+- appropriate multiple-comparison correction
 
-Reproduce the WinoBias/coreference capability-gate analysis.
+Do not manipulate the official metric merely to make it compatible with the
+old results.
 
-Calculate Jeffreys or another justified binomial interval for each
-architecture × split combination.
-
-If all intervals include 0.5, clearly state that the coreference capability gate
-fails.
-
-Do NOT spend substantial GPU time trying to make the gate pass.
-
-The correct conclusion is that the CrowS-Pairs result concerns association in the
-masked-language-model head and cannot be interpreted as demonstrated downstream
-behavioural fairness.
-
-Check whether any usable GLUE results already exist in logs/checkpoints.
-
-If existing results can be recovered, report them.
-
-If GLUE requires new expensive training, do NOT run it merely to make the paper
-look complete because the coreference gate already fails.
-
-Do not quietly delete a preregistered gate.
-
-============================================================
-RULE 9 — GPU BUDGET
-====================
-
-DEFAULT DECISION: NO NEW GPU TRAINING.
-
-First exhaust:
-
-- cached predictions
-- saved logits
-- existing checkpoints
-- training logs
-- saved evaluation outputs
-- CPU statistical analysis
-
-Do NOT repeat four 7B-token pretraining runs.
-
-Do NOT train new architectures simply to save the original hypothesis.
-
-Before ANY new GPU experiment:
-
-1. Write GPU_REQUIRED.md containing:
-
-   - exact reviewer problem addressed
-   - why existing evidence cannot answer it
-   - experiment
-   - models/checkpoints
-   - dataset
-   - estimated GPU type
-   - estimated runtime
-   - current Vast.ai hourly price
-   - total expected monetary cost
-   - expected scientific value
-   - what conclusion changes depending on the result
-2. Inspect existing project notes/logs to determine compute already consumed.
-3. Respect the overall low-compute budget already specified for this project.
-   Do not assume unused budget exists merely because a GPU key exists.
-4. Query Vast.ai prices before launching anything.
-5. Prefer evaluation/rescoring over training.
-6. Use the cheapest GPU that can safely execute the task.
-7. Terminate the instance immediately after results are copied and verified.
-8. Never leave a Vast.ai instance running unattended.
-
-Only run a GPU experiment when it addresses a likely reviewer-blocking problem
-and fits the remaining documented budget.
-
-If an experiment would merely provide a nicer figure or another weak robustness
-check, do not spend GPU money.
-
-============================================================
-RULE 10 — SEEDS
-================
-
-Search thoroughly for checkpoints/results from additional training seeds.
-
-If additional seeds already exist, analyse them.
-
-If they do not exist, do not manufacture pseudo-replication by treating
-checkpoints/bands/items as training seeds.
-
-State clearly that training uses one seed.
-
-Bootstrap CIs across CrowS-Pairs items measure benchmark-item uncertainty, NOT
-training-run uncertainty.
-
-Make that distinction explicit in the paper.
-
-Do not undertake several new full pretraining runs under the current deadline
-unless an existing budget document shows that they are trivially affordable.
-
-============================================================
-RULE 11 — REFRAME THE PAPER
-============================
-
-Consider replacing the title with:
-
-"Single-Point Bias Comparisons Are Fragile:
-An Iso-Loss Sensitivity Study of Weight-Shared Transformer Encoders"
-
-Alternative:
-
-"When Does Weight Sharing Appear to Reduce Stereotype Association?
-A Robustness Study Across Capability Levels and Scorers"
-
-Choose the title that most accurately matches the reproduced results.
-
-The revised contributions should approximately become:
-
-1. An iso-loss robustness framework for separating architecture comparisons from
-   gross training-progress differences while explicitly testing sensitivity to
-   the selected matched capability level.
-2. Empirical evidence that the apparent architecture effect on CrowS-Pairs is
-   sensitive to matched-loss point and scoring formulation, making a simple claim
-   that weight sharing reduces stereotype association unsupported.
-3. Evidence that LoopedBERT and HyperloopBERT have equivalent association within
-   a practically defined margin under the conditions for which equivalence is
-   actually supported, suggesting that the extra routing mechanism does not yield
-   a measurable association benefit there.
-4. Evidence that aggregate stereotype scores conceal substantial bias-category
-   heterogeneity and sign changes.
-5. A capability-gate result showing that these association measurements should
-   not be interpreted as downstream behavioural fairness at the present training
-   scale.
-
-Modify these depending on reproduced evidence.
-
-============================================================
-RULE 12 — DECIDE REGULAR vs PERSPECTIVE PAPER
+=========================================================
+KEEP THE CHANGED-TOKEN ANALYSIS ONLY IF USEFUL
 ==============================================
 
-Read FIRE2026_REQUIREMENTS.md and the current FIRE 2026 CFP carefully.
+Our existing changed-token scorer can remain as an ADDITIONAL sensitivity
+analysis if scientifically meaningful.
 
-Assess both:
+But NEVER call it:
 
-A. Regular Paper
-B. Perspective Paper
+- official CrowS-Pairs scorer
+- reference implementation scorer
+- benchmark's own scoring rule
+- conventional CrowS-Pairs metric
 
-Given the revised methodological/negative-result story, specifically evaluate
-whether Perspective Paper is the stronger fit.
+Rename it accurately, for example:
 
-A Perspective framing could be:
+"attribute-token-only PLL"
+or
+"modified-token-only PLL"
 
-"Fairness comparisons between neural architectures should not be based on a
-single capability-matched checkpoint and a single scorer."
+depending on exactly what it computes.
 
-If selecting Perspective Paper, create a short explicit section such as:
+The final paper could compare three scoring formulations:
 
-"Perspective: Bias Evaluation as a Robustness Problem"
+A. full-sentence length-normalised PLL
+B. official CrowS-Pairs unmodified/shared-token scoring
+C. modified-token-only scoring
 
-Explain:
+if all three are methodologically defensible.
 
-- conventional practice being challenged
-- why single operating-point comparisons are vulnerable
-- evidence from this study
-- recommended evaluation protocol
-- boundaries of the argument
+The central scorer-sensitivity claim must be based on the actual reproduced
+results, not the desired story.
 
-Do not artificially call it a Perspective Paper merely for lower perceived
-reviewer expectations. It must genuinely satisfy the track definition.
+Update every affected occurrence in:
 
-Write TRACK_DECISION.md with:
+- Abstract
+- Contributions
+- §3.3
+- §5.5
+- figures
+- Discussion
+- Limitations
+- Conclusion
 
-- recommended track
-- reasoning
-- risks
-- changes needed for that track
+Search globally for:
+"changed-token"
+"reference implementation"
+"benchmark's own"
+"benchmark implementation"
+"official"
+and audit every occurrence.
 
-============================================================
-RULE 13 — REDUCE REPETITION
+=========================================================
+BLOCKING ISSUE 2 — STEREOSET TEXT CONTRADICTS TABLE 2
+======================================================
+
+The current §5.6 says approximately:
+
+"the comparisons that were significant on CrowS-Pairs, against LoopedBERT and
+ALBERTLoopedBERT, are not..."
+
+This contradicts Table 2.
+
+At the deepest CrowS-Pairs point Table 2 reports approximately:
+
+Vanilla vs Looped:
+pHolm = 0.0003 — significant
+
+Vanilla vs ALBERT:
+pHolm = 0.0653 — NOT significant
+
+Vanilla vs Hyperloop:
+pHolm = 0.0003 — significant
+
+Therefore the significant CrowS-Pairs contrasts were Looped and Hyperloop,
+not Looped and ALBERT.
+
+Correct §5.6 and search the entire manuscript for similar stale interpretation
+errors.
+
+Create a programmatic consistency table mapping every prose statement about
+significance to the corresponding result table.
+
+No prose significance statement may disagree with a table.
+
+=========================================================
+ISSUE 3 — TEST STEREOSET ACROSS MORE THAN ONE CHECKPOINT
+=========================================================
+
+The paper's central argument is that single-point architecture conclusions are
+fragile.
+
+However, the StereoSet replication currently appears to evaluate only the four
+snapshots at the deepest matched point.
+
+That creates an obvious reviewer question:
+
+"Why criticise single-point evaluation and then validate on the second
+benchmark using another single point?"
+
+StereoSet evaluation is CPU/inference only and requires no new training.
+
+If computationally practical, score StereoSet across all available distinct
+snapshots for all architectures.
+
+Then determine:
+
+- whether direction is stable across capability
+- whether architecture ordering changes across capability
+- whether significance is checkpoint-dependent
+- whether the Hyperloop result persists
+- whether benchmark × capability interactions exist
+
+Do not force StereoSet into the same narrative.
+
+If results differ from CrowS-Pairs, report that honestly.
+
+Add a compact supplementary/main-paper analysis only if it improves the paper.
+
+=========================================================
+ISSUE 4 — DEFINE EXACTLY WHAT "STEREOSET EFFECT" MEANS
+=======================================================
+
+The paper reports:
+
+Effect
+SS
+LMS
+
+for StereoSet, but the method section does not adequately explain how "Effect"
+is constructed from StereoSet's stereotype, anti-stereotype and unrelated
+continuations.
+
+Document precisely:
+
+- dataset split
+- number of examples
+- tokenisation
+- masking procedure
+- stereotype candidate
+- anti-stereotype candidate
+- unrelated candidate
+- formula for our continuous "Effect"
+- formula for standard SS
+- formula for LMS
+- whether these reproduce the official StereoSet implementation
+
+Do not say "identical protocol" if the benchmark structure requires a different
+scoring procedure.
+
+=========================================================
+ISSUE 5 — REVISIT THE CONTINUOUS CAPABILITY REGRESSION
+=======================================================
+
+The current paper pools:
+
+31,668 item × snapshot observations
+1508 items
+21 snapshots
+
+and uses OLS with standard errors clustered only on benchmark item.
+
+This needs a more careful statistical audit.
+
+Architecture and realised validation loss vary at the SNAPSHOT level, while the
+1508 item measurements within each snapshot share the same model checkpoint.
+
+Clustering only by item may fail to capture checkpoint-level dependence and
+may make the effective amount of information look much larger than the 21
+model snapshots that actually identify architecture/loss effects.
+
+Do NOT simply defend the current model.
+
+Compare statistically appropriate alternatives, such as:
+
+1. two-way clustering by:
+
+   - item
+   - model snapshot
+2. small-cluster correction / wild cluster bootstrap where appropriate
+3. analysis of snapshot-level mean effects:
+
+   - one effect estimate per snapshot
+   - uncertainty/weights obtained from the item-level data
+4. hierarchical/mixed modelling only if identifiable from this design
+5. sensitivity analysis using architecture-level trajectories
+
+There are only 21 distinct snapshots and one training seed, so be conservative.
+
+Explicitly distinguish:
+
+number of item-level observations = 31,668
+
+from
+
+number of distinct trained model snapshots = 21.
+
+Do not imply that architecture inference has 31,668 independent experimental
+units.
+
+Create:
+
+REGRESSION_AUDIT.md
+
+Report whether the conclusion
+
+"architecture terms are not distinguishable from zero after adjusting for
+realised loss"
+
+survives reasonable dependence structures.
+
+If it does, retain it with appropriately cautious language.
+
+If it does not, rewrite the manuscript.
+
+=========================================================
+ISSUE 6 — REMOVE CAUSAL OVERSTATEMENT IN DISCUSSION
+====================================================
+
+The current Discussion says approximately:
+
+"capability is doing the work that the architecture appeared to be doing."
+
+That is stronger than the evidence supports.
+
+A non-significant architecture coefficient after loss adjustment does NOT prove
+that capability caused the apparent architecture difference.
+
+It may also reflect:
+
+- limited snapshot-level sample size
+- single training seed
+- residual confounding
+- architecture × training-stage variation
+- uncertainty in the loss adjustment
+
+Replace causal statements with language such as:
+
+"The adjusted analysis is consistent with training capability accounting for
+part of the single-point architecture contrast."
+
+or, if justified by the final analysis:
+
+"After adjustment, the data do not provide clear evidence for an architecture
+effect independent of realised validation loss."
+
+Audit words including:
+
+cause
+drives
+doing the work
+explains
+removes
+isolates
+results from
+due to
+
+Use causal language only where the design permits it.
+
+=========================================================
+ISSUE 7 — MATCHED POINTS ARE NOT A "DISTRIBUTION"
+==================================================
+
+The Discussion currently says that repeating the analysis across matched points
+"converts a point estimate into a distribution".
+
+These matched checkpoints are not independent draws from a sampling
+distribution.
+
+They form a sensitivity trajectory / set of estimates across capability.
+
+Replace "distribution" with:
+
+"trajectory"
+"set of estimates"
+"sensitivity curve"
+or similar accurate language.
+
+Do not interpret variation across checkpoints as statistical sampling
+variation.
+
+=========================================================
+ISSUE 8 — MULTIPLE TESTING ACROSS ALL MATCHED POINTS
+=====================================================
+
+§5.3 reports individual p-values across several matched checkpoints, including
+p = 0.0002 in the opposite direction, and discusses how many points reach
+p < 0.05.
+
+These are exploratory repeated tests.
+
+Do not call individual pointwise values "significant" without specifying the
+multiplicity treatment.
+
+Count all tests actually performed.
+
+At minimum there appear to be multiple baseline-vs-shared tests across
+multiple matched points.
+
+Choose and justify an inferential family.
+
+Possible approaches:
+
+- Holm correction across all pointwise exploratory architecture contrasts;
+- correction separately within architecture contrast, with explicit
+  justification;
+- or remove pointwise significance language and present estimates + confidence
+  intervals as a sensitivity analysis.
+
+Prefer the last approach if inferential families are arbitrary.
+
+When an uncorrected exploratory p-value is shown, label it "nominal p".
+
+Keep the deepest-point pre-specified three-contrast Holm family separate from
+the post-hoc all-band analyses.
+
+=========================================================
+ISSUE 9 — CATEGORY MULTIPLICITY
+================================
+
+The paper performs 27 category-by-contrast tests:
+
+9 categories × 3 architecture contrasts
+
+and currently performs Holm correction "within each contrast".
+
+Audit whether this family definition is justified.
+
+Since the category analysis is explicitly exploratory, consider:
+
+A. correcting all 27 together;
+
+OR
+
+B. retaining three families of 9 with an explicit rationale;
+
+OR preferably
+
+C. making category analysis primarily descriptive:
+   effect estimates + uncertainty + sign structure, while de-emphasising
+   thresholded significance.
+
+Do not make "four significant categories" a major contribution if the number
+depends strongly on the correction family.
+
+=========================================================
+ISSUE 10 — POST-HOC EQUIVALENCE MARGIN
+=======================================
+
+The current manuscript says LoopedBERT and HyperloopBERT are "equivalent within
+an exploratory margin".
+
+The ±0.0118 margin was chosen AFTER looking at the result and is defined as
+half of the observed baseline-vs-looped difference.
+
+This makes the equivalence conclusion substantially weaker than a
+pre-specified SESOI.
+
+Do not promote this as strong equivalence evidence.
+
+Investigate whether a principled equivalence margin can be justified using:
+
+- prior published work
+- benchmark measurement reliability
+- an independently defined practically meaningful effect
+- preregistration/specification written before seeing the contrast
+
+If no independent margin exists:
+
+retain the TOST only as explicitly post-hoc sensitivity evidence and use
+language such as:
+
+"Under a post-hoc illustrative margin of ±..., the interval falls within the
+equivalence region."
+
+Do NOT simply say:
+
+"the two architectures are equivalent."
+
+Consider removing equivalence from the Abstract and main Contributions if it
+cannot be supported by an independently justified margin.
+
+=========================================================
+ISSUE 11 — ARCHITECTURES DO NOT "DIFFER ONLY" IN WEIGHT REUSE
+==============================================================
+
+Search for statements such as:
+
+"the four architectures differ only in how weights are reused across depth"
+
+This is not literally true.
+
+HyperloopBERT additionally includes:
+
+- four residual streams
+- learned mixing/hyper-connections
+- ~19M additional parameters over LoopedBERT
+
+Parameter counts also differ substantially:
+
+Vanilla ≈ 110.1M
+Looped ≈ 67.6M
+Hyperloop ≈ 86.5M
+ALBERT ≈ 32.1M
+
+Hyperloop also uses a different learning rate after instability.
+
+Rewrite architecture descriptions accurately, e.g.:
+
+"All models share tokenizer, hidden width, effective depth, objective and
+training corpus, but differ in parameter-sharing scheme; Hyperloop additionally
+introduces parallel residual streams and learned mixing."
+
+Do not attribute observed differences uniquely to weight sharing.
+
+=========================================================
+ISSUE 12 — INTRODUCTION OVERCLAIMS DOWNSTREAM INHERITANCE
+==========================================================
+
+The Introduction currently says approximately:
+
+"a stereotypical association acquired during pre-training is inherited by every
+component built on it."
+
+This is too deterministic.
+
+Fine-tuning and downstream training can alter representations and behaviour.
+
+Use:
+
+"can propagate into downstream components"
+"may influence downstream systems"
+or similarly cautious wording.
+
+Also audit claims like:
+
+"a better-trained model gives sharper answers on every probe."
+
+Replace "every" unless directly demonstrated.
+
+=========================================================
+ISSUE 13 — SECOND-BENCHMARK INTERPRETATION
+===========================================
+
+The Discussion says that direction agreement across CrowS-Pairs and StereoSet
+is "mild evidence that some small difference exists rather than none."
+
+This may conflict with:
+
+- all-band sign reversals
+- scorer sensitivity
+- continuous adjustment
+- single seed
+- different significant architecture across benchmarks
+
+Use more neutral language unless statistically justified.
+
+For example:
+
+"Directional agreement at the selected operating point is suggestive, but does
+not establish a stable architecture effect because the significance pattern,
+aggregate benchmark behaviour, and capability sensitivity differ."
+
+=========================================================
+ISSUE 14 — REFERENCE AUDIT: CORRECT VERIFIED ERRORS
+====================================================
+
+Audit every bibliography record against the official publication/arXiv/OpenReview
+entry.
+
+I have identified likely errors that MUST be checked:
+
+[22] mHC: Manifold-Constrained Hyper-Connections
+
+The current manuscript lists:
+"Zhijian Xie et al."
+
+The arXiv entry appears to list:
+"Zhenda Xie et al."
+
+Verify and correct the complete author metadata.
+
+[24] Hyperloop Transformers
+
+The current manuscript lists:
+"Abdelrahman Zeitoun"
+
+The official arXiv entry appears to list:
+"Abbas Zeitoun"
+
+Verify and correct.
+
+[27]
+
+The manuscript gives the title approximately:
+
+"Ouro: Scaling Latent Reasoning via Looped Language Models"
+
+The official title appears to be:
+
+"Scaling Latent Reasoning via Looped Language Models"
+
+"Ouro" is the model/family name, not part of the paper title.
+
+Verify and correct.
+
+Also check whether:
+
+"Adaptive Loops and Memory in Transformers: Think Harder or Know More?"
+
+has a published ICLR 2026 workshop version that should replace the arXiv-only
+citation.
+
+Never invent venue metadata.
+
+Create REFERENCES_FINAL_AUDIT.md with:
+reference number,
+current record,
+verified source,
+correction.
+
+=========================================================
+ISSUE 15 — AI DISCLOSURE SHOULD BE FULLY SPECIFIC
+==================================================
+
+FIRE requires compliance with ACM generative-AI policy.
+
+The current disclosure says only:
+
+"a large language model based coding assistant"
+
+That is unnecessarily vague for a disclosure intended to be transparent.
+
+Determine the actual tools used.
+
+If Anthropic Claude was used, say Anthropic Claude.
+If OpenAI ChatGPT was also materially used in writing, analysis, code, figures,
+or interpretation, disclose it too.
+
+Include model/version where known and stable.
+
+Accurately describe the role:
+
+- code writing/debugging
+- statistical-analysis assistance
+- experimental auditing
+- figure generation
+- prose editing
+- identification of robustness weaknesses
+
+Do not imply the AI independently made experimental decisions if humans made
+them.
+
+Keep:
+
+"All numerical claims and interpretations were verified by the authors."
+
+Do not list an AI system as an author.
+
+=========================================================
+ISSUE 16 — FIRE TRACK CHECK
 ============================
 
-The existing paper unnecessarily repeats several messages.
+Check the CURRENT official FIRE 2026 CFP.
 
-Search for repetition of:
+The paper now has a substantial empirical robustness analysis and could be
+submitted as a Regular Paper.
 
-A. weight sharing lowers stereotype association
-B. Hyperloop adds no reduction
-C. Hyperloop is harder to optimise
-D. capability gate is not met
-E. association does not imply downstream fairness
+However, its thesis also challenges a common evaluation practice and could fit
+Perspective.
 
-Use this structure:
+Do not change track automatically.
 
-Abstract:
-one concise statement.
+Write TRACK_FINAL_DECISION.md comparing:
 
-Introduction:
-motivation and contribution only.
+Regular Paper
+Perspective Paper
 
-Results:
-full evidence.
+If Perspective is selected, FIRE specifically expects a short section explaining
+the perspective offered.
 
-Discussion:
-interpretation, not repetition of numbers.
+In that case add a clearly labelled section such as:
 
-Limitations:
-scope restrictions only.
+"Perspective: Architecture Bias Evaluation as a Robustness Problem"
 
-Conclusion:
-2–3 key findings without re-explaining all experiments.
+If Regular is selected, do not add artificial Perspective framing.
 
-Reduce rhetorical repetition aggressively while preserving necessary scientific
-signposting.
+=========================================================
+ISSUE 17 — CCS SCOPE ACCURACY
+==============================
 
-============================================================
-RULE 14 — TRAINING STABILITY CLAIM
-===================================
+The current CCS concepts include:
 
-The existing manuscript risks generalising from individual runs that:
+Information systems -> Retrieval models and ranking
 
-"weight reuse makes optimisation more delicate."
+but the paper does not evaluate a retrieval or ranking model directly.
 
-One Hyperloop run diverging and one ALBERT transient spike under a single seed is
-not sufficient to establish a general architecture property.
+Check whether this CCS code accurately represents the contribution.
 
-Use wording such as:
+Do not use a retrieval CCS label merely to look more FIRE-specific.
 
-"In these runs, HyperloopBERT exhibited substantially greater optimisation
-instability..."
+Prefer CCS concepts matching what is actually studied:
 
-Do not claim a general causal relationship without multi-seed evidence.
+- NLP
+- fairness / user characteristics
+- evaluation / information retrieval only where technically justified
 
-Separate observed fact from mechanistic interpretation.
+FIRE relevance can be explained in Introduction/Discussion without falsely
+implying a retrieval experiment.
 
-============================================================
-RULE 15 — CAUSAL LANGUAGE
-==========================
+=========================================================
+FINAL PAPER-WIDE CONSISTENCY AUDIT
+==================================
 
-Audit the entire manuscript for:
+After all analyses are frozen, create a machine-readable table containing every
+numerical claim in:
 
-causes
-reduces
-improves fairness
-due to
-results from
-follows from
-suppresses
-makes
+Abstract
+Introduction
+Results
+Discussion
+Limitations
+Conclusion
 
-Replace causal language with associational language unless the experimental design
-supports causality.
+For every number record:
 
-Examples:
+- value
+- table/figure/script source
+- corrected or raw p-value
+- confirmatory vs exploratory
+- benchmark
+- scorer
+- checkpoint/band
+- item count
 
-BAD:
-"the stereotype reduction follows from sharing weights"
+Then check that no two parts of the paper describe the same result
+inconsistently.
 
-BETTER:
-"the observed difference at this operating point is associated with the
-weight-sharing configuration."
+Pay special attention to:
 
-But after the robustness analysis, even that statement may need to be removed.
+Looped significance
+ALBERT significance
+Hyperloop significance
+which scorer is official
+number of matched points
+StereoSet interpretation
+number of items
+correction families
+equivalence language
 
-============================================================
-RULE 16 — REFERENCES
-=====================
+=========================================================
+GPU RULE
+========
 
-Audit EVERY bibliography entry.
+Do NOT retrain any encoder.
 
-For each citation verify:
+The only potentially required new computation is evaluation of existing
+checkpoints, especially the genuine official CrowS-Pairs metric and perhaps
+StereoSet across snapshots.
 
-- paper exists
-- author names
-- title
-- year
-- venue
-- pages
-- DOI where available
+First use:
 
-Prefer published conference/journal versions over arXiv when available.
+- cached logits
+- stored per-token probabilities
+- existing evaluation results
+- CPU inference
 
-Pay special attention to recent 2025/2026 references.
+Only use GPU when necessary for checkpoint inference.
 
-Never invent a citation.
+Use the cheapest suitable Vast.ai GPU.
+Estimate cost before launching.
+Terminate immediately afterward.
+Never expose PHD_VAST_AI_KEY.
 
-Create REFERENCES_AUDIT.md.
-
-If you cannot verify a reference, flag it rather than guessing.
-
-============================================================
-RULE 17 — REPRODUCIBILITY
-==========================
-
-FIRE requests enough information for verification and encourages a reproducibility
-statement.
-
-Add a compact Reproducibility section containing, as appropriate:
-
-- data
-- tokenizer
-- architecture configuration
-- training budget
-- seeds
-- checkpoint selection
-- scoring implementation
-- statistical tests
-- software versions
-- hardware
-- code availability
-
-For double-blind review, all repository URLs must be anonymous.
-
-Search the source, bibliography, PDF metadata, comments and supplementary files
-for identifiers including:
-
-Debk
-DevDaring
-author names
-institution names
-personal usernames
-email addresses
-grant identifiers
-
-Do not expose:
-Debk/HyperloopBERT
-DevDaring/HyperloopBert
-or any identifying dataset namespace.
-
-Prepare ANONYMITY_AUDIT.md.
-
-============================================================
-RULE 18 — GENERATIVE AI DISCLOSURE
-===================================
-
-FIRE 2026 explicitly requires compliance with its GenAI/ACM policy.
-
-This research/revision has used Claude.
-
-Determine exactly how Claude was used:
-
-- writing/editing only?
-- statistical analysis?
-- code generation?
-- experiment design?
-- result interpretation?
-- figure generation?
-
-AI use relevant to the actual research methodology/results must be disclosed
-accurately.
-
-FIRE explicitly asks for disclosure of AI-generated/AI-assisted content.
-
-Do not hide the disclosure because the manuscript is double-blind.
-
-Create a short non-identifying "Generative AI Use Disclosure" before References,
-or another FIRE/ACM-compliant location that remains visible in anonymous mode.
-
-Do not use an Acknowledgements environment if the anonymous ACM template suppresses
-it.
-
-Never describe Claude as an author.
-
-The human authors remain responsible for every number and claim.
-
-============================================================
-RULE 19 — ACCESSIBILITY AND FIRE FORMAT
-========================================
-
-Maintain:
-
-\documentclass[sigconf,natbib=true,anonymous=true]{acmart}
-
-Regular/Perspective submissions are double blind.
-
-Maximum:
-9 pages CONTENT
-references excluded.
-
-ACM CCS concepts and keywords are mandatory.
-
-Add meaningful \Description{} text to figures.
-
-Ensure all figures remain interpretable when printed and for readers with
-colour-vision deficiencies.
-
-Do not depend only on colour to distinguish architectures:
-use markers, line styles, labels, or combinations.
-
-The present manuscript is substantially under the 9-page content allowance,
-so use extra space for ROBUSTNESS ANALYSIS, not filler.
-
-============================================================
-RULE 20 — FIGURES AND TABLES
-=============================
-
-Reconsider all current figures/tables.
-
-Likely final visual structure:
-
-Figure 1:
-training trajectories / validation loss, only if necessary to explain matching.
-
-Figure 2:
-architecture association effect across DISTINCT validation-loss checkpoints.
-
-Figure 3:
-architecture contrast Δ across capability levels and both scoring formulations,
-or a compact multi-panel robustness figure.
-
-Figure 4 if space permits:
-category-level heterogeneity.
-
-Table 1:
-architecture specifications.
-
-Table 2:
-primary robust statistical findings.
-
-Table 3:
-equivalence/capability/scorer robustness summary if necessary.
-
-Do not retain a table merely because it existed in the old manuscript.
-
-Every figure should answer a reviewer question.
-
-============================================================
-RULE 21 — ABSTRACT
-===================
-
-Completely rewrite the abstract after the analyses are frozen.
-
-Suggested logical structure:
-
-1 sentence:
-why architecture/bias comparisons are confounded by training capability.
-
-1 sentence:
-iso-loss experiment with four encoders and CrowS-Pairs.
-
-2–3 sentences:
-actual robustness findings across matched-loss points and scorers.
-
-1 sentence:
-Looped-Hyperloop equivalence if verified.
-
-1 sentence:
-coreference gate limitation.
-
-Final sentence:
-methodological implication.
-
-Do not use "debiasing", "fairer", "bias reduction", or "weight sharing reduces
-stereotypes" unless supported by the final analysis.
-
-============================================================
-RULE 22 — DISCUSSION
-=====================
-
-The Discussion should answer:
-
-1. Why did the original single-point analysis look convincing?
-2. Why does all-band analysis change that conclusion?
-3. Why can two plausible PLL scoring formulations disagree?
-4. What does approximate iso-loss matching solve, and what does it not solve?
-5. What does Looped-Hyperloop equivalence tell us?
-6. Why do category-specific sign changes matter?
-7. What can researchers designing architecture fairness comparisons learn from
-   this?
-
-Do not speculate about a biological/representational mechanism without evidence.
-
-============================================================
-RULE 23 — LIMITATIONS
-======================
-
-Explicitly retain:
-
-- one training seed
-- English only
-- CrowS-Pairs benchmark quality limitations
-- capability gate failure
-- incompletely trained encoders
-- approximate rather than exact loss matching
-- sensitivity to scorer
-- exploratory nature of analyses added after discovering the headline instability
-
-Do not bury the post-hoc nature of the robustness analyses.
-
-Reviewer trust is more important than preserving a dramatic result.
-
-============================================================
-RULE 24 — FIRE RELEVANCE
-=========================
-
-Strengthen the connection to FIRE without artificial claims.
-
-Explain why the result matters for IR/NLP systems using pretrained encoders:
-architecture comparisons used in ranking, classification, retrieval and related
-pipelines can produce apparently different fairness conclusions depending on
-evaluation operating point and scorer.
-
-Do not claim that the models were evaluated in a deployed IR system unless they
-actually were.
-
-Keep the India-centric omission as an explicit limitation/future direction.
-
-Do not add a rushed India-bias experiment simply for venue cosmetics unless there
-is already a valid compatible dataset and it can be evaluated methodologically
-correctly at negligible cost.
-
-============================================================
+=========================================================
 FINAL DELIVERABLES
 ==================
 
-After completing the work, produce:
+Produce:
 
-1. FIRE_HyperloopBERT_REVISED.tex
-2. FIRE_HyperloopBERT_REVISED.pdf
-3. REVISION_AUDIT.md
-4. STATISTICAL_AUDIT.md
-5. REFERENCES_AUDIT.md
-6. ANONYMITY_AUDIT.md
-7. TRACK_DECISION.md
-8. GPU_REQUIRED.md, only if GPU experimentation was genuinely necessary
-9. CHANGELOG.md
+1. FIRE_HyperloopBERT_FINAL.tex
+2. FIRE_HyperloopBERT_FINAL.pdf
+3. CROWS_SCORER_AUDIT.md
+4. REGRESSION_AUDIT.md
+5. REFERENCES_FINAL_AUDIT.md
+6. CONSISTENCY_AUDIT.md
+7. TRACK_FINAL_DECISION.md
+8. FINAL_REVIEW.md
 
-CHANGELOG.md must contain:
+FINAL_REVIEW.md must provide:
 
-OLD CLAIM
-NEW CLAIM
-WHY CHANGED
-EVIDENCE
+BLOCKING ISSUES REMAINING:
+NONE or list
 
-Then perform a hostile reviewer pass.
+SCIENTIFIC CLAIM NOW SUPPORTED:
+one paragraph
 
-Pretend you are Reviewer #2 attempting to reject the paper.
+CLAIMS THAT MUST NOT BE MADE:
+list
 
-List every reason for rejection under:
+CONFIRMATORY ANALYSES:
+list
 
-- novelty
-- statistics
-- confounding
-- benchmark choice
-- architecture fairness attribution
-- scorer choice
-- one seed
-- capability
-- FIRE relevance
-- reproducibility
-- anonymity
-- references
-- AI disclosure
-- writing
+EXPLORATORY ANALYSES:
+list
 
-Fix every issue that can be fixed honestly.
+RECOMMENDED FIRE TRACK:
+Regular / Perspective
 
-Finally output FINAL_REVIEW.md containing:
+READY TO SUBMIT:
+YES / NO
 
-Overall recommendation:
-READY / NOT READY FOR FIRE
-
-Recommended FIRE track
-
-Five strongest contributions
-
-Five remaining weaknesses
-
-Every claim that must NOT be made
-
-Any indispensable work before submission
-
-Do not mark READY unless the PDF and all reported numbers are internally
-consistent.
+Do not mark READY TO SUBMIT = YES until the genuine official CrowS-Pairs
+scoring implementation has been verified and all prose/table inconsistencies
+have been eliminated.
