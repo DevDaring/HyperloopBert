@@ -247,7 +247,7 @@ where the stereotypical reading is correct and cases where it is not.
 
 \begin{table}[t]
 \centering
-\caption{One item from each of the three evaluation datasets.}
+\caption{Samples from each of the three evaluation datasets.}
 \label{tab:data}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -520,6 +520,64 @@ VanillaBERT      & 2.183 & 0.0707 & [0.045, 0.097] & --- & --- \\
 LoopedBERT       & 2.192 & 0.0471 & [0.022, 0.072] & 0.0237 & 0.0003 \\
 ALBERTLoopedBERT & 2.163 & 0.0591 & [0.034, 0.085] & 0.0116 & 0.0653 \\
 HyperloopBERT    & 2.196 & 0.0466 & [0.022, 0.071] & 0.0241 & 0.0003 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{What the encoders predict}
+\label{sec:qualitative}
+
+The numbers above are summaries of model output, so it is worth seeing that
+output directly. Table~\ref{tab:qual} gives the three most probable words each
+encoder places at a masked position, at the same matched point used in
+Table~\ref{tab:band}.
+
+Three things are visible. The encoders are weak on fact: asked for the capital of
+France, none of the four puts \emph{paris} in its top three, and the unshared
+baseline instead repeats \emph{capital} from the prompt. They nonetheless carry a
+strong occupational gender association: on the engineer sentence every encoder
+places \emph{he} first, with probability from 0.54 to 0.71. And the association
+does not run symmetrically. On the nurse sentence, where the common stereotype
+points to \emph{she}, all four instead place \emph{it} first and \emph{she}
+nowhere in the top three, because at this scale raw pronoun frequency dominates a
+single probe.
+
+That asymmetry is the reason the study measures paired differences rather than
+reading probabilities off individual prompts. A single probe conflates the
+demographic association with how common the candidate word is; the paired design
+in Section~\ref{sec:method} cancels the second term by holding the sentence fixed
+and changing only the group term.
+
+\begin{table}[t]
+\centering
+\caption{The three most probable words each encoder predicts at the mask, at the
+matched point of Table~\ref{tab:band}.}
+\label{tab:qual}
+\footnotesize
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{ll}
+\toprule
+\multicolumn{2}{l}{\emph{The capital of France is} [MASK].} \\
+\midrule
+VanillaBERT      & capital 0.13, france 0.06, italy 0.04 \\
+LoopedBERT       & france 0.03, now 0.02, here 0.02 \\
+ALBERTLoopedBERT & france 0.09, italy 0.05, spain 0.03 \\
+HyperloopBERT    & unknown 0.07, here 0.02, france 0.01 \\
+\midrule
+\multicolumn{2}{l}{\emph{The engineer explained that} [MASK] \emph{had finished the design.}} \\
+\midrule
+VanillaBERT      & \textbf{he 0.54}, they 0.12, it 0.12 \\
+LoopedBERT       & \textbf{he 0.54}, they 0.28, it 0.04 \\
+ALBERTLoopedBERT & \textbf{he 0.62}, they 0.22, it 0.04 \\
+HyperloopBERT    & \textbf{he 0.71}, they 0.15, it 0.06 \\
+\midrule
+\multicolumn{2}{l}{\emph{The nurse said that} [MASK] \emph{would be back shortly.}} \\
+\midrule
+VanillaBERT      & it 0.31, this 0.09, he 0.08 \\
+LoopedBERT       & it 0.34, this 0.16, they 0.09 \\
+ALBERTLoopedBERT & it 0.53, this 0.07, he 0.05 \\
+HyperloopBERT    & it 0.26, they 0.20, this 0.19 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -909,8 +967,9 @@ with items as clusters. Analyses run under Python 3.10 with NumPy 2.2, pandas
 2.3, SciPy 1.15 and statsmodels 0.14, with all random seeds fixed; re-running the
 analysis scripts reproduces every reported number exactly.
 % CAMERA-READY: replace the anonymised mirror with the permanent repository URL.
-Code, per-item scores for every snapshot, and the analysis scripts are available
-at \url{https://anonymous.4open.science/r/HyperloopBert/}.
+Code, per-item scores for every snapshot, the masked-position predictions behind
+Table~\ref{tab:qual}, and the analysis scripts are available at
+\url{https://anonymous.4open.science/r/HyperloopBert/}.
 
 % 
 % ================================================================= conclusion
