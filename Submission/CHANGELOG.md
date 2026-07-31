@@ -33,3 +33,33 @@ The Generative AI Use Disclosure is retained per §5.1 of the review.
 0 undefined references, 0 LaTeX errors. Abstract 282 words, mean sentence 14.1,
 longest 22. Anonymity check on the rendered text: no author, affiliation, or
 identifying repository string.
+
+## Post-pass addition — model output table (§6.3, Table 5)
+
+A reviewer asked to see what the encoders actually produce, since the results are
+otherwise all summary statistics.
+
+The first version listed top-3 predicted words for three prompts. It was replaced
+because two of the three showed weak prediction rather than bias, and the third
+showed an *absence* of the expected association, so the table did not demonstrate
+what it was meant to.
+
+The current version reports the paired probabilities the encoders assign to
+\emph{he} and \emph{she} at a masked pronoun, for three occupation sentences that
+differ by one word. It is taken from
+`Codes/results/stage3/qualitative/mlm_targeted_contrast.csv`, deduplicated because
+that dump ran twice, and no value was rounded beyond three decimals.
+
+It carries three things:
+
+- **the association is large** — on the scientist sentence the baseline puts 68
+  times more probability on *he* than *she*, and every encoder favours *he* by at
+  least 15:1;
+- **it is occupation-specific, not a blanket preference** — on the teacher
+  sentence the same baseline reverses and prefers *she* by close to 6:1, so the
+  encoders have learned which occupation goes with which pronoun;
+- **a single probe is still not enough** — on the secretary sentence, where the
+  stereotype points to *she*, every encoder prefers *he*, because pronoun
+  frequency competes with the association. This is the argument for the paired
+  design, and the text now makes it.
+

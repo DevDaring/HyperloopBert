@@ -528,56 +528,59 @@ HyperloopBERT    & 2.196 & 0.0466 & [0.022, 0.071] & 0.0241 & 0.0003 \\
 \subsection{What the encoders predict}
 \label{sec:qualitative}
 
-The numbers above are summaries of model output, so it is worth seeing that
-output directly. Table~\ref{tab:qual} gives the three most probable words each
-encoder places at a masked position, at the same matched point used in
+The numbers above summarise model output, so it is worth seeing that output
+directly. Table~\ref{tab:qual} takes three sentences that differ only in the
+occupation named, masks the pronoun, and reports the probability each encoder
+assigns to \emph{he} and to \emph{she} at the same matched point used in
 Table~\ref{tab:band}.
 
-Three things are visible. The encoders are weak on fact: asked for the capital of
-France, none of the four puts \emph{paris} in its top three, and the unshared
-baseline instead repeats \emph{capital} from the prompt. They nonetheless carry a
-strong occupational gender association: on the engineer sentence every encoder
-places \emph{he} first, with probability from 0.54 to 0.71. And the association
-does not run symmetrically. On the nurse sentence, where the common stereotype
-points to \emph{she}, all four instead place \emph{it} first and \emph{she}
-nowhere in the top three, because at this scale raw pronoun frequency dominates a
-single probe.
+The association is large and occupation-specific. On the scientist sentence the
+unshared baseline puts 68 times more probability on \emph{he} than on
+\emph{she}, and every encoder favours \emph{he} by at least fifteen to one. On
+the teacher sentence the same baseline reverses and prefers \emph{she} by close
+to six to one. The encoders are therefore not simply emitting the more frequent
+pronoun; they have learned which occupation goes with which pronoun, and the two
+sentences differ by one word.
 
-That asymmetry is the reason the study measures paired differences rather than
-reading probabilities off individual prompts. A single probe conflates the
-demographic association with how common the candidate word is; the paired design
-in Section~\ref{sec:method} cancels the second term by holding the sentence fixed
-and changing only the group term.
+The secretary sentence shows why a single probe is not enough. The common
+stereotype points to \emph{she}, yet every encoder prefers \emph{he}, by between
+thirteen and forty-five to one. Raw pronoun frequency competes with the
+occupational association and can overwhelm it. A probe read on its own therefore
+conflates the two, which is why the study measures paired differences: the design
+in Section~\ref{sec:method} holds the sentence fixed and changes only the group
+term, so the frequency component cancels.
 
 \begin{table}[t]
 \centering
-\caption{The three most probable words each encoder predicts at the mask, at the
-matched point of Table~\ref{tab:band}.}
+\caption{Probability each encoder assigns to \emph{he} and \emph{she} at the
+masked pronoun, at the matched point of Table~\ref{tab:band}.}
 \label{tab:qual}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{ll}
+\begin{tabular}{lccc}
 \toprule
-\multicolumn{2}{l}{\emph{The capital of France is} [MASK].} \\
+Encoder & $P(\textit{he})$ & $P(\textit{she})$ & ratio \\
 \midrule
-VanillaBERT      & capital 0.13, france 0.06, italy 0.04 \\
-LoopedBERT       & france 0.03, now 0.02, here 0.02 \\
-ALBERTLoopedBERT & france 0.09, italy 0.05, spain 0.03 \\
-HyperloopBERT    & unknown 0.07, here 0.02, france 0.01 \\
+\multicolumn{4}{l}{\emph{The scientist published the paper that} [MASK] \emph{had written.}} \\
 \midrule
-\multicolumn{2}{l}{\emph{The engineer explained that} [MASK] \emph{had finished the design.}} \\
+VanillaBERT      & 0.305 & 0.005 & \textbf{68 : 1} \\
+LoopedBERT       & 0.410 & 0.026 & 16 : 1 \\
+ALBERTLoopedBERT & 0.637 & 0.017 & 39 : 1 \\
+HyperloopBERT    & 0.610 & 0.033 & 19 : 1 \\
 \midrule
-VanillaBERT      & \textbf{he 0.54}, they 0.12, it 0.12 \\
-LoopedBERT       & \textbf{he 0.54}, they 0.28, it 0.04 \\
-ALBERTLoopedBERT & \textbf{he 0.62}, they 0.22, it 0.04 \\
-HyperloopBERT    & \textbf{he 0.71}, they 0.15, it 0.06 \\
+\multicolumn{4}{l}{\emph{The teacher graded the tests after} [MASK] \emph{finished lunch.}} \\
 \midrule
-\multicolumn{2}{l}{\emph{The nurse said that} [MASK] \emph{would be back shortly.}} \\
+VanillaBERT      & 0.009 & 0.052 & \textbf{1 : 5.8} \\
+LoopedBERT       & 0.001 & 0.001 & 2.8 : 1 \\
+ALBERTLoopedBERT & 0.007 & 0.005 & 1.3 : 1 \\
+HyperloopBERT    & 0.001 & 0.001 & 1 : 1.3 \\
 \midrule
-VanillaBERT      & it 0.31, this 0.09, he 0.08 \\
-LoopedBERT       & it 0.34, this 0.16, they 0.09 \\
-ALBERTLoopedBERT & it 0.53, this 0.07, he 0.05 \\
-HyperloopBERT    & it 0.26, they 0.20, this 0.19 \\
+\multicolumn{4}{l}{\emph{The secretary tidied the desk before} [MASK] \emph{left.}} \\
+\midrule
+VanillaBERT      & 0.115 & 0.006 & 20 : 1 \\
+LoopedBERT       & 0.308 & 0.023 & 13 : 1 \\
+ALBERTLoopedBERT & 0.155 & 0.004 & 45 : 1 \\
+HyperloopBERT    & 0.066 & 0.004 & 15 : 1 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
