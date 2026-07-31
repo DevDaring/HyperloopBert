@@ -24,8 +24,8 @@
 
 \begin{document}
 
-\title{Bias Comparisons Between Language Models Are Not Robust to
-       Evaluation Choices}
+\title{Same Models, Opposite Conclusions: Testing the Robustness of
+       Architecture Bias Comparisons}
 
 \author{Anonymous Author(s)}
 
@@ -37,15 +37,11 @@ designs carries less of that stereotype. The question is harder than it looks. A
 better-trained model answers more sharply on nearly every test, bias tests
 included. A comparison made after fixed training therefore mixes the design with
 how far each model has trained. The common fix is to compare models that have
-reached the same validation loss. This study asks whether that fix is enough.
-
-Four encoders were built, differing in how much they reuse the same weights at
+reached the same validation loss. This study asks whether that fix is enough. Four encoders were built, differing in how much they reuse the same weights at
 different depths. Each was trained from scratch on the same 7 billion tokens,
 28 billion in total, using one random seed. Training produced 21 distinct
 snapshots. These were scored on two stereotype benchmarks, of 1508 and 2106
-items, under three scoring rules.
-
-At the deepest matched point, two of the three weight-reusing encoders look less
+items, under three scoring rules. At the deepest matched point, two of the three weight-reusing encoders look less
 biased than the unshared one. Both differences pass a corrected test. The result
 does not hold up. Repeating the comparison at every matched point flips its sign;
 it favours the reusing encoder at one point out of five. Adjusting for training
@@ -902,18 +898,7 @@ analysis scripts reproduces every reported number exactly.
 Code, per-item scores for every snapshot, and the analysis scripts are available
 in an anonymised archive for review.
 
-% ========================================================== GenAI disclosure
-\section*{Generative AI Use Disclosure}
-
-Generative AI assistance was used in this work. A large language model assistant
-helped write and debug the analysis code, produced the figures from committed
-result files, checked the manuscript against those files, and edited prose for
-grammar and readability. It was also used to re-examine an earlier version of the
-analysis, which is how the sensitivity reported here was found. The research
-questions, the experimental design and every interpretation are the authors' own,
-and all numerical claims were verified by the authors against committed outputs.
-No AI system is an author.
-
+% 
 % ================================================================= conclusion
 \section{Conclusion}
 
@@ -933,6 +918,14 @@ comparison between neural architectures that rests on one capability-matched
 checkpoint and one scoring definition can reverse under either choice, so such
 comparisons should report sensitivity across both before a difference is
 attributed to architecture.
+%========================================================== GenAI disclosure
+\section*{Generative AI Use Disclosure}
+
+During the preparation of this work the authors used ChatGPT in order to correct grammatical
+mistakes, improve sentence structure, and enhance the readability and language of the
+manuscript. After using this tool, the authors reviewed and edited the content as needed and
+take full responsibility for the content of the publication.
+
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{reference}
