@@ -38,10 +38,9 @@ better-trained model answers more sharply on nearly every test, bias tests
 included. A comparison made after fixed training therefore mixes the design with
 how far each model has trained. The common fix is to compare models that have
 reached the same validation loss. This study asks whether that fix is enough. Four encoders were built, differing in how much they reuse the same weights at
-different depths. Each was trained from scratch on the same 7 billion tokens,
-28 billion in total, using one random seed. Training produced 21 distinct
-snapshots. These were scored on two stereotype benchmarks, of 1508 and 2106
-items, under three scoring rules. At the deepest matched point, two of the three weight-reusing encoders look less
+different depths. Each was trained from scratch on identical data with a single
+random seed, and snapshotted whenever it reached a target validation loss. Those
+snapshots were scored on two stereotype benchmarks under three scoring rules. At the deepest matched point, two of the three weight-reusing encoders look less
 biased than the unshared one. Both differences pass a corrected test. The result
 does not hold up. Repeating the comparison at every matched point flips its sign;
 it favours the reusing encoder at one point out of five. Adjusting for training
@@ -52,6 +51,8 @@ difference of three stays significant, and for a different encoder. All four
 encoders answer at chance on a pronoun-resolution test, so these numbers describe
 word association rather than task behaviour. Bias comparisons between model
 designs should be reported across several training levels and scoring rules.
+Code, checkpoints and per-item scores:
+\url{https://anonymous.4open.science/r/HyperloopBert/}
 \end{abstract}
 
 % ---------------------------------------------------------- CCS and keywords
@@ -117,7 +118,8 @@ the architecture.
 Four encoders are compared. All share the tokeniser, hidden width, effective
 depth, objective and training corpus, and they differ in their parameter-sharing
 scheme: an unshared baseline, a looped encoder that applies six blocks twice, an
-ALBERT-style encoder that applies one block twelve times \citep{lan2020albert},
+\emph{ALBERT}-style encoder that applies one block twelve times
+\citep{lan2020albert},
 and a looped encoder that additionally introduces four parallel residual streams
 with learned mixing \citep{zhu2025hyperconnections}. \label{sec:intro-bundle}The comparison is therefore
 between architecture bundles rather than a clean manipulation of one variable:
@@ -129,25 +131,26 @@ statement about ``shared'' encoders has to account for all three.
 This paper makes three contributions.
 
 \begin{enumerate}
-\item A comparison protocol that holds training progress fixed by matching
-      models on validation loss, and then checks whether the conclusion survives
-      the choice of which matched point is used and which scoring rule is
-      applied.
-\item Evidence that the apparent architecture effect is sensitive to both
-      choices. It reverses sign across matched training levels, does not survive
-      correction under either of two other scoring rules, and replicates in
-      direction but not in significance on a second benchmark.
-\item Evidence that an aggregate stereotype score conceals sign changes among the
-      individual bias categories, together with a capability check showing that
-      these measurements should not be read as evidence about behaviour on a
-      downstream task.
+\item We introduce a comparison protocol that holds training progress fixed by
+      matching models on validation loss, then tests whether the conclusion
+      survives the choice of matched point and of scoring rule.
+\item We show that the apparent architecture effect is sensitive to both choices:
+      it reverses sign across matched training levels, does not survive correction
+      under either of two other scoring rules, and replicates in direction but not
+      in significance on a second benchmark.
+\item We show that an aggregate stereotype score conceals sign changes among
+      individual bias categories, and that a capability check rules out reading
+      these measurements as evidence about downstream behaviour.
 \end{enumerate}
 
-Section~\ref{sec:related} reviews the relevant measurement and weight-sharing
-literature. Section~\ref{sec:method} defines the encoders, the matching protocol
-and the three scoring rules. Section~\ref{sec:results} reports the
-robustness analyses, and Section~\ref{sec:limits} states what the evidence does
-not support.
+Section~\ref{sec:related} reviews the measurement and weight-sharing literature
+and Section~\ref{sec:data} describes the corpus and the three evaluation sets.
+Section~\ref{sec:method} defines the encoders, the matching protocol and the
+three scoring rules, and Section~\ref{sec:setup} gives the training runs.
+Section~\ref{sec:results} reports the robustness analyses and
+Section~\ref{sec:discussion} interprets them. Section~\ref{sec:limits} sets out
+the scope restrictions, Section~\ref{sec:repro} records what is needed to
+reproduce the work, and Section~\ref{sec:conclusion} concludes.
 
 % ================================================================ related work
 \section{Related Work}
@@ -206,7 +209,8 @@ the paper.
 
 \subsection{Pre-training corpus}
 
-All four encoders are pre-trained on FineWeb-Edu \citep{penedo2024fineweb}, a
+All four encoders are pre-trained on \emph{FineWeb-Edu}
+\citep{penedo2024fineweb}, a
 filtered subset of web text selected for educational content. Each encoder sees
 the same 7 billion tokens in the same order, at a sequence length of 128 tokens,
 with a single tokeniser fitted once and reused. No encoder sees different data or
@@ -221,19 +225,20 @@ names a social group. If the model consistently prefers the version matching a
 common stereotype, that preference is taken as evidence of an association.
 Table~\ref{tab:data} shows one item from each.
 
-CrowS-Pairs \citep{nangia2020crows} contains 1508 sentence pairs written by
+\emph{CrowS-Pairs} \citep{nangia2020crows} contains 1508 sentence pairs written by
 crowdworkers, each labelled with one of nine bias categories. The pairs are
 minimal: usually a single demographic term changes. Category sizes are uneven,
-from 516 pairs for race and colour down to 60 for disability, which matters when
+from 516 pairs for the category the dataset labels \texttt{race-color} down to 60
+for disability, which matters when
 results are broken down by category in Section~\ref{sec:category}.
 
-StereoSet \citep{nadeem2021stereoset} is used in its intrasentence split, 2106
+\emph{StereoSet} \citep{nadeem2021stereoset} is used in its intrasentence split, 2106
 items across four bias types. Each item gives a context sentence with a blank and
 three ways of filling it: a stereotypical completion, an anti-stereotypical one,
 and an unrelated one. The unrelated option is what allows a separate check that
 the model can do the task at all, independently of which group term it prefers.
 
-WinoBias \citep{zhao2018winobias} is used as a capability check rather than as a
+\emph{WinoBias} \citep{zhao2018winobias} is used as a capability check rather than as a
 bias measure. Each item is a sentence containing two occupations and a pronoun
 that refers to one of them. Resolving the pronoun requires understanding the
 sentence, so a model at chance here cannot be demonstrating a stereotypical
@@ -434,24 +439,22 @@ all.
 \section{Experimental Setup}
 \label{sec:setup}
 
-The corpus and benchmarks are described in Section~\ref{sec:data}. An integrity
-check compares the tokeniser checksum and block count against a manifest at the
-start of every run. Training uses the AdamW optimiser at a peak learning rate of
-$3 \times 10^{-4}$, batch size 512, a warmup over the first tenth of the steps,
-and gradient clipping at 1.0, in mixed precision on one H100 GPU
-\citep{dao2022flashattention}. Encoders reach the deepest common
-matched point after different token counts, between 1.53 and 2.07 billion.
+The corpus and benchmarks are described in Section~\ref{sec:data} and the full
+training configuration in Section~\ref{sec:repro}. Three properties of the runs
+bear on how the results should be read. First, the encoders reach the deepest
+common matched point after different amounts of training, between 1.53 and 2.07
+billion tokens, so matching on loss does not imply matching on budget.
 
-HyperloopBERT is the one exception to the shared learning rate. At
-$3 \times 10^{-4}$ its loss became non-finite, and at half that value it did so
-later in training; its snapshots come from the run at $1.5 \times 10^{-4}$.
-Holding the learning rate fixed would have compared three stable models against
-one that failed to train, so the peak learning rate is tuned per architecture and
-the arms are matched on validation loss rather than on hyper-parameters.
+Second, HyperloopBERT is the one exception to the shared learning rate. At the
+common peak rate its loss became non-finite, and at half that value it did so
+later in training; its snapshots come from the lower-rate run. Holding the
+learning rate fixed would have compared three stable models against one that
+failed to train, so the peak rate is tuned per architecture and the arms are
+matched on validation loss rather than on hyper-parameters.
 
-Training uses a single seed. Every interval reported in this paper is a bootstrap
-over benchmark items and therefore quantifies benchmark-item uncertainty, not
-uncertainty across training runs. No claim in this paper is supported by
+Third, training uses a single seed. Every interval reported in this paper is a
+bootstrap over benchmark items and therefore quantifies benchmark-item
+uncertainty, not uncertainty across training runs. No claim here is supported by
 replication across seeds.
 
 % ==================================================================== results
@@ -503,7 +506,9 @@ separates them far less than the effect-size column does.
 \begin{table}[t]
 \centering
 \caption{Results at the deepest matched point, where the four snapshots agree
-within 0.034 nats.}
+within 0.034 nats. \emph{Effect} is the mean paired stereotype score over items;
+the interval is an item bootstrap; $\Delta$ is the contrast against VanillaBERT;
+$p_{\text{Holm}}$ is the corrected permutation $p$-value.}
 \label{tab:band}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -582,7 +587,9 @@ rather than evidence of absence.
 \begin{table}[t]
 \centering
 \caption{Bias score explained by encoder design and by training progress,
-estimated from the 21 snapshots.}
+estimated from the 21 snapshots. Coefficients are on the effect scale; the two
+$p$-value columns come from the snapshot-level fit and from a bootstrap over
+snapshots.}
 \label{tab:model}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -635,7 +642,9 @@ less than 0.0006.
 
 \begin{table}[t]
 \centering
-\caption{The three contrasts at the matched point under each scoring rule.}
+\caption{The three contrasts at the matched point under each scoring rule. Each
+entry is $\Delta$, the contrast against VanillaBERT; positive means the baseline
+scores higher.}
 \label{tab:rules2}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -696,8 +705,9 @@ the task.
 
 \begin{table}[t]
 \centering
-\caption{Results on the second benchmark, StereoSet, at the same matched
-point.}
+\caption{Results on the second benchmark, \emph{StereoSet}, at the same matched
+point. \emph{SS} is the stereotype score and \emph{LMS} the language-modelling
+score, both percentages; $\Delta$ and $p_{\text{Holm}}$ are against VanillaBERT.}
 \label{tab:stereoset}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -724,7 +734,7 @@ family is taken to be the nine categories within one contrast; that count depend
 on the family chosen and is not treated as a finding. The stable observation is
 structural: four of the nine categories change sign depending on which shared
 encoder is compared. The aggregate difference is carried mainly by
-race-colour, the largest category with 516 items, where the
+\texttt{race-color}, the largest category with 516 items, where the
 baseline-versus-looped contrast is 0.0468 ($p_{\text{Holm}} = 0.0009$), and by
 disability, a much smaller category of 60 items, where it is 0.0802
 ($p_{\text{Holm}} = 0.047$). Sexual orientation runs the other way for two of the
@@ -780,6 +790,7 @@ failures and were checked to contain no non-finite values.
 
 % ================================================================= discussion
 \section{Discussion}
+\label{sec:discussion}
 
 The single-point result looked convincing for good reasons.
 Table~\ref{tab:band} has every feature of a solid finding: a pre-stated contrast
@@ -878,13 +889,16 @@ the same robustness protocol to it is the first direction this work would pursue
 
 % =========================================================== reproducibility
 \section{Reproducibility}
+\label{sec:repro}
 
 Data are as described in Section~\ref{sec:data}, with a checksum and block-count
 manifest verified at the start of every run. Architectures are as in
 Table~\ref{tab:arch},
 trained with AdamW, peak learning rate $3 \times 10^{-4}$ (HyperloopBERT
 $1.5 \times 10^{-4}$), batch size 512, 10\% warmup, gradient clipping 1.0,
-bfloat16 autocast, one seed (42), on one H100 GPU. Snapshots are selected by
+bfloat16 autocast, one seed (42), on one H100 GPU. Attention uses the
+memory-efficient exact implementation of \citet{dao2022flashattention}, which the
+run log confirms was active throughout. Snapshots are selected by
 first crossing of a pre-set validation loss target. Scoring is 32-bit for both
 formulations; the StereoSet replication reruns the identical scoring code on CPU
 from the same snapshots and reproduces stored CrowS-Pairs item scores to within
@@ -894,13 +908,14 @@ bootstraps, Holm correction within each contrast family, and cluster-robust OLS
 with items as clusters. Analyses run under Python 3.10 with NumPy 2.2, pandas
 2.3, SciPy 1.15 and statsmodels 0.14, with all random seeds fixed; re-running the
 analysis scripts reproduces every reported number exactly.
-% CAMERA-READY: restore the concrete repository and checkpoint URLs here.
+% CAMERA-READY: replace the anonymised mirror with the permanent repository URL.
 Code, per-item scores for every snapshot, and the analysis scripts are available
-in an anonymised archive for review.
+at \url{https://anonymous.4open.science/r/HyperloopBert/}.
 
 % 
 % ================================================================= conclusion
 \section{Conclusion}
+\label{sec:conclusion}
 
 Four encoders differing in cross-depth weight sharing were pre-trained on
 identical data and compared at matched validation loss. At the deepest matched
