@@ -70,7 +70,7 @@ VAL_FINE_MARGIN = 0.15
 
 # Eval Params
 BIAS_EVAL_BATCH_SIZE = 50  # rows written per CSV append
-VAL_DATASET_NAMESPACE = 'Debk'
+VAL_DATASET_NAMESPACE = 'ANONYMOUS'
 
 # Directories (relative to project root)
 RESULTS_DIR = 'results/stage1'

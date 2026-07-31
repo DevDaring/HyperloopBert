@@ -1,7 +1,7 @@
 """
 upload_to_hf.py -- publish trained models, adapters and results to the Hub.
 
-Target: https://huggingface.co/Debk/HyperloopBERT  (override with --repo)
+Target: https://huggingface.co/ANONYMOUS/HyperloopBERT  (override with --repo)
 
 SECURITY CONTRACT
 -----------------
@@ -127,7 +127,7 @@ See `PRE_REGISTRATION_AMENDMENT.md` and `CODE_README.md` for the full reference 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--stage', default='stage1')
-    ap.add_argument('--repo', default='Debk/HyperloopBERT')
+    ap.add_argument('--repo', default='ANONYMOUS/HyperloopBERT')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
 

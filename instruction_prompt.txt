@@ -1,3 +1,0 @@
-Use gcloud to connect with gcp account - koushik_phd21@iiitkalyani.ac.in . 
-Project id- silicon-guru-472717-q9 . 
-Create an optimal gpu so that you can run stage 1 code. 

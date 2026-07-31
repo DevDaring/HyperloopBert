@@ -48,7 +48,7 @@ def _standardize_pair_columns(df, dataset_label):
     )
 
 
-def download_multi_crows_pairs(namespace: str = 'Debk'):
+def download_multi_crows_pairs(namespace: str = 'ANONYMOUS'):
     """Download Multi-CrowS-Pairs (English subset).
 
     Tries the project namespace first (spec 7.2: --dataset-namespace lets an
@@ -229,7 +229,7 @@ def _write_indian_provenance(prov_dir, base_repo, n_pairs, category_counts):
     logger.info(f"Provenance report written to {prov_path}")
 
 
-def download_indian_bias(namespace: str = 'Debk'):
+def download_indian_bias(namespace: str = 'ANONYMOUS'):
     """
     Download the Indian bias instrument (Indian-BhED base + multilingual
     extension) and write the spec-7.2 deliverables:
@@ -297,7 +297,7 @@ def download_indian_bias(namespace: str = 'Debk'):
         return
 
     # English-only pipeline guard: an English WordPiece model cannot score
-    # non-Latin-script text (e.g. the Bengali Debk mirror), so skip if the
+    # non-Latin-script text (e.g. the Bengali ANONYMOUS mirror), so skip if the
     # loaded pairs are not predominantly English.
     if not _is_predominantly_english(df):
         logger.error(f"Indian bias dataset from {used_repo} is not predominantly "
@@ -434,7 +434,7 @@ def create_mlm_validation_set():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset-namespace', type=str, default='Debk',
+    parser.add_argument('--dataset-namespace', type=str, default='ANONYMOUS',
                         help='HF org prefix for project datasets (spec 7.2)')
     args = parser.parse_args()
 

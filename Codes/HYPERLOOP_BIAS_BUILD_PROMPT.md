@@ -456,7 +456,7 @@ to differentiate architectures' bias encoding, not to reach BERT-base perplexity
 
 ### 7.2 Evaluation datasets
 
-A CLI flag `--dataset-namespace` (default `Debk`) controls the HF org prefix (for anonymous
+A CLI flag `--dataset-namespace` (default `ANONYMOUS`) controls the HF org prefix (for anonymous
 submission, mirror to an anonymous org and pass it here).
 
 - **Multi-CrowS-Pairs** — `{namespace}/Multi-CrowS-Pairs`, English CSV ->

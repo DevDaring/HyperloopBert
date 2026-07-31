@@ -151,7 +151,7 @@ VAL_FINE_MARGIN = 0.15
 
 # Eval Params
 BIAS_EVAL_BATCH_SIZE = 50
-VAL_DATASET_NAMESPACE = 'Debk'
+VAL_DATASET_NAMESPACE = 'ANONYMOUS'
 
 # GLUE fine-tuning params
 GLUE_TASKS = ['sst2', 'mrpc', 'qnli', 'rte']  # full screen for the final paper

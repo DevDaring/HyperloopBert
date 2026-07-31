@@ -44,7 +44,7 @@ DEFAULT_ISO_BANDS = [4.0, 3.7, 3.4, 3.1]
 
 # Eval Params
 BIAS_EVAL_BATCH_SIZE = 50
-VAL_DATASET_NAMESPACE = 'Debk'
+VAL_DATASET_NAMESPACE = 'ANONYMOUS'
 
 # GLUE fine-tuning params
 GLUE_TASKS = ['sst2', 'rte']  # SST-2 + RTE sufficient for Stage 2
