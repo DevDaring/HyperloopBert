@@ -18,6 +18,8 @@
   2026}{India}
 
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
 \usepackage{adjustbox}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -134,11 +136,11 @@ This paper makes three contributions.
 \item We introduce a comparison protocol that holds training progress fixed by
       matching models on validation loss, then tests whether the conclusion
       survives the choice of matched point and of scoring rule.
-\item We show that the apparent architecture effect is sensitive to both choices:
+\item This work shows that the apparent architecture effect is sensitive to both choices:
       it reverses sign across matched training levels, does not survive correction
       under either of two other scoring rules, and replicates in direction but not
       in significance on a second benchmark.
-\item We show that an aggregate stereotype score conceals sign changes among
+\item It has been shown that an aggregate stereotype score conceals sign changes among
       individual bias categories, and that a capability check rules out reading
       these measurements as evidence about downstream behaviour.
 \end{enumerate}
@@ -156,48 +158,67 @@ reproduce the work, and Section~\ref{sec:conclusion} concludes.
 \section{Related Work}
 \label{sec:related}
 
-Work on measuring stereotype association in masked models begins with paired
-benchmarks. CrowS-Pairs scores a model on minimal pairs differing only in a demographic term
-and records how often the stereotypical member receives the higher
-pseudo-log-likelihood \citep{nangia2020crows}. StereoSet uses a related paired
-construction \citep{nadeem2021stereoset}, building on the masked-position probing
-of \citet{kurita2019measuring}. The instruments carry documented problems.
-\citet{blodgett2021salmon} audited them and found unclear or inconsistent items
-in a large share of pairs, warning against reading one aggregate number as a
-measure of harm. \citet{wang2025difference} separate correlation-type benchmarks,
-which record association, from descriptive and normative benchmarks, which record
-whether a model treats groups differently when it should. The measure used here
-is of the correlation type.
+Three lines of work meet in this paper: how stereotype association is measured in
+masked encoders, how reusing weights changes what an encoder is, and what happens
+to measured bias when model capacity changes. Each leaves an open question that
+the next one takes up, and the last leaves the question this study answers.
 
-A separate line of work reuses weights across depth. ALBERT ties one encoder block across all layers and trades quality for storage
-\citep{lan2020albert}. \citet{saunshi2025looped} show that a $k$-layer block
-looped $L$ times approaches the reasoning performance of a $kL$-layer model, and
-\citet{bae2025mor} learn a per-token recursion depth over a shared block.
-\citet{geiping2025huginn}, \citet{zhu2025ouro} and \citet{frey2026adaptive} study
-related recurrent-depth models. Hyper-connections generalise the residual
-connection to several parallel streams with learned mixing
-\citep{zhu2025hyperconnections}, later constrained to a manifold by
-\citet{xie2025mhc}; \citet{zeitoun2026hyperloop} combine looping with
-hyper-connections. This literature evaluates quality, efficiency and reasoning,
-not social bias.
+Measurement came first. CrowS-Pairs scores a model on minimal pairs differing
+only in a demographic term and records how often the stereotypical member
+receives the higher pseudo-log-likelihood \citep{nangia2020crows}. StereoSet uses
+a related paired construction \citep{nadeem2021stereoset}, both building on the
+masked-position probing of \citet{kurita2019measuring}. Audits followed.
+\citet{blodgett2021salmon} found unclear or inconsistent items in a large share
+of pairs and warned against reading one aggregate number as a measure of harm.
+\citet{wang2025difference} separate correlation-type benchmarks, which record
+association, from descriptive and normative ones, which record whether a model
+treats groups differently when it should; the measure used here is of the
+correlation type. What these audits question is the instrument: whether an item
+means what it claims, and whether one number deserves the weight put on it. They
+stop short of the next question. When the same imperfect instrument is used to
+compare \emph{two} models, flaws common to both may cancel in the difference, or
+they may not. Whether a comparison keeps its sign and its significance when the
+measurement is varied is an empirical question, and it has not been asked of
+these benchmarks.
 
-A third line asks how changing model capacity changes what a model records about
-social groups. \citet{hooker2020characterising} found that pruning degrades accuracy unevenly
+Asking it needs two models that differ in one designed way, and the axis used
+here comes from a separate literature. ALBERT ties one encoder block across all
+layers, trading quality for storage \citep{lan2020albert}.
+\citet{saunshi2025looped} show that a $k$-layer block looped $L$ times approaches
+the reasoning performance of a $kL$-layer model, and \citet{bae2025mor} learn a
+per-token recursion depth over a shared block. \citet{geiping2025huginn},
+\citet{zhu2025ouro} and \citet{frey2026adaptive} study related recurrent-depth
+models. Hyper-connections generalise the residual connection to several parallel
+streams with learned mixing \citep{zhu2025hyperconnections}, later constrained to
+a manifold by \citet{xie2025mhc}; \citet{zeitoun2026hyperloop} combine looping
+with hyper-connections. This literature reports quality, efficiency and reasoning,
+never social bias. It also compares after a fixed budget, at which a shared-weight
+encoder that has not trained as far answers differently on any test, a bias test
+included. A bias comparison read off such a setup would inherit that confound
+before any measurement question arose.
+
+One line does connect capacity to bias, and it is the closest precedent.
+\citet{hooker2020characterising} found that pruning degrades accuracy unevenly
 across groups. \citet{xu2022compression} and \citet{ramesh2023comparative} report
-outcomes whose direction depends on the compression method and the benchmark,
-and \citet{voria2026tracing} localise stereotype-carrying neurons inside
-pre-trained transformers. These studies compress a model after training. The
-present work varies sharing before training and compares at matched quality,
-which isolates the architectural question from the recovery dynamics of a
-compressed checkpoint. The disagreement among their conclusions is itself part of
-the motivation: if the measured direction depends on evaluation choices, mixed
-results across studies are expected.
+outcomes whose direction depends on the compression method and the benchmark, and
+\citet{voria2026tracing} localise stereotype-carrying neurons inside pre-trained
+transformers. Two things are left open. These studies change capacity
+\emph{after} training, so what they observe mixes the capacity change with the
+recovery dynamics of a compressed checkpoint; varying sharing before training and
+comparing at matched quality separates the two. And their disagreement is itself
+informative rather than incidental: if the measured direction depends on the
+method and the benchmark, conflicting results across studies are exactly what
+should be expected, yet no study has taken a single such conclusion and tested
+whether it survives its own evaluation choices. That test is what this paper
+performs.
 
-Finally, fairness in information access is an established concern for retrieval and
-ranking systems \citep{ekstrand2022fairness,singh2018fairness}. The present study
-contributes to the measurement side of that literature rather than to ranking
-itself: it asks whether a comparison between two encoders is stable under
-defensible variations of the evaluation procedure.
+The result matters beyond encoder design. Fairness in information access is an
+established concern for retrieval and ranking systems
+\citep{ekstrand2022fairness,singh2018fairness}, and a claim that one model design
+carries less stereotype than another is the kind of evidence a deployment
+decision would rest on. This study contributes to the measurement side of that
+literature rather than to ranking itself: it asks whether such a claim is stable
+under variations of the evaluation procedure that were arbitrary to begin with.
 
 % =================================================================== datasets
 \section{Data}
@@ -247,33 +268,40 @@ where the stereotypical reading is correct and cases where it is not.
 
 \begin{table}[t]
 \centering
-\caption{Samples from each of the three evaluation datasets.}
+\caption{One example item from each evaluation dataset.}
 \label{tab:data}
 \footnotesize
-\begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{ll}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\columnwidth}{@{}l>{\raggedright\arraybackslash}X@{}}
 \toprule
-\multicolumn{2}{l}{\textbf{CrowS-Pairs} (1508 pairs, 9 categories) --- gender} \\
+\textbf{Sentence role} & \textbf{Example text} \\
 \midrule
-stereotypical & \ldots whether \emph{he} would come forward. \\
+\multicolumn{2}{@{}l@{}}{\textbf{CrowS-Pairs} \quad 1508 pairs, 9 categories
+  \quad \textit{primary measure}} \\
+\cmidrule(lr){1-1}\cmidrule(l){2-2}
+stereotypical      & \ldots whether \emph{he} would come forward. \\
 anti-stereotypical & \ldots whether \emph{she} would come forward. \\
+\addlinespace[3pt]
 \midrule
-\multicolumn{2}{l}{\textbf{StereoSet} (2106 items, 4 types) --- profession} \\
-\midrule
-context & The chess player was \_\_\_\_. \\
-stereotypical & \ldots was \emph{asian}. \\
+\multicolumn{2}{@{}l@{}}{\textbf{StereoSet} \quad 2106 items, 4 types
+  \quad \textit{second measure}} \\
+\cmidrule(lr){1-1}\cmidrule(l){2-2}
+context            & The chess player was \_\_\_\_. \\
+stereotypical      & \ldots was \emph{asian}. \\
 anti-stereotypical & \ldots was \emph{hispanic}. \\
-unrelated & \ldots was \emph{fox}. \\
+unrelated          & \ldots was \emph{fox}. \\
+\addlinespace[3pt]
 \midrule
-\multicolumn{2}{l}{\textbf{WinoBias} (374 items) --- capability check} \\
-\midrule
-pro-stereotypical & The developer argued with the designer because \emph{he} \\
-                  & did not like the design. \\
-anti-stereotypical & The developer argued with the designer because \emph{she} \\
-                   & did not like the design. \\
+\multicolumn{2}{@{}l@{}}{\textbf{WinoBias} \quad 374 items
+  \quad \textit{capability check, not a bias measure}} \\
+\cmidrule(lr){1-1}\cmidrule(l){2-2}
+pro-stereotypical  & The developer argued with the designer because \emph{he}
+                     did not like the design. \\
+anti-stereotypical & The developer argued with the designer because \emph{she}
+                     did not like the design. \\
 \bottomrule
-\end{tabular}
-\end{adjustbox}
+\end{tabularx}
 \end{table}
 
 % ===================================================================== method
@@ -319,8 +347,7 @@ every possible realisation of it. Table~\ref{tab:arch} gives the sizes.
 
 \begin{table}[t]
 \centering
-\caption{The four encoders. All share width, depth, tokeniser, objective and
-corpus.}
+\caption{The four encoders, ordered by how much weight they reuse.}
 \label{tab:arch}
 \small
 \begin{adjustbox}{max width=\columnwidth}
@@ -493,7 +520,10 @@ VanillaBERT and LoopedBERT overlap closely and end lowest.}
 
 Table~\ref{tab:band} reports the deepest common matched point, where the four
 snapshots agree to within 0.034 nats of validation loss, a difference of well
-under two per cent. Read alone, this table supports the
+under two per cent. Its columns are the mean paired stereotype score over items,
+written \emph{Effect}; a 95\% interval obtained by resampling the items; the
+contrast against VanillaBERT, written $\Delta$; and the permutation $p$-value
+after Holm correction, written $p_{\text{Holm}}$. Read alone, this table supports the
 conclusion that weight sharing goes with a lower stereotype effect: LoopedBERT
 and HyperloopBERT both sit below the baseline, and both contrasts survive Holm
 correction with $p_{\text{Holm}} = 0.0003$. The third shared encoder does not:
@@ -505,10 +535,7 @@ separates them far less than the effect-size column does.
 
 \begin{table}[t]
 \centering
-\caption{Results at the deepest matched point, where the four snapshots agree
-within 0.034 nats. \emph{Effect} is the mean paired stereotype score over items;
-the interval is an item bootstrap; $\Delta$ is the contrast against VanillaBERT;
-$p_{\text{Holm}}$ is the corrected permutation $p$-value.}
+\caption{Results at the deepest matched point.}
 \label{tab:band}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -552,8 +579,8 @@ term, so the frequency component cancels.
 
 \begin{table}[t]
 \centering
-\caption{Probability each encoder assigns to \emph{he} and \emph{she} at the
-masked pronoun, at the matched point of Table~\ref{tab:band}.}
+\caption{Probability assigned to \emph{he} and to \emph{she} at the masked
+pronoun.}
 \label{tab:qual}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -614,8 +641,7 @@ family at the deepest matched point in Table~\ref{tab:band} is kept separate.
 bootstrap error bars. All three contrast curves cross the zero line, and the
 baseline-versus-looped curve is negative at four of its five points and positive
 only at the lowest-loss point.}
-\caption{Difference between the unshared baseline and each weight-reusing
-encoder, at every matched point.}
+\caption{Contrast against the unshared baseline at every matched point.}
 \label{fig:delta}
 \end{figure}
 
@@ -628,7 +654,10 @@ for continuously. The regression uses 31\,668 architecture-snapshot-item rows,
 but architecture and loss vary only across the \emph{21 distinct snapshots}, and
 those 21 are the units that identify the coefficients; the item rows are not
 independent experimental units for this purpose. Table~\ref{tab:model} therefore
-reports the snapshot-level fit alongside a wild cluster bootstrap over snapshots.
+reports the snapshot-level fit alongside a wild cluster bootstrap over snapshots,
+and its two $p$-value columns come from those two procedures. The coefficients
+are on the effect scale, so they can be read directly against the $\Delta$ column
+of Table~\ref{tab:band}.
 
 The conclusion is the same under four dependence models: clustering on item,
 two-way clustering on item and snapshot, collapsing to one observation per
@@ -647,10 +676,7 @@ rather than evidence of absence.
 
 \begin{table}[t]
 \centering
-\caption{Bias score explained by encoder design and by training progress,
-estimated from the 21 snapshots. Coefficients are on the effect scale; the two
-$p$-value columns come from the snapshot-level fit and from a bootstrap over
-snapshots.}
+\caption{Bias score explained by encoder design and by training progress.}
 \label{tab:model}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -672,7 +698,9 @@ Realised loss     & $-0.0184$ & \textbf{0.0002} & \textbf{0.0049} \\
 
 The same four snapshots were rescored under the other two rules, so the contrast
 can be recomputed without retraining anything. Figure~\ref{fig:robust}(a) places
-the results side by side and Table~\ref{tab:rules2} gives the numbers.
+the results side by side and Table~\ref{tab:rules2} gives the numbers, each entry
+being the contrast $\Delta$ against VanillaBERT, so a positive value means the
+unshared baseline scores higher.
 
 Neither alternative reproduces the headline result. Under the shared-token rule
 no contrast survives correction: the difference against the looped encoder falls
@@ -703,9 +731,7 @@ less than 0.0006.
 
 \begin{table}[t]
 \centering
-\caption{The three contrasts at the matched point under each scoring rule. Each
-entry is $\Delta$, the contrast against VanillaBERT; positive means the baseline
-scores higher.}
+\caption{The three contrasts at the matched point under each scoring rule.}
 \label{tab:rules2}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -731,8 +757,8 @@ matched point under three scoring rules; the two alternative rules give interval
 that cross zero, and the official rule places the looped contrast on the opposite
 side. Panel b plots the contrast for nine bias categories, with values on both
 sides of zero.}
-\caption{The same comparisons under (a) different scoring rules and (b) the nine
-bias categories.}
+\caption{The same comparisons under (a) each scoring rule and (b) each bias
+category.}
 \label{fig:robust}
 \end{figure*}
 
@@ -744,7 +770,10 @@ scored on StereoSet, using the full-sentence rule and the stereotypical against
 anti-stereotypical pair, so the numbers are comparable to Table~\ref{tab:band}.
 The unrelated completion supplies a separate check that the encoders can do the
 task. All 2106 items were scored by all four encoders and no retraining was
-needed. Table~\ref{tab:stereoset} reports the outcome.
+needed. Table~\ref{tab:stereoset} reports the outcome: the paired effect, then
+the benchmark's own stereotype score \emph{SS} and language-modelling score
+\emph{LMS}, both percentages, and finally the contrast and corrected $p$-value
+against VanillaBERT.
 
 The direction agrees on all three contrasts: every shared encoder again records a
 lower effect than the unshared baseline. The statistical conclusion does not
@@ -767,8 +796,7 @@ the task.
 \begin{table}[t]
 \centering
 \caption{Results on the second benchmark, \emph{StereoSet}, at the same matched
-point. \emph{SS} is the stereotype score and \emph{LMS} the language-modelling
-score, both percentages; $\Delta$ and $p_{\text{Holm}}$ are against VanillaBERT.}
+point.}
 \label{tab:stereoset}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}

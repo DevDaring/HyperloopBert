@@ -63,3 +63,35 @@ It carries three things:
   frequency competes with the association. This is the argument for the paired
   design, and the text now makes it.
 
+## Presentation pass — Table 1, Related Work, captions
+
+**Table 1 (datasets).** Had no column headers at all: two unlabelled columns with
+dataset names buried in spanning rows, and the two WinoBias sentences broken by
+hand across rows. Rebuilt on `tabularx` with real headers (*Sentence role* /
+*Example text*), a banded row per dataset carrying its size and its role in the
+study (primary measure / second measure / capability check), and an `X` column so
+long examples wrap on their own instead of being split manually.
+
+**Related Work.** Reordered as a gap analysis rather than three parallel surveys.
+Each paragraph now closes on the question it leaves open and the next one opens
+by taking it up:
+
+1. measurement — the audits question the *instrument*; they never ask whether a
+   *comparison between two models* keeps its sign when the measurement is varied;
+2. weight reuse — supplies two models differing in one designed way, but reports
+   only quality, efficiency and reasoning, and compares at a fixed budget, so a
+   bias reading would inherit the training-progress confound;
+3. capacity and bias — the closest precedent, but it changes capacity after
+   training, and its own disagreement across studies is the reason to ask whether
+   a single conclusion survives its evaluation choices;
+4. IR fairness — why the answer matters for a deployment decision.
+
+No citation was dropped.
+
+**Captions.** All cut to one line, per the instruction that explanation belongs in
+the text. The symbol definitions the captions used to carry (Effect, the interval,
+Delta, p_Holm, SS, LMS, the coefficient scale, the sign convention) were moved
+into the prose of the sections that own those tables, not deleted.
+
+Rebuild: 9 pages, references begin on page 9, 0 overfull, 0 undefined refs.
+
