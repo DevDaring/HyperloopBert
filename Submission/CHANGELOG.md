@@ -95,3 +95,84 @@ into the prose of the sections that own those tables, not deleted.
 
 Rebuild: 9 pages, references begin on page 9, 0 overfull, 0 undefined refs.
 
+## Academic-register and specificity pass (abstract untouched)
+
+Instruction: make the prose academic rather than conversational, and state for
+every result *which dataset, which models, and over what it is aggregated*. The
+abstract was left byte-identical, as it had already been edited by hand.
+
+### A substantive finding surfaced by the pass
+
+Making the scoring rules precise exposed that the paper's own description of them
+was incomplete. The official CrowS-Pairs implementation differs from this
+project's shared-token rule along **three** axes, not two:
+
+| | token set | aggregation | stereotypical member |
+|---|---|---|---|
+| full-sentence | all | mean | `sent_more` always |
+| shared-token | shared | mean | `sent_more` always |
+| official | shared (difflib) | **sum** | **by direction label** |
+
+The third axis was undocumented in the paper. It matters: 218 of the 1508 pairs
+carry `stereo_antistereo == antistereo`, and on those the official code treats
+`sent_less` as the stereotypical member, flipping the sign of the per-item
+effect. The project's stored per-item scores were verified to use
+`sent_more` as stereotypical on 100% of rows including all 218.
+
+`analysis/fire2026/phase7_scorer_decomposition.py` crosses aggregation with
+direction convention on a fixed token set. Result (contrast vs VanillaBERT):
+
+```
+                       mean/sent_more   mean/official   sum/sent_more   sum/official
+Vanilla vs Looped         +0.0076         -0.0035         +0.0919         -0.0519
+Vanilla vs ALBERT         +0.0097         -0.0030         +0.0948         -0.0163
+Vanilla vs Hyperloop      +0.0155         +0.0077         +0.1305         +0.0488
+```
+
+Aggregation scales magnitude by roughly the mean shared-token count (15.9) and
+**never changes a sign**; the direction convention flips the sign for two of the
+three contrasts under either aggregation. The paper's reported reversal under the
+official rule is therefore attributable to a convention affecting 14.5% of the
+benchmark, not to the token set or to summation. Table 7 gained a fourth row
+making this explicit, and Table 3 a fourth column.
+
+### Errors found and corrected
+
+Checking every result statement against the CSVs turned up four:
+
+- **"positive at five of five" for ALBERTLoopedBERT** — it is **four of five**.
+  The five distinct matched points give +0.0224, -0.0060, +0.0074, +0.0026,
+  +0.0116.
+- **"averaged over its five matched points the contrast is -0.0063"** — -0.0063
+  is the mean over the seven *nominal* bands, which counts one shared snapshot
+  three times. Over the five *distinct* matched points it is **-0.0050**.
+- **"2.997 versus 2.968 nats, a tighter match than the headline point"** — false.
+  That pair is matched to 0.029 nats; the headline pair is matched to 0.0086,
+  three times tighter. The claim was removed and the interval reported instead.
+- **"inflates the architecture standard error by roughly 70%"** — true only for
+  the LoopedBERT term. Across the three terms the inflation is **27 to 70%**.
+
+Also corrected: WinoBias has **374 items in each of the two splits**, not 374
+items split evenly between them.
+
+### Specificity added throughout
+
+Every result statement now names its dataset, its scoring rule, its snapshot and
+its aggregation. Section 6 opens with a blanket statement of the default (all
+1508 CrowS-Pairs pairs, full-sentence rule, contrast against VanillaBERT,
+positive = baseline higher) so individual sentences need not repeat it. New
+specifics include the 21 snapshots broken down per architecture (4/5/5/7), the
+StereoSet per-type sizes (962 race, 810 profession, 255 gender, 79 religion) and
+the negative profession effect on all four encoders, Cohen's d per contrast,
+the CrowS-Pairs direction-label counts (1290/218), and the explicit note that
+Table 5 is a hand-constructed probe set drawn from neither benchmark.
+
+### Length
+
+The pass added roughly 1.5 pages, which had to come back out to respect the
+9-page content limit. Content now ends on page 9 with references beginning on
+page 10. Trimming was prose-only plus modest figure scaling; no number, no
+qualifier and no caveat was dropped to make room.
+
+Build: 10 pages total, content ends page 9, 0 overfull, 0 undefined references.
+
