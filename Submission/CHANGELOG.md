@@ -176,3 +176,94 @@ qualifier and no caveat was dropped to make room.
 
 Build: 10 pages total, content ends page 9, 0 overfull, 0 undefined references.
 
+## Register pass (FINAL_REVIEW.md) — wording only
+
+Converted the paper from a conversational/narrative register to a plain formal
+technical register. **No numeric value, citation key, table cell, symbol
+definition, or section order was changed.** Verified mechanically: all 413
+numerals and all citation keys from the Introduction onward are byte-identical
+to the previous commit.
+
+### Abstract — rewritten to the FINAL_REVIEW §2 target
+
+The supervisor's `\textcolor{red}` / `\textcolor{blue}` markup flagged the
+abstract for register, so the markup itself was removed and the abstract replaced
+with the version supplied in FINAL_REVIEW.md §2. Every claim and number is
+preserved. Representative changes:
+
+| before | after |
+|---|---|
+| "a stereotype it encodes can spread to all of them" | "propagate to every system built on the model" |
+| "The question is harder than it looks." | folded into "This comparison is confounded with model capability." |
+| "A better-trained model answers more sharply" | "assigns sharper probabilities on nearly every probe" |
+| "mixes the design with how far each model has trained" | "reflects both the architecture and the amount of training" |
+| "This study asks whether that fix is enough." | "this study evaluates whether it is sufficient" |
+| "Four encoders were built" | "Four encoders are trained" |
+| "look less biased than the unshared one" | "record a lower stereotype effect than the unshared baseline" |
+| "The result does not hold up." | "The effect does not replicate." |
+| "flips its sign" | "reverses its sign" |
+
+### Group A — idioms → technical phrasing
+
+§1 "harder than it appears" → "difficult to answer because the compared quantity
+is confounded with model capability"; "the natural remedy" → "the standard
+control"; "tests whether that control suffices" → "evaluates whether that control
+is sufficient"; "carries less of that association" → "encodes less of that
+association".
+
+### Group B — Related Work narrative transitions → topic sentences
+
+"Measurement came first." → "Measurement of stereotype association developed
+first."; "Audits followed." → "Audits of these benchmarks followed."; "They stop
+short of the question that follows." → "These audits do not address the question
+that follows."; "Asking it needs two models differing in one designed way" →
+"Answering it requires two models that differ along a single design axis"; "One
+line does connect capacity to bias" → "A third line relates model capacity to
+measured bias"; "Two things are left open." → "This line leaves two questions
+open."; "That test matters beyond encoder design." → "This test is relevant
+beyond encoder design." Thematic grouping and every citation unchanged.
+
+### Group C — model personification → operational description (§4.3)
+
+"the model is asked how likely the original word was in that slot" → "the
+probability of the original token at that position is evaluated"; "higher means
+the model finds the sentence more plausible" → "A higher value indicates that the
+model assigns greater probability to the sentence"; "The intuition is that a
+model holding the stereotype should find the same surrounding words more likely"
+→ "Under this rule, an encoder that encodes the stereotype assigns higher
+probability to the shared context when the stereotypical term is present."
+
+### Group D — reader-engaging framing → neutral statement
+
+"This section describes what was built and how it was measured." → "This section
+defines the four encoders, the matching protocol, and the three scoring rules.";
+"so it is worth inspecting the underlying model output" → "The underlying model
+output is therefore examined directly."; "The single-point result was convincing
+for defensible reasons." → "The single-point result has the features of a sound
+finding."; "which is the difficulty" → "which is the central difficulty".
+
+### Sentence length (§5.2)
+
+Split 16 long or clause-stacked sentences, including the 7-clause chain in the
+Conclusion, the three-respects sentence in §4.3, and the aggregate-score sentence
+in §7. Median sentence length is 20 words. Sentences still above 30 words are
+concentrated in the equation-to-symbol definitions and the statistical
+description, both of which FINAL_REVIEW §4 exempts from editing.
+
+### Vocabulary (§5.1)
+
+"Both are moreover scored" → "Both are also scored". "independent measurement
+paradigms" → "independent measurement approaches". No banned buzzword or rare
+word was introduced. British spelling retained throughout; the two remaining
+instances of `color` are inside `\texttt{race-color}`, which is the dataset's own
+category label and must not be re-spelled.
+
+### Preserved unchanged
+
+All hedging and negative-result framing: the single-seed caveat, "absence of
+evidence rather than evidence of absence", the failed capability gate, the
+direction-convention attribution to the 218 antistereo pairs, the exploratory
+labelling of the post-hoc analyses. The Generative AI Use Disclosure is intact.
+
+Build: 10 pages, content ends page 9, 0 overfull, 0 undefined references.
+
