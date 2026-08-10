@@ -267,3 +267,52 @@ labelling of the post-hoc analyses. The Generative AI Use Disclosure is intact.
 
 Build: 10 pages, content ends page 9, 0 overfull, 0 undefined references.
 
+## Optional polish pass (FINAL_REVIEW.md, second version)
+
+FINAL_REVIEW.md was replaced with a shorter document listing four optional items.
+All four were applied.
+
+**1. §6.2 — numbers that merely restate Table 4 removed.** Seven values were
+dropped from the prose because each is already visible in that encoder's Table 4
+row: Δ = 0.0237, Δ = 0.0241, p_Holm = 0.0003, Δ = 0.0116, the interval
+[−0.0008, 0.0240], and p_Holm = 0.065. The paragraph keeps the qualitative finding
+and both numbers that are *not* tabulated — Cohen's d = 0.115 / 0.098 / 0.047 and
+the 55.4–55.8 aggregate range — and now points at Table 4 by reference. Both
+retained figures were re-confirmed against `contrasts_band2.2.csv` and
+`overall_band2.2.csv` before writing. The scope limit was honoured: §6.4
+(Δ = −0.0222, mean −0.0050), §6.6 (+0.0076 vs −0.0035, +0.0919 vs −0.0519, 58.49,
+56.6 vs 53.4) and §6.7 (Δ and p) are untouched, since there the numbers are the
+argument.
+
+**2. Figure 3(b) axis label.** The panel took its tick labels straight from the
+`Category` column of `per_category_contrasts.csv`, which spells the category
+`race-colour`. The plotting script now maps that one label to `race-color` at
+draw time, matching §3.2, §6.8 and the dataset's own label. The CSV is unchanged.
+Both figures regenerated. All three occurrences of the label in the built PDF now
+read `race-color`.
+
+**3. §6.6 first person removed.** "we cross aggregation with direction convention"
+→ "aggregation is crossed with the direction convention". The verb-first "We
+specify / We show / We show" in the contributions list is left intact, as
+instructed.
+
+**4. §4.3 permutation sentence split.** Broken after the test is named, giving two
+sentences instead of one 45-word sentence with a colon and three clauses.
+
+### Unrelated repair: `reference.bib` had been truncated
+
+The working copy of `reference.bib` was 42 bytes — the closing two lines of the
+Singh & Joachims entry and nothing else. BibTeX consequently emitted
+`\begin{thebibliography}{0}`, and all 44 citations rendered undefined. The file
+was restored from the previous commit (14 447 bytes, 31 entries); the surviving
+fragment's DOI is present in that version, so nothing was lost. The truncated file
+is kept at `/tmp/reference.bib.truncated-backup` for the session. After restoring,
+all 27 cited keys resolve.
+
+### Verification
+
+- Only seven numerals differ from the previous commit, and all seven are the §6.2
+  values listed above. No numeral was added. All citation keys identical.
+- 0 overfull boxes, 0 undefined references, 27 bibliography entries rendered.
+- 10 pages; content ends on page 9.
+

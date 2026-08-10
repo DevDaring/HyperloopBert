@@ -467,7 +467,7 @@ encoders at the same matched point, so each item yields one paired difference
 $d_i = e_i^{\text{base}} - e_i^{\text{other}}$, and the contrast $\Delta$ is the
 mean of those differences over the $N$ items of the benchmark. The null
 hypothesis $\mathbb{E}[d_i] = 0$ is tested by a paired sign-flip permutation
-test: the signs of the $N$ differences are independently randomised over
+test. The signs of the $N$ differences are independently randomised over
 $m = 10^4$ draws, and the $p$-value is the Phipson--Smyth estimate $(b+1)/(m+1)$,
 where $b$ counts the draws at least as extreme as the observed $|\Delta|$
 \citep{phipson2010permutation}. Confidence intervals are percentile bootstraps
@@ -557,17 +557,15 @@ percentile item bootstrap interval; the contrast $\Delta$ against
 \emph{VanillaBERT}; and the Holm-corrected permutation $p$-value over the family
 of three contrasts.
 
-Read in isolation, this table supports the conclusion that weight reuse
+Read in isolation, Table~\ref{tab:band} supports the conclusion that weight reuse
 accompanies a lower stereotype effect. \emph{LoopedBERT} and
-\emph{HyperloopBERT} fall below the unshared baseline by $\Delta = 0.0237$ and
-$\Delta = 0.0241$, both surviving Holm correction at
-$p_{\text{Holm}} = 0.0003$; \emph{ALBERTLoopedBERT} does not, differing by
-$\Delta = 0.0116$ with a bootstrap interval covering zero, $[-0.0008, 0.0240]$,
-at $p_{\text{Holm}} = 0.065$. All three are small in standardised terms, at
-Cohen's $d = 0.115$, $0.098$ and $0.047$ respectively. The benchmark's own
-aggregate, the percentage of the 1508 pairs preferring the stereotypical member,
-separates the four far less, placing all between 55.4 and 55.8 with overlapping
-intervals.
+\emph{HyperloopBERT} fall below the unshared baseline, and both contrasts survive
+Holm correction. \emph{ALBERTLoopedBERT} does not, with a bootstrap interval
+covering zero. All three effects are small in standardised terms, at Cohen's
+$d = 0.115$, $0.098$ and $0.047$ for the looped, hyper-connected and
+ALBERT-style encoders respectively. The benchmark's own aggregate, the percentage
+of the 1508 pairs preferring the stereotypical member, separates the four far
+less, placing all between 55.4 and 55.8 with overlapping intervals.
 
 \begin{table}[t]
 \centering
@@ -758,8 +756,8 @@ individual pairs rather than rescale one another.
 
 Because the official rule differs along three axes at once
 (Section~\ref{sec:rules}), the reversal cannot be attributed without separating
-them. Holding the token set fixed at the official shared tokens, we cross
-aggregation with direction convention over all 1508 pairs. Under the convention
+them. With the token set fixed at the official shared tokens, aggregation is
+crossed with the direction convention over all 1508 pairs. Under the convention
 that \texttt{sent\_more} is stereotypical throughout, the contrast against
 \emph{LoopedBERT} is $+0.0076$ averaged and $+0.0919$ summed; under the official
 convention it is $-0.0035$ and $-0.0519$. Aggregation changes magnitude by roughly

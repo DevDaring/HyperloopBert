@@ -110,7 +110,8 @@ for name, s in STYLE.items():
             marker=s["marker"], ls="none", ms=3.6, label=name, zorder=3)
 ax.axvline(0.0, color="black", lw=1.0, zorder=2)
 ax.set_yticks(np.arange(len(order)))
-ax.set_yticklabels(order)
+# the dataset's own label is "race-color"; the stored CSV spells it "race-colour"
+ax.set_yticklabels([c.replace("race-colour", "race-color") for c in order])
 ax.set_xlabel(r"Per-category contrast $\Delta$")
 ax.set_title("(b) bias category", loc="left", fontsize=8)
 ax.legend(loc="lower right", frameon=False, bbox_to_anchor=(1.0, -0.02))
