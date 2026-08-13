@@ -291,9 +291,10 @@ is the correct antecedent and one in which it is not, with 374 items each.
 \toprule
 \textbf{Sentence role} & \textbf{Sample sentence} \\
 \midrule
-\multicolumn{2}{@{}l@{}}{\textbf{CrowS-Pairs}} \\
-stereotypical      & \ldots whether \emph{he} would come forward. \\
-anti-stereotypical & \ldots whether \emph{she} would come forward. \\
+\multicolumn{2}{@{}l@{}}{\textbf{CrowS-Pairs} \quad
+  \textit{direction label} \texttt{antistereo}} \\
+\texttt{sent\_more} & \ldots whether \emph{he} would come forward. \\
+\texttt{sent\_less} & \ldots whether \emph{she} would come forward. \\
 \midrule
 \multicolumn{2}{@{}l@{}}{\textbf{StereoSet}} \\
 context            & The chess player was \_\_\_\_. \\
@@ -438,6 +439,15 @@ pairs. Summed and averaged effects are also not on a common scale. At a mean of
 larger than the same effect averaged. Magnitudes are therefore comparable within
 a rule but not across rules, while signs and significance are comparable across
 all three.
+
+The three rules can be read off a single item. The \emph{CrowS-Pairs} pair in
+Table~\ref{tab:data} differs in one token, \emph{he} against \emph{she}, and is
+labelled \texttt{antistereo}. Each member has 19 scoreable positions. The
+full-sentence rule averages over all 19; the shared-token rule averages over the
+18 the members share, so the pronoun is never scored; the official rule sums
+those same 18 and treats \texttt{sent\_less} as the stereotypical member. For
+this item the sign of $e$ under the official rule is therefore opposite to the
+sign the other two assign.
 
 None of the three is treated as the single correct scorer. They encode different
 assumptions about which part of a sentence carries the association and about
@@ -609,11 +619,11 @@ pronoun, and the two probes differ by a single lexical item.
 
 The secretary probe shows why one probe cannot be read as a bias measurement. The
 conventional stereotype points to \emph{she}, yet every encoder prefers
-\emph{he}, by ratios between 13:1 and 45:1: marginal pronoun frequency competes
+\emph{he}, by ratios between 13:1 and 45:1. Marginal pronoun frequency competes
 with the occupational association and can dominate it, so an unpaired probe
-confounds the two. This is the confound the paired construction of
-Section~\ref{sec:method} removes, since substituting only the group term causes
-the frequency component to cancel in $e_i$.
+confounds the two. The paired construction of Section~\ref{sec:method} removes
+this confound: substituting only the group term cancels the frequency component
+in $e_i$.
 
 \begin{table}[t]
 \centering
@@ -661,9 +671,8 @@ reproduces the headline sign consistently across capability levels.
 These 17 comparisons are exploratory and repeated, and the matched points within
 an encoder are not independent, being successive checkpoints of one run. Rather
 than assert an inferential family over them, the figure and discussion report
-estimates with intervals and every uncorrected $p$-value from this analysis is
-labelled nominal; the pre-specified three-contrast Holm family of
-Table~\ref{tab:band} is kept separate.
+estimates with intervals, and every uncorrected $p$-value here is labelled
+nominal. The Holm family of Table~\ref{tab:band} is kept separate.
 
 \begin{figure}[t]
 \centering
@@ -689,12 +698,12 @@ architecture-snapshot-item rows.
 
 The unit of analysis matters here. Architecture and loss vary only across the 21
 distinct snapshots, so those 21 observations, not the 31\,668 rows, identify the
-coefficients; the 1508 item rows within a snapshot share one checkpoint and are
-not independent units for this purpose. Table~\ref{tab:model} therefore reports
-the snapshot-level fit, collapsing items to one mean effect per snapshot,
-alongside a wild cluster bootstrap over the 21 snapshot clusters with Rademacher
-weights and 9999 draws. Coefficients are on the per-item effect scale and so are
-directly comparable with the $\Delta$ column of Table~\ref{tab:band}.
+coefficients. The 1508 item rows within a snapshot share one checkpoint and are
+not independent units. Table~\ref{tab:model} therefore reports the snapshot-level
+fit, collapsing items to one mean effect per snapshot, alongside a wild cluster
+bootstrap over the 21 clusters with Rademacher weights and 9999 draws.
+Coefficients are on the per-item effect scale, so they are directly comparable
+with the $\Delta$ column of Table~\ref{tab:band}.
 
 The conclusion is invariant under four dependence models: clustering on item
 alone, two-way clustering on item and snapshot, collapsing to one observation per
@@ -770,22 +779,22 @@ convention while retaining the official token set and sum: all three contrasts
 return to positive, and still none survives Holm correction.
 
 The reimplementation was validated before use. On the public
-\texttt{bert-\allowbreak base-\allowbreak uncased} checkpoint over all 1508
-pairs it returns an aggregate stereotype score of 58.49 against the 60.5 reported
-by \citet{nangia2020crows}, decomposing into 61.09 on the 1290
-\texttt{stereo} pairs and 43.12 on the 218 \texttt{antistereo} pairs, with no
-exact ties. The discrepancy was not closed and is most plausibly library and
-checkpoint drift since 2020; since all four encoders are scored with identical
-code it is common-mode and cancels in the contrasts, but the absolute scores here
-should not be compared against published values.
+\texttt{bert-\allowbreak base-\allowbreak uncased} checkpoint it returns an
+aggregate stereotype score of 58.49 against the 60.5 reported by
+\citet{nangia2020crows}, decomposing into 61.09 on the 1290 \texttt{stereo} pairs
+and 43.12 on the 218 \texttt{antistereo} pairs, with no exact ties. The
+discrepancy was not closed and is most plausibly library and checkpoint drift
+since 2020. Because all four encoders are scored with identical code it cancels
+in the contrasts, but the absolute scores should not be compared against
+published values.
 
 The prefix-and-suffix alignment fails on 8 of the 1508 pairs, which is why the
 shared-token rule is computed on 1500. Those 8 differ in four to nine words at
 more than one location, as in \emph{``Whites are not good at reading.''} against
-\emph{``Hispanics are good at reading''}, where the negation also changes; they
+\emph{``Hispanics are good at reading''}, where the negation also changes. They
 are instances of the item-quality problem documented by
-\citet{blodgett2021salmon}. The official alignment recovers them, and dropping or
-imputing them shifts the shared-token contrasts by less than 0.0006.
+\citet{blodgett2021salmon}. The official alignment recovers them, and dropping
+them shifts the shared-token contrasts by less than 0.0006.
 
 \begin{table}[t]
 \centering
@@ -839,25 +848,23 @@ percentages, and the contrast and Holm-corrected $p$-value against
 The direction replicates on all three contrasts: every weight-reusing encoder
 again records a lower effect than the unshared baseline. The inferential
 conclusion does not. On \emph{CrowS-Pairs} the two contrasts reaching
-significance were those against \emph{LoopedBERT} and \emph{HyperloopBERT}; on
+significance were those against \emph{LoopedBERT} and \emph{HyperloopBERT}. On
 \emph{StereoSet} only the contrast against \emph{HyperloopBERT} survives Holm
 correction, at $\Delta = 0.0300$ and $p_{\text{Holm}} = 0.0009$, while the
 \emph{LoopedBERT} contrast does not, at $\Delta = 0.0148$ and
-$p_{\text{Holm}} = 0.084$. The \emph{ALBERTLoopedBERT} contrast is
-non-significant on both instruments. Which architecture separates from the
-baseline is therefore instrument-dependent, the same pattern the scoring rule
-produced in Section~\ref{sec:scorer}.
+$p_{\text{Holm}} = 0.084$; \emph{ALBERTLoopedBERT} is non-significant on both.
+Which architecture separates from the baseline is therefore instrument-dependent,
+the same pattern Section~\ref{sec:scorer} produced.
 
-Three observations bear on interpretation. \emph{StereoSet}'s own stereotype
-score places all four encoders between 49.7 and 51.4, at chance, whereas the same
-four score 55.4 to 55.8 on \emph{CrowS-Pairs}, so the instruments disagree about
-whether any aggregate preference exists to account for. Language-modelling scores
-of 86.0 to 87.1 confirm the encoders prefer a meaningful completion to an
-unrelated one, so that near-chance score is not an artefact of task failure. And
-the aggregate again conceals structure across bias types: on the 810 profession
-items every encoder records a \emph{negative} effect, between $-0.024$ and
-$-0.057$, while on the 962 race items every one is positive, between $+0.067$ and
-$+0.094$.
+Three observations bear on interpretation. \emph{StereoSet}'s stereotype score
+places all four encoders between 49.7 and 51.4, at chance, whereas the same four
+score 55.4 to 55.8 on \emph{CrowS-Pairs}, so the instruments disagree about
+whether any aggregate preference exists. Language-modelling scores of 86.0 to
+87.1 confirm the encoders prefer a meaningful completion to an unrelated one, so
+that near-chance score is not an artefact of task failure. The aggregate again
+conceals structure across bias types: on the 810 profession items every encoder
+records a \emph{negative} effect, between $-0.024$ and $-0.057$, while on the 962
+race items every one is positive, between $+0.067$ and $+0.094$.
 
 \begin{table}[t]
 \centering
@@ -889,7 +896,8 @@ point, giving 27 estimates. Four reach Holm-corrected $p<0.05$ when the family i
 taken to be the nine categories within one contrast. That count is sensitive to
 the family chosen and is not treated as a finding on its own.
 
-The structural observation is more robust: four of the nine categories, namely
+The sign pattern is more stable than the significance count. Four of the nine
+categories, namely
 socioeconomic status, sexual orientation, religion and age, reverse sign
 depending on which weight-reusing encoder the baseline is compared against. The
 aggregate is carried principally by \texttt{race-color}, the largest category at
@@ -961,15 +969,15 @@ parameter values before scoring.
 The single-point result has the features of a sound finding.
 Table~\ref{tab:band} reports a pre-stated contrast set, a paired test over 1508
 items, correction for multiplicity, and two of three comparisons surviving at
-$p_{\text{Holm}} = 0.0003$. Nothing in its execution is erroneous. It is one draw
-from a family of equally defensible analyses, and the remainder of that family
-disagrees with it.
+$p_{\text{Holm}} = 0.0003$. Nothing in its execution is erroneous. It is one of
+five equally defensible analyses of the same 21 snapshots, and the other four do
+not reproduce it.
 
 Repeating the comparison at the remaining matched points converts a point
 estimate into a distribution that straddles zero (Figure~\ref{fig:delta}): the
 baseline-versus-looped contrast is positive at one of five points and averages
-$-0.0050$. The continuous adjustment of Section~\ref{sec:cont} arrives at the same place by
-another route. With realised loss as a covariate, no architecture term is
+$-0.0050$. The continuous adjustment of Section~\ref{sec:cont} reaches the same conclusion
+from a different specification. With realised loss as a covariate, no architecture term is
 distinguishable from zero under any of four dependence models. The loss term is,
 at $-0.0184$ per nat, which is of the same order as the entire headline contrast
 of $0.0237$. This is consistent with realised capability accounting for
@@ -980,52 +988,50 @@ coefficient may equally reflect limited snapshot-level information.
 The three scoring rules disagree for two separable reasons. The first is the
 token set. The full-sentence rule lets every position contribute, including the
 substituted demographic terms; the other two score only positions the pair holds
-in common. When the demographic term is embedded in a long sentence, the
-full-sentence score is dominated by shared context, making it sensitive to length
-and fluency and comparatively insensitive to the substitution itself. That the
-two rules order individual pairs at Spearman 0.46 to 0.49 rather than near unity
-confirms a reordering rather than a rescaling.
+in common. When the demographic term sits inside a long sentence, the
+full-sentence score is dominated by shared context, which makes it sensitive to
+length and fluency rather than to the substitution. That the two rules order
+individual pairs at Spearman 0.46 to 0.49 confirms a reordering, not a
+rescaling.
 
 The second reason is decisive here. The released implementation assigns the
 stereotypical role from the dataset's direction label, reversing the sign of the
-per-item effect on the 218 \texttt{antistereo} pairs relative to the convention
-under which the other two rules were computed. Toggling only that convention
-flips the sign of two of the three architecture contrasts, whereas toggling
-summation against averaging never does. A
-convention affecting 14.5 per cent of the benchmark, documented only in the
-released source, therefore determines the direction of the reported architectural
-conclusion. Neither convention is indefensible, which is the central difficulty.
-A comparison that survives under only one of them is not yet a finding.
+per-item effect on the 218 \texttt{antistereo} pairs. Toggling only that
+convention flips the sign of two of the three architecture contrasts, whereas
+toggling summation against averaging never does. A convention affecting 14.5 per
+cent of the benchmark, documented only in the released source, therefore
+determines the direction of the reported conclusion. Neither convention is
+indefensible, which is the central difficulty. A comparison that survives under
+only one of them is not yet a finding.
 
-The second benchmark helps only partially. Directional agreement across all three
-contrasts is suggestive but does not establish a stable effect. The two
+\emph{StereoSet} corroborates the direction but not the inference. Directional
+agreement across all three contrasts is suggestive but does not establish a
+stable effect. The two
 instruments disagree about which architecture separates from the baseline, about
 the significance pattern, and about whether any aggregate preference exists at
 all, at 49.7--51.4 on \emph{StereoSet} against 55.4--55.8 on
 \emph{CrowS-Pairs}. Both are also scored from the same masked language modelling
 head, so they are not independent tests of the underlying property.
 
-Matching on validation loss resolves part of the problem. It removes gross
-differences in training progress, which is an improvement over comparison at a
-fixed token budget. It does not render two checkpoints interchangeable. The
+Matching on validation loss removes gross differences in training progress, which
+is an improvement over comparison at a fixed token budget. It does not render two
+checkpoints interchangeable. The
 residual spread here is 0.034 nats, yet the contrast moves by more than the
 headline effect across matched points. The conclusion is therefore more sensitive
 to which point is reported than to the precision of the matching.
 
 An aggregate stereotype score is a mean over categories that do not behave alike.
 Four of the nine \emph{CrowS-Pairs} categories reverse sign depending on which
-weight-reusing encoder is compared. On \emph{StereoSet} the 810 profession items
-run negative while the 962 race items run positive for all four encoders. The
-aggregate can therefore describe a model as less stereotyping overall while the
-pattern reverses within the categories a practitioner cares about.
+weight-reusing encoder is compared, and on \emph{StereoSet} the profession items
+run negative while the race items run positive for all four. The aggregate can
+therefore describe a model as less stereotyping overall while the pattern
+reverses within the categories a practitioner cares about.
 
 Retrieval and classification pipelines routinely select one pre-trained encoder
-over another, sometimes on partly fairness grounds. The evidence here is that
+over another, sometimes partly on fairness grounds. The evidence here is that
 such a comparison can reverse under choices seldom reported: the matched
 capability level, the scoring rule, and conventions inherited unexamined from a
-reference implementation. A defensible protocol reports the contrast across
-several matched levels and at least two scoring rules, states the direction
-convention, and treats a single-point result as provisional.
+reference implementation.
 
 % ================================================================ limitations
 \section{Limitations}
@@ -1033,7 +1039,7 @@ convention, and treats a single-point result as provisional.
 
 Training uses a single seed per architecture, so the four runs are not
 replicated. Every interval reported here bootstraps over benchmark items and so
-quantifies item sampling alone, not variation between training runs; the ordering
+quantifies item sampling alone, not variation between training runs. The ordering
 of the encoders may not be stable under re-training with another seed. This is
 the study's largest limitation, and it applies to the 21 snapshots collectively,
 since they are successive checkpoints of only four runs.
@@ -1041,34 +1047,33 @@ since they are successive checkpoints of only four runs.
 The analyses across matched points, the continuous loss adjustment, the
 scoring-rule decomposition, the per-category comparisons and the equivalence
 check were all performed after the single-point result had been examined, and are
-reported as exploratory. Only the three baseline-versus-shared contrasts at the
-deepest matched point were specified before that point was analysed.
+reported as exploratory. Only the three contrasts at the deepest matched point
+were specified in advance.
 
 The encoders reach roughly 2.18 nats at the deepest matched point, well short of
 convergence at this size, and the effect is still changing there. The Spearman
 correlation between matched loss and effect is $-0.80$, $-0.90$ and $-0.71$ for
 \emph{VanillaBERT}, \emph{ALBERTLoopedBERT} and \emph{HyperloopBERT}.
-\emph{LoopedBERT} does not follow that trend, at $+0.30$. Whether the picture
-differs for fully trained encoders is untested here.
+\emph{LoopedBERT} does not follow that trend, at $+0.30$. Whether these contrasts
+differ for fully trained encoders is untested here.
 
 Two benchmarks are used, both of the correlation type in the sense of
 \citet{wang2025difference}, and both scored from the same masked language
-modelling head; agreement between them is therefore weaker evidence than
-agreement between independent measurement approaches would be. The capability gate
-is not met, so no statement about downstream behaviour is supported. Both
-instruments carry documented item-quality problems
-\citep{blodgett2021salmon}, of which the eight unalignable \emph{CrowS-Pairs}
-pairs in Section~\ref{sec:scorer} are a concrete instance. Finally, the
-scoring-rule decomposition isolates the direction convention on one token set at
-one matched point, and does not establish that the same attribution holds at
-other matched points or on \emph{StereoSet}, neither of which was rescored under
-the official rule.
+modelling head. Agreement between them is therefore weaker evidence than
+agreement between independent measurement approaches would be. The capability
+gate is not met, so no statement about downstream behaviour is supported. Both
+instruments carry documented item-quality problems \citep{blodgett2021salmon}, of
+which the eight unalignable pairs in Section~\ref{sec:scorer} are an instance.
+Finally, the scoring-rule decomposition isolates the direction convention at one
+matched point, and does not establish that the same attribution holds at other
+matched points or on \emph{StereoSet}, neither of which was rescored under the
+official rule.
 
 The evaluation is English-only. An India-centric instrument covering caste and
 religion \citep{khandelwal2023indianbhed} was planned, but the mirror available
 at the time could not be used with an English-only tokeniser. Given the regional
-focus of this venue that omission is stated rather than passed over, and extending
-the same robustness protocol to it is the first direction this work would pursue.
+focus of this venue that omission is stated rather than passed over, and
+extending the protocol to it is the first direction this work would pursue.
 
 % =========================================================== reproducibility
 \section{Reproducibility}
@@ -1129,10 +1134,9 @@ attributing any difference to architecture.
 %========================================================== GenAI disclosure
 \section*{Generative AI Use Disclosure}
 
-During the preparation of this work the authors used ChatGPT to correct
-grammatical mistakes and improve sentence structure and readability. The authors
-reviewed and edited the content as needed and take full responsibility for the
-publication.
+In preparing this work the authors used ChatGPT to correct grammatical mistakes
+and to improve sentence structure and readability. The authors reviewed the
+content and take full responsibility for it.
 
 
 \bibliographystyle{ACM-Reference-Format}

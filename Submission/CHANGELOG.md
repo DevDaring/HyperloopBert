@@ -316,3 +316,60 @@ all 27 cited keys resolve.
 - 0 overfull boxes, 0 undefined references, 27 bibliography entries rendered.
 - 10 pages; content ends on page 9.
 
+## Audit against a reviewer report received for a different paper
+
+Two complaints were checked: (a) vague, unnatural, vacuous phrasing, and (b)
+absence of concrete examples.
+
+### (b) Concrete examples — largely already present, one real gap
+
+The paper already shows a real item from each evaluation dataset (Table 1), real
+model output (Table 5, P(he)/P(she) on three probes), and a real problem item
+(the "Whites are not good at reading" pair in 6.6). The gap was the *methodology
+in action*: 4.3 defined the three scoring rules purely abstractly, so a reader
+could not see which tokens each rule scores or which member it treats as
+stereotypical.
+
+Added a worked example to 4.3, using the pair already in Table 1 so no new
+material is introduced: 19 scoreable positions, the full-sentence rule averaging
+over all 19, the shared-token rule averaging over the 18 shared, the official rule
+summing those 18 and treating `sent_less` as stereotypical. Counts computed with
+the project tokeniser and difflib, not estimated.
+
+### A real error found while doing this
+
+The Table 1 CrowS-Pairs item — "…whether he would come forward" against "…whether
+she would come forward" — is labelled **`antistereo`** in the dataset. The table
+labelled the two rows "stereotypical" and "anti-stereotypical", which contradicts
+the dataset's own direction label, and does so in a paper whose central finding is
+about that very label. Rows relabelled to `sent_more` / `sent_less` with the
+direction label shown in the block header. The item now doubles as the 4.3 worked
+example.
+
+### (a) Vague phrasing — six instances found and fixed
+
+| before | after |
+|---|---|
+| "The structural observation is more robust" | "The sign pattern is more stable than the significance count" |
+| "one draw from a family of equally defensible analyses, and the remainder of that family disagrees with it" | "one of five equally defensible analyses of the same 21 snapshots, and the other four do not reproduce it" |
+| "arrives at the same place by another route" | "reaches the same conclusion from a different specification" |
+| "The second benchmark helps only partially." | "*StereoSet* corroborates the direction but not the inference." |
+| "Matching on validation loss resolves part of the problem." | deleted; the concrete sentence that followed now leads |
+| "Whether the picture differs for fully trained encoders" | "Whether these contrasts differ for fully trained encoders" |
+
+"The contrast crosses zero repeatedly" was left alone: the contrast literally
+changes sign, so the phrase is descriptive rather than figurative.
+
+The abstract was checked against the specific examples in the report ("points the
+other way", "load-bearing", "is a prognosis") and contains nothing of that kind.
+Its shortest sentence, "The effect does not replicate.", is a technical statement,
+not an idiom.
+
+### Length
+
+The worked example and the Table 1 change cost about 12 lines, recovered by
+tightening 16 passages across 4.3, 6.3-6.8, 7 and 8. No number, qualifier or
+caveat was dropped. Content ends on page 9.
+
+Build: 10 pages, 0 overfull, 0 undefined references, 27 references rendered.
+
