@@ -373,3 +373,53 @@ caveat was dropped. Content ends on page 9.
 
 Build: 10 pages, 0 overfull, 0 undefined references, 27 references rendered.
 
+## Hanging-reference audit — every number now says what it is over
+
+Scanned every numeric claim in the body and asked whether the sentence, or the
+one before it, states the dataset, the model set, and the aggregation basis. The
+scan over-flags, so each hit was judged by hand; twelve were genuine.
+
+### Prose
+
+| where | was | now says |
+|---|---|---|
+| 7 | "one of five equally defensible analyses" — the five were never named | names them: this point, the remaining matched points, the loss adjustment, the two scoring rules, the second benchmark |
+| 7 | "That the two rules order individual pairs at Spearman 0.46 to 0.49" | "the full-sentence and shared-token rules order the 1508 pairs" |
+| 7 | "Toggling only that convention flips the sign…" — no dataset, no operating point | "On *CrowS-Pairs* at the deepest matched point, toggling…" |
+| 8 | "The Spearman correlation between matched loss and effect is −0.80, −0.90, −0.71" — over what, and over how many points? | "between matched validation loss and the mean *CrowS-Pairs* effect, taken across each encoder's own distinct matched points … over 4, 5 and 7 points" |
+| 6.2 | "Cohen's d = 0.115, 0.098, 0.047" | adds "on the paired per-item differences" |
+| Conclusion | "Aggregates conceal sign reversals across four of nine categories" directly after a *StereoSet* sentence — and *StereoSet* has four bias types | "*CrowS-Pairs* aggregates … four of its nine categories" |
+| 6.7 | "Language-modelling scores of 86.0 to 87.1" | adds "across the four encoders" |
+| 6.6 | "shifts the shared-token contrasts" | "shifts all three shared-token contrasts" |
+| 4.3 | "At a mean of 15.9 shared tokens per sentence" | adds "over the 1508 pairs" |
+| 6.5 | "records an effect larger by 0.018" | "records a mean per-item *CrowS-Pairs* effect larger by 0.018" |
+| 6.4 | "occurs at 2.997 against 2.968 nats" — whose losses? | "where *VanillaBERT* and *LoopedBERT* sit at 2.997 and 2.968 nats" |
+
+The Conclusion case was the worst of these: *StereoSet* has four bias types and
+*CrowS-Pairs* has nine categories, so "four of nine categories" placed
+immediately after a *StereoSet* sentence invited exactly the wrong reading.
+
+### Captions
+
+Four captions reported numbers without naming the dataset, and one referred to
+"the same comparisons" with no antecedent in the caption itself:
+
+- Table 4 → "*CrowS-Pairs* results at the deepest matched point."
+- Table 6 → "*CrowS-Pairs* effect explained by encoder design and by training progress, over the 21 snapshots."
+- Figure 2 → "*CrowS-Pairs* contrast against the unshared baseline at every matched point."
+- Figure 3 → "*CrowS-Pairs* contrasts at the deepest matched point, by (a) scoring rule and (b) bias category." (was "The same comparisons under…")
+- Table 5 → adds "of three probes"
+
+All still one line.
+
+### Length
+
+The additions cost about 14 lines, recovered by tightening 13 passages in 6.4-6.6,
+7, 8 and the Conclusion, mostly where the Discussion restated Section 6 verbatim.
+Verified afterwards that **no decimal value was removed or added anywhere in the
+paper** and that the citation keys are unchanged, so nothing was traded away for
+space.
+
+Build: 10 pages, content ends page 9, 0 overfull, 0 undefined references, 27
+references.
+

@@ -434,9 +434,9 @@ Table~\ref{tab:rules} summarises all three axes.
 
 Two consequences are used in Section~\ref{sec:scorer}. The alignment matters only
 where a pair differs at more than one location, which affects 8 of the 1508
-pairs. Summed and averaged effects are also not on a common scale. At a mean of
-15.9 shared tokens per sentence, a summed effect is roughly an order of magnitude
-larger than the same effect averaged. Magnitudes are therefore comparable within
+pairs. Summed and averaged effects are also not on a common scale. At a mean of 15.9
+shared tokens per sentence over the 1508 pairs, a summed effect is roughly an
+order of magnitude larger than the same effect averaged. Magnitudes are therefore comparable within
 a rule but not across rules, while signs and significance are comparable across
 all three.
 
@@ -571,15 +571,15 @@ Read in isolation, Table~\ref{tab:band} supports the conclusion that weight reus
 accompanies a lower stereotype effect. \emph{LoopedBERT} and
 \emph{HyperloopBERT} fall below the unshared baseline, and both contrasts survive
 Holm correction. \emph{ALBERTLoopedBERT} does not, with a bootstrap interval
-covering zero. All three effects are small in standardised terms, at Cohen's
-$d = 0.115$, $0.098$ and $0.047$ for the looped, hyper-connected and
-ALBERT-style encoders respectively. The benchmark's own aggregate, the percentage
+covering zero. All three effects are small in standardised terms, at Cohen's $d = 0.115$,
+$0.098$ and $0.047$ on the paired per-item differences for the looped,
+hyper-connected and ALBERT-style encoders respectively. The benchmark's own aggregate, the percentage
 of the 1508 pairs preferring the stereotypical member, separates the four far
 less, placing all between 55.4 and 55.8 with overlapping intervals.
 
 \begin{table}[t]
 \centering
-\caption{Results at the deepest matched point.}
+\caption{\emph{CrowS-Pairs} results at the deepest matched point.}
 \label{tab:band}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -627,8 +627,8 @@ in $e_i$.
 
 \begin{table}[t]
 \centering
-\caption{Probability assigned to \emph{he} and to \emph{she} at the masked
-pronoun.}
+\caption{Probability assigned to \emph{he} and \emph{she} at the masked pronoun
+of three probes.}
 \label{tab:qual}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -657,22 +657,22 @@ contrasts on \emph{CrowS-Pairs}: 5 against \emph{LoopedBERT}, 5 against
 against realised validation loss.
 
 The contrast crosses zero repeatedly. Of the five matched points available for
-\emph{LoopedBERT}, the reduction reported in Table~\ref{tab:band} appears at
-exactly one, the deepest; at the remaining four the looped encoder records the
-\emph{higher} effect. The largest of those reversals occurs at 2.997 against
-2.968 nats, where $\Delta = -0.0222$ with a bootstrap interval of
-$[-0.0331, -0.0112]$ that excludes zero in the direction opposite to the headline
-result. Averaged over its five distinct matched points the
+\emph{LoopedBERT}, the reduction of Table~\ref{tab:band} appears at exactly one,
+the deepest; at the other four the looped encoder records the \emph{higher}
+effect. The largest reversal is at the point where \emph{VanillaBERT} and
+\emph{LoopedBERT} sit at 2.997 and 2.968 nats, giving $\Delta = -0.0222$ with a
+bootstrap interval of $[-0.0331, -0.0112]$ that excludes zero in the direction
+opposite to the headline result. Averaged over its five distinct matched points the
 baseline-versus-looped contrast is $-0.0050$, that is, negative overall. The
 contrast against \emph{ALBERTLoopedBERT} is positive at four of its five points
 and that against \emph{HyperloopBERT} at five of its seven, so no encoder
 reproduces the headline sign consistently across capability levels.
 
 These 17 comparisons are exploratory and repeated, and the matched points within
-an encoder are not independent, being successive checkpoints of one run. Rather
-than assert an inferential family over them, the figure and discussion report
-estimates with intervals, and every uncorrected $p$-value here is labelled
-nominal. The Holm family of Table~\ref{tab:band} is kept separate.
+an encoder are successive checkpoints of one run, so they are not independent.
+The figure and discussion therefore report estimates with intervals, every
+uncorrected $p$-value here is labelled nominal, and the Holm family of
+Table~\ref{tab:band} is kept separate.
 
 \begin{figure}[t]
 \centering
@@ -681,7 +681,8 @@ nominal. The Holm family of Table~\ref{tab:band} is kept separate.
 bootstrap error bars. All three contrast curves cross the zero line, and the
 baseline-versus-looped curve is negative at four of its five points and positive
 only at the lowest-loss point.}
-\caption{Contrast against the unshared baseline at every matched point.}
+\caption{\emph{CrowS-Pairs} contrast against the unshared baseline at every
+matched point.}
 \label{fig:delta}
 \end{figure}
 
@@ -711,9 +712,9 @@ snapshot, and the wild cluster bootstrap. Under all four, no architecture
 coefficient reaches the 5\% level, the largest being $-0.0066$ for
 \emph{HyperloopBERT} at $p = 0.265$ and $p = 0.191$ under the snapshot-level fit
 and the bootstrap, whereas realised loss reaches $p = 0.0002$ and $p = 0.0049$
-under the same two. Its coefficient of $-0.0184$ implies that an encoder one nat
-further along records an effect larger by 0.018, comparable to the entire
-headline contrast of 0.0237. Moving from item clustering to the snapshot-level
+under the same two. Its coefficient of $-0.0184$ implies that an encoder one nat further along
+records a mean per-item \emph{CrowS-Pairs} effect larger by 0.018, comparable to
+the entire headline contrast of 0.0237. Moving from item clustering to the snapshot-level
 fit inflates the architecture standard errors by 27 to 70 per cent depending on
 the term, the expected cost of counting 21 units rather than 1508, without
 altering which terms are significant.
@@ -721,12 +722,13 @@ altering which terms are significant.
 A mixed model with random slopes was not attempted: with four architectures and
 four to seven snapshots each, the variance components are not identifiable. With
 21 snapshots and one seed none of these procedures carries much power against a
-small architecture effect, so this is an absence of evidence at the present
-sample size rather than evidence of absence.
+small architecture effect, so this is an absence of evidence at this sample size
+rather than evidence of absence.
 
 \begin{table}[t]
 \centering
-\caption{Bias score explained by encoder design and by training progress.}
+\caption{\emph{CrowS-Pairs} effect explained by encoder design and by training
+progress, over the 21 snapshots.}
 \label{tab:model}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -783,10 +785,9 @@ The reimplementation was validated before use. On the public
 aggregate stereotype score of 58.49 against the 60.5 reported by
 \citet{nangia2020crows}, decomposing into 61.09 on the 1290 \texttt{stereo} pairs
 and 43.12 on the 218 \texttt{antistereo} pairs, with no exact ties. The
-discrepancy was not closed and is most plausibly library and checkpoint drift
-since 2020. Because all four encoders are scored with identical code it cancels
-in the contrasts, but the absolute scores should not be compared against
-published values.
+discrepancy is most plausibly library and checkpoint drift since 2020. Because
+all four encoders are scored with identical code it cancels in the contrasts, but
+the absolute scores should not be compared against published values.
 
 The prefix-and-suffix alignment fails on 8 of the 1508 pairs, which is why the
 shared-token rule is computed on 1500. Those 8 differ in four to nine words at
@@ -794,7 +795,7 @@ more than one location, as in \emph{``Whites are not good at reading.''} against
 \emph{``Hispanics are good at reading''}, where the negation also changes. They
 are instances of the item-quality problem documented by
 \citet{blodgett2021salmon}. The official alignment recovers them, and dropping
-them shifts the shared-token contrasts by less than 0.0006.
+them shifts all three shared-token contrasts by less than 0.0006.
 
 \begin{table}[t]
 \centering
@@ -826,8 +827,8 @@ matched point under three scoring rules; the two alternative rules give interval
 that cross zero, and the official rule places the looped contrast on the opposite
 side. Panel b plots the contrast for nine bias categories, with values on both
 sides of zero.}
-\caption{The same comparisons under (a) each scoring rule and (b) each bias
-category.}
+\caption{\emph{CrowS-Pairs} contrasts at the deepest matched point, by (a)
+scoring rule and (b) bias category.}
 \label{fig:robust}
 \end{figure*}
 
@@ -860,8 +861,8 @@ Three observations bear on interpretation. \emph{StereoSet}'s stereotype score
 places all four encoders between 49.7 and 51.4, at chance, whereas the same four
 score 55.4 to 55.8 on \emph{CrowS-Pairs}, so the instruments disagree about
 whether any aggregate preference exists. Language-modelling scores of 86.0 to
-87.1 confirm the encoders prefer a meaningful completion to an unrelated one, so
-that near-chance score is not an artefact of task failure. The aggregate again
+87.1 across the four encoders confirm that they prefer a meaningful completion to
+an unrelated one, so that near-chance score is not an artefact of task failure. The aggregate again
 conceals structure across bias types: on the 810 profession items every encoder
 records a \emph{negative} effect, between $-0.024$ and $-0.057$, while on the 962
 race items every one is positive, between $+0.067$ and $+0.094$.
@@ -905,10 +906,9 @@ aggregate is carried principally by \texttt{race-color}, the largest category at
 ($p_{\text{Holm}} = 0.0009$), and by disability at 60 pairs, where it is 0.0802
 ($p_{\text{Holm}} = 0.047$). Sexual orientation runs the other way for two of the
 three comparisons, at $-0.0270$ and $-0.0438$ against \emph{LoopedBERT} and
-\emph{ALBERTLoopedBERT} but $+0.0676$ against \emph{HyperloopBERT}. These
-analyses are descriptive: they followed the identification of the aggregate
-instability, are not confirmatory tests of a pre-stated hypothesis, and emphasise
-estimates and sign structure rather than thresholded significance.
+\emph{ALBERTLoopedBERT} but $+0.0676$ against \emph{HyperloopBERT}. These analyses are descriptive: they followed the aggregate instability, are not
+confirmatory tests of a pre-stated hypothesis, and emphasise estimates and sign
+structure rather than thresholded significance.
 
 \subsection{The two looped variants}
 
@@ -970,68 +970,66 @@ The single-point result has the features of a sound finding.
 Table~\ref{tab:band} reports a pre-stated contrast set, a paired test over 1508
 items, correction for multiplicity, and two of three comparisons surviving at
 $p_{\text{Holm}} = 0.0003$. Nothing in its execution is erroneous. It is one of
-five equally defensible analyses of the same 21 snapshots, and the other four do
-not reproduce it.
+five equally defensible analyses of the same 21 snapshots: this single point, the
+remaining matched points, the continuous loss adjustment, the two alternative
+scoring rules, and the second benchmark. The other four do not reproduce it.
 
-Repeating the comparison at the remaining matched points converts a point
-estimate into a distribution that straddles zero (Figure~\ref{fig:delta}): the
+Repeating the comparison at the remaining matched points turns a point estimate
+into a distribution straddling zero (Figure~\ref{fig:delta}): the
 baseline-versus-looped contrast is positive at one of five points and averages
-$-0.0050$. The continuous adjustment of Section~\ref{sec:cont} reaches the same conclusion
-from a different specification. With realised loss as a covariate, no architecture term is
-distinguishable from zero under any of four dependence models. The loss term is,
-at $-0.0184$ per nat, which is of the same order as the entire headline contrast
-of $0.0237$. This is consistent with realised capability accounting for
-a substantial part of the single-point contrast, though weaker than a causal
-claim, since with 21 snapshots from four runs and one seed a non-significant
-coefficient may equally reflect limited snapshot-level information.
+$-0.0050$. Section~\ref{sec:cont} reaches the same conclusion from a different
+specification. With realised loss as a covariate no architecture term is
+distinguishable from zero under any of four dependence models, while the loss
+term is, at $-0.0184$ per nat, of the same order as the headline contrast of
+$0.0237$. This is consistent with realised capability accounting for much of the
+single-point contrast, though weaker than a causal claim: with 21 snapshots from
+four runs and one seed, a non-significant coefficient may equally reflect limited
+snapshot-level information.
 
 The three scoring rules disagree for two separable reasons. The first is the
 token set. The full-sentence rule lets every position contribute, including the
 substituted demographic terms; the other two score only positions the pair holds
-in common. When the demographic term sits inside a long sentence, the
+in common. When the demographic term sits inside a long sentence the
 full-sentence score is dominated by shared context, which makes it sensitive to
-length and fluency rather than to the substitution. That the two rules order
-individual pairs at Spearman 0.46 to 0.49 confirms a reordering, not a
-rescaling.
+length and fluency rather than to the substitution. That the full-sentence and
+shared-token rules order the 1508 pairs at Spearman 0.46 to 0.49 confirms a
+reordering, not a rescaling.
 
 The second reason is decisive here. The released implementation assigns the
 stereotypical role from the dataset's direction label, reversing the sign of the
-per-item effect on the 218 \texttt{antistereo} pairs. Toggling only that
-convention flips the sign of two of the three architecture contrasts, whereas
-toggling summation against averaging never does. A convention affecting 14.5 per
-cent of the benchmark, documented only in the released source, therefore
-determines the direction of the reported conclusion. Neither convention is
-indefensible, which is the central difficulty. A comparison that survives under
-only one of them is not yet a finding.
+per-item effect on the 218 \texttt{antistereo} pairs. On \emph{CrowS-Pairs} at
+the deepest matched point, toggling only that convention flips the sign of two of
+the three architecture contrasts, whereas toggling summation against averaging
+never does. A convention affecting 14.5 per cent of the benchmark, documented
+only in the released source, therefore determines the direction of the reported
+conclusion. Neither convention is indefensible, which is the central difficulty:
+a comparison surviving under only one of them is not yet a finding.
 
-\emph{StereoSet} corroborates the direction but not the inference. Directional
-agreement across all three contrasts is suggestive but does not establish a
-stable effect. The two
-instruments disagree about which architecture separates from the baseline, about
-the significance pattern, and about whether any aggregate preference exists at
-all, at 49.7--51.4 on \emph{StereoSet} against 55.4--55.8 on
-\emph{CrowS-Pairs}. Both are also scored from the same masked language modelling
-head, so they are not independent tests of the underlying property.
+\emph{StereoSet} corroborates the direction but not the inference. Agreement on
+all three contrast signs is suggestive but does not establish a stable effect.
+The two instruments disagree about which architecture separates from the
+baseline, about the significance pattern, and about whether any aggregate
+preference exists at all, at 49.7--51.4 against 55.4--55.8. Both are also scored
+from the same masked language modelling head, so they are not independent tests
+of the underlying property.
 
 Matching on validation loss removes gross differences in training progress, which
-is an improvement over comparison at a fixed token budget. It does not render two
-checkpoints interchangeable. The
-residual spread here is 0.034 nats, yet the contrast moves by more than the
-headline effect across matched points. The conclusion is therefore more sensitive
-to which point is reported than to the precision of the matching.
+is an improvement over comparison at a fixed token budget, but it does not render
+two checkpoints interchangeable. The residual spread here is 0.034 nats, yet the
+contrast moves by more than the headline effect across matched points, so the
+conclusion is more sensitive to which point is reported than to the precision of
+the matching.
 
-An aggregate stereotype score is a mean over categories that do not behave alike.
-Four of the nine \emph{CrowS-Pairs} categories reverse sign depending on which
-weight-reusing encoder is compared, and on \emph{StereoSet} the profession items
-run negative while the race items run positive for all four. The aggregate can
-therefore describe a model as less stereotyping overall while the pattern
-reverses within the categories a practitioner cares about.
+An aggregate stereotype score is a mean over categories that do not behave alike:
+four of the nine \emph{CrowS-Pairs} categories reverse sign depending on which
+weight-reusing encoder is compared. The aggregate can therefore describe a model
+as less stereotyping overall while the pattern reverses within the categories a
+practitioner cares about.
 
 Retrieval and classification pipelines routinely select one pre-trained encoder
 over another, sometimes partly on fairness grounds. The evidence here is that
-such a comparison can reverse under choices seldom reported: the matched
-capability level, the scoring rule, and conventions inherited unexamined from a
-reference implementation.
+such a comparison can reverse under three choices that are seldom reported: the
+matched capability level, the scoring rule, and the direction convention.
 
 % ================================================================ limitations
 \section{Limitations}
@@ -1046,28 +1044,30 @@ since they are successive checkpoints of only four runs.
 
 The analyses across matched points, the continuous loss adjustment, the
 scoring-rule decomposition, the per-category comparisons and the equivalence
-check were all performed after the single-point result had been examined, and are
+check were performed after the single-point result had been examined, and are
 reported as exploratory. Only the three contrasts at the deepest matched point
 were specified in advance.
 
 The encoders reach roughly 2.18 nats at the deepest matched point, well short of
 convergence at this size, and the effect is still changing there. The Spearman
-correlation between matched loss and effect is $-0.80$, $-0.90$ and $-0.71$ for
-\emph{VanillaBERT}, \emph{ALBERTLoopedBERT} and \emph{HyperloopBERT}.
-\emph{LoopedBERT} does not follow that trend, at $+0.30$. Whether these contrasts
+correlation between matched validation loss and the mean \emph{CrowS-Pairs}
+effect, taken across each encoder's own distinct matched points, is $-0.80$,
+$-0.90$ and $-0.71$ for \emph{VanillaBERT}, \emph{ALBERTLoopedBERT} and
+\emph{HyperloopBERT} over 4, 5 and 7 points. \emph{LoopedBERT} does not follow
+that trend, at $+0.30$ over 5 points. Whether these contrasts
 differ for fully trained encoders is untested here.
 
 Two benchmarks are used, both of the correlation type in the sense of
 \citet{wang2025difference}, and both scored from the same masked language
-modelling head. Agreement between them is therefore weaker evidence than
-agreement between independent measurement approaches would be. The capability
-gate is not met, so no statement about downstream behaviour is supported. Both
-instruments carry documented item-quality problems \citep{blodgett2021salmon}, of
-which the eight unalignable pairs in Section~\ref{sec:scorer} are an instance.
-Finally, the scoring-rule decomposition isolates the direction convention at one
-matched point, and does not establish that the same attribution holds at other
-matched points or on \emph{StereoSet}, neither of which was rescored under the
-official rule.
+modelling head, so agreement between them is weaker evidence than agreement
+between independent measurement approaches would be. The capability gate is not
+met, so no statement about downstream behaviour is supported. Both instruments
+carry documented item-quality problems \citep{blodgett2021salmon}, of which the
+eight unalignable pairs in Section~\ref{sec:scorer} are an instance. Finally, the
+scoring-rule decomposition isolates the direction convention at one matched
+point, and does not establish that the same attribution holds elsewhere; neither
+the other matched points nor \emph{StereoSet} was rescored under the official
+rule.
 
 The evaluation is English-only. An India-centric instrument covering caste and
 religion \citep{khandelwal2023indianbhed} was planned, but the mirror available
@@ -1111,19 +1111,19 @@ Table~\ref{tab:qual}, and the analysis scripts are available at
 
 Four encoders differing in how far they reuse weights across depth were
 pre-trained from scratch on identical data and compared at matched validation
-loss over 21 distinct snapshots. At the deepest matched point on \emph{CrowS-Pairs} two of the three
-weight-reusing encoders record a lower stereotype effect than the unshared
-baseline, both surviving Holm correction at $p_{\text{Holm}} = 0.0003$. That
-result does not survive the checks that follow. It holds at one of the five
-matched points available for the looped encoder and reverses at the other four.
-No architecture term is distinguishable from zero once realised loss is adjusted
-for continuously under four dependence models, whereas the loss term is. No
-contrast survives correction under either alternative scoring rule, and one rule
-reverses the sign. That reversal is traced to a convention governing 218 of the
-1508 pairs rather than to the token set or the aggregation. On \emph{StereoSet} the
-direction replicates on all three contrasts but only one retains significance,
-for a different encoder. Aggregates conceal sign reversals across four of nine
-categories, and all four encoders perform at chance on \emph{WinoBias}.
+loss over 21 distinct snapshots. At the deepest matched point on
+\emph{CrowS-Pairs}, two of the three weight-reusing encoders record a lower
+stereotype effect than the unshared baseline, both surviving Holm correction at
+$p_{\text{Holm}} = 0.0003$. That result does not survive the checks that follow.
+It holds at one of the five matched points available for the looped encoder,
+becomes indistinguishable from zero once realised loss is adjusted for
+continuously under four dependence models, and survives correction under neither
+alternative scoring rule. One rule reverses its sign, and that reversal is traced
+to a convention governing 218 of the 1508 pairs rather than to the token set or
+the aggregation. On \emph{StereoSet} the direction replicates but only one of
+three contrasts retains significance, for a different encoder. \emph{CrowS-Pairs}
+aggregates conceal sign reversals across four of its nine categories, and all
+four encoders perform at chance on \emph{WinoBias}.
 
 The conclusion is methodological rather than architectural. A bias comparison
 resting on one matched checkpoint and one scoring definition can reverse under
@@ -1134,9 +1134,9 @@ attributing any difference to architecture.
 %========================================================== GenAI disclosure
 \section*{Generative AI Use Disclosure}
 
-In preparing this work the authors used ChatGPT to correct grammatical mistakes
-and to improve sentence structure and readability. The authors reviewed the
-content and take full responsibility for it.
+ChatGPT was used to correct grammatical mistakes and to improve sentence
+structure and readability. The authors reviewed the content and take full
+responsibility for it.
 
 
 \bibliographystyle{ACM-Reference-Format}
