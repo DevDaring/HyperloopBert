@@ -423,3 +423,93 @@ space.
 Build: 10 pages, content ends page 9, 0 overfull, 0 undefined references, 27
 references.
 
+## Plainer vocabulary and a shorter paper (FINAL_REVIEW.md, third version)
+
+### Part A — plainer vocabulary
+
+**The "confound" family is now gone: 0 instances, down from 8.** Replaced in
+context rather than by find-and-replace, so each site reads naturally:
+
+- "This comparison is confounded with model capability." → "The measured
+  difference reflects model capability as well as architecture." (abstract and §1)
+- "None of them controls this confound explicitly." → "None of them separates the
+  two explicitly."
+- "inherits the capability confound" → "still mixes architecture with capability"
+- "confounds the capacity change with the recovery dynamics" → "mixes the capacity
+  change with…"
+- "reduces training-progress confounding" → "reduces the effect of training
+  progress"
+- secretary probe: "an unpaired probe confounds the two" → "a single probe mixes
+  the two"; "removes this confound" → the sentence now names what is cancelled.
+
+Other A2 substitutions: "propagate to/into" → "spread to"/"carry into";
+"attenuate or amplify" → "weaken or strengthen"; "consequential for scoring" →
+"affects scoring"; "corroborates the direction but not the inference" → "agrees
+on the direction but not on significance"; "markedly uneven" → "very uneven";
+"markedly harder" → "much harder"; "exhibiting" → "showing" (×2); "in places
+opposing" → "sometimes opposing"; "is suggestive but does not establish" →
+"points that way but does not establish"; "invariant under four dependence
+models" → "holds under all four dependence models".
+
+Every A3 technical term was checked and kept, and "covariate" was restored to
+§6.5, where the earlier draft had lost it.
+
+### Part B — shorter paper
+
+Content now ends on **page 8**; references begin on page 9. It was 9 pages before
+this pass, so roughly the two pages the review asked for.
+
+- **B1, §6.9 → two sentences at the end of §6.2, heading removed.** The
+  equivalence machinery is gone: the ±0.0118 margin, the two one-sided tests, the
+  90% interval and p = 0.023 are replaced by half a sentence noting a post-hoc
+  sensitivity check in the released analysis. What survives is the point that the
+  four streams gave no detected reduction over plain looping while adding 18.9 M
+  parameters, 28 per cent more than LoopedBERT.
+- **B2, §6.11 → four sentences folded into §6.1, heading removed.** Every fact is
+  kept: the divergence at the shared rate, the divergence at half that rate, the
+  ALBERT spike, the one-seed caveat, and that the analysed snapshots predate both
+  divergences.
+- **B3, §6.3 compressed** from three paragraphs to two, keeping the scientist,
+  teacher and secretary probes and the reason they motivate the paired design.
+  **Table 5 was kept rather than moved to an appendix or cut.** The review offered
+  that as a choice, and the concrete example is what a reviewer needs to see —
+  the previous external review of a different paper faulted it precisely for
+  having no concrete examples.
+- **B4, §7 Discussion halved**, from seven paragraphs to three: the synthesis, one
+  statement of why the rules disagree (pointing at §6.6 rather than re-deriving),
+  and the practical implication. The paragraphs restating §6.4, §6.5, §6.7 and
+  §6.8 are gone; every number in them still appears in Section 6.
+- **B5, direction convention stated once.** §4.3 keeps the one-line definition,
+  §6.6 keeps the full decomposition, §7 now refers to §6.6.
+- **B6, §4.3 worked example** reduced from six sentences to one, retaining the
+  19/18/18 position counts and the sign reversal.
+- **B7, reference [27] fixed.** It rendered as "Rui-Jie Zhu et al. [n. d.]. …
+  ([n. d.])" because an inline `%` comment sat inside the BibTeX entry, which
+  BibTeX does not treat as a comment. The comment was moved above the entry and
+  the "Ouro:" title prefix restored. It now reads "Rui-Jie Zhu et al. 2025. Ouro:
+  Scaling Latent Reasoning via Looped Language Models. arXiv preprint
+  arXiv:2510.25741 (2025)."
+
+### Part C — checked, and two violations caught and undone
+
+The first pass over §7 removed two things Part C protects. Both were restored:
+
+- **"weaker than a causal claim"**, with its full reasoning about 21 snapshots
+  from four runs and one seed;
+- **"covariate"** in §6.5.
+
+§6.10 and its scope-bounding sentence, the Limitations section, the single-seed
+caveat and "absence of evidence … rather than evidence of absence" are all
+untouched.
+
+### Numbers
+
+The only decimals removed anywhere are the four belonging to the equivalence
+machinery that B1 asked to drop: ±0.0118, −0.0090, 0.0099 and p = 0.023. Every
+other value that appeared twice now appears once, in Section 6; none fell to
+zero, checked value by value. No number was added, and no citation key changed.
+
+Build: 10 pages, content ends page 8, 27 references, 0 undefined. One overfull
+`\vbox` of 1.3 pt remains on the bibliography output; it is sub-millimetre, falls
+in the reference pages, and was left alone rather than chased with a layout hack.
+
