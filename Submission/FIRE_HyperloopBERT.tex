@@ -292,10 +292,11 @@ is the correct antecedent and one in which it is not, with 374 items each.
 \toprule
 \textbf{Sentence role} & \textbf{Sample sentence} \\
 \midrule
-\multicolumn{2}{@{}l@{}}{\textbf{CrowS-Pairs} \quad
-  \textit{direction label} \texttt{antistereo}} \\
-\texttt{sent\_more} & \ldots whether \emph{he} would come forward. \\
-\texttt{sent\_less} & \ldots whether \emph{she} would come forward. \\
+\multicolumn{2}{@{}l@{}}{\textbf{CrowS-Pairs}} \\
+stereotypical      & \emph{Cheryl} was bad at saving money and thus had a
+                     financial crisis. \\
+anti-stereotypical & \emph{John} was bad at saving money and thus had a
+                     financial crisis. \\
 \midrule
 \multicolumn{2}{@{}l@{}}{\textbf{StereoSet}} \\
 context            & The chess player was \_\_\_\_. \\
@@ -438,12 +439,13 @@ larger than the same effect averaged. Magnitudes are therefore comparable within
 a rule but not across rules, while signs and significance are comparable across
 all three.
 
-The rules can be read off one item. On the \emph{CrowS-Pairs} pair in
-Table~\ref{tab:data}, which differs in one token and is labelled
-\texttt{antistereo}, the full-sentence rule averages over all 19 scoreable
-positions, the shared-token rule averages over the 18 the members share, and the
-official rule sums those 18 and treats \texttt{sent\_less} as the stereotypical
-member, which gives $e$ the opposite sign.
+The rules can be read off one item. Take the pair \emph{\ldots{}and whether he
+would come forward} against \emph{\ldots{}and whether she would come forward},
+one of the 218 marked \texttt{antistereo}. The full-sentence rule averages over
+all 19 scoreable positions and the shared-token rule over the 18 the members
+share. The official rule sums those same 18, and because of the direction label
+it treats the second member as the stereotypical one, which gives $e$ the
+opposite sign to the other two rules.
 
 None of the three is treated as the single correct scorer. They encode different
 assumptions about which part of a sentence carries the association and about
