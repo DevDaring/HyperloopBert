@@ -550,3 +550,45 @@ and 18 shared, are unchanged and still refer to that same pair.
 
 Build: 10 pages, content ends page 8, 27 references, 0 undefined.
 
+## Green additions answering Debarshi Sir's TODOs (nothing of his removed)
+
+Working rule for this pass: everything the professor wrote — the three `\TODO`
+notes, the red "a list of targets" flag, the blue encoder-list sentence, and his
+rewordings — stays in the file and still renders. Every new or replacement text
+appears in green (`addgreen`, RGB 0,110,46) so it can be reviewed at a glance in
+Overleaf. Where green text supersedes earlier non-professor prose, the old prose
+is commented out in the source with a "superseded" marker, not deleted.
+
+- **TODO 1 (§1, model overview + why looped).** Green block after the TODO:
+  plain-words definition of a looped encoder, one sentence per model, then three
+  reasons the family is suited to the question — it varies model size 110.1 to
+  32.1 M while width, block applications, task and text are identical (each
+  spelled out in plain words, not named); weight reuse changes how fast a model
+  learns, so these models give the validation-loss control its strictest test;
+  the looped literature reports no social-bias measurements. The superseded
+  sentence contained the incorrect "applies six blocks twice"; the green text
+  says "a two-block core four times", matching the code.
+- **Red flag (§1, "a list of targets").** Green parenthesis with the concrete
+  values: seven targets, 5.0 down to 2.2 nats, confirmed against
+  `config_stage3.py` `DEFAULT_ISO_BANDS`.
+- **TODO 2 (§3.2, why WinoBias).** Green paragraph: the two benchmarks measure
+  association and share a blind spot (a weak encoder's near-tied scores mimic
+  absence of association); WinoBias is scored right/wrong against a known
+  answer, so it can tell those apart, and is used as a gate, not a third
+  measure. Note: the professor's own §3.2 opening says the benchmarks are used
+  "for training" and WinoBias is "the test dataset"; the green text states that
+  none of the three is used for training. Both currently render — flagged to
+  the author to resolve with the professor rather than edited away.
+- **TODO 3 (§4.1, describe before numbers).** Green block after his blue
+  sentence: entry/core/exit description of looping, one plain paragraph per
+  encoder, then the shared dimensions. The superseded block (commented out)
+  also contained "applies the stack twice".
+- Fixed a leftover grammar error from an earlier vocabulary pass: "This label is
+  affects scoring" → "This label affects scoring".
+
+All green text avoids unexplained technical vocabulary: "hidden size" appears as
+"width of 768 values per token", the loop-index embedding as "a small learned
+marker", streams as "parallel copies of the token representations".
+
+Build: 10 pages, 0 overfull hboxes, 0 undefined references, TODOs still visible.
+
