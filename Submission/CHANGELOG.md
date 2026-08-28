@@ -599,3 +599,19 @@ Per the author's instruction, all review additions now render in blue
 sentence in §4.1 — so blue consistently means "proposed new text" throughout.
 No wording changed; the professor's red TODOs and red flag still render red.
 
+## Corrected the "benchmarks for training" paragraph (blue replacement)
+
+The 3.2 opening stated that CrowS-Pairs and StereoSet are used "for training"
+and called WinoBias "the test dataset". Verified against the code: the only
+optimiser is in `common/train_loop.py` and the only data reaching
+`loss.backward()` is `fineweb-edu/train_filtered.jsonl`; `train_stage3.py`
+contains zero references to any benchmark; all three benchmarks are scored
+inference-only (`model.eval()`, no backward pass) by `eval_bias_stage3.py` and
+`phase4_stereoset.py`; and `contamination_filter.py` actively removes benchmark
+n-grams from the training corpus.
+
+The paragraph is replaced in blue, per the review convention: the benchmarks are
+for evaluation, no model is trained on them or any benchmark, and WinoBias is a
+third evaluation set used as a capability check, not "the test dataset". The
+incorrect original is commented out in the source with a note, not deleted.
+

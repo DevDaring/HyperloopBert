@@ -290,7 +290,27 @@ them can originate in the training text.
 
 \subsection{Stereotype benchmarks}
 
-We use two stereotype benchmarks for training, namely, \emph{CrowS-Pairs} \citep{nangia2020crows} and \emph{StereoSet} \citep{nadeem2021stereoset}. They share a common design: each item presents two or more near-identical sentences differing in a term naming a social group, and a consistent preference for the version matching a common stereotype is taken as evidence of an association. Table~\ref{tab:data} shows one item from each as well as an item from the test dataset \emph{WinoBias} \citep{zhao2018winobias}.
+{\color{blue}%
+We use two stereotype benchmarks for evaluation, namely, \emph{CrowS-Pairs}
+\citep{nangia2020crows} and \emph{StereoSet} \citep{nadeem2021stereoset}. No
+model is trained on either of them, or on any benchmark: training uses only the
+pre-training corpus above, and the trained models are then scored on the
+benchmarks without any further weight updates. The two benchmarks share a common
+design: each item presents two or more near-identical sentences differing in a
+term naming a social group, and a consistent preference for the version matching
+a common stereotype is taken as evidence of an association.
+Table~\ref{tab:data} shows one item from each, as well as an item from
+\emph{WinoBias} \citep{zhao2018winobias}, a third evaluation set used as a
+capability check rather than a bias measure.
+}%
+% --- superseded (factually incorrect: benchmarks are not used for training) ---
+% We use two stereotype benchmarks for training, namely, CrowS-Pairs and
+% StereoSet. They share a common design: each item presents two or more
+% near-identical sentences differing in a term naming a social group, and a
+% consistent preference for the version matching a common stereotype is taken
+% as evidence of an association. Table 1 shows one item from each as well as an
+% item from the test dataset WinoBias.
+% ------------------------------------------------------------------------------
 
 \emph{CrowS-Pairs} \citep{nangia2020crows} contains 1508 crowdworker-written sentence pairs, each labelled with one of nine bias categories and typically substituting a single demographic term. Category sizes are very uneven, from
 516 pairs for the category the dataset labels \texttt{race-color} down to 60 for disability, which is why Section~\ref{sec:category} reports categories separately
