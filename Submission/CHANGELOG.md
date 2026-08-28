@@ -592,3 +592,10 @@ marker", streams as "parallel copies of the token representations".
 
 Build: 10 pages, 0 overfull hboxes, 0 undefined references, TODOs still visible.
 
+## Colour of additions switched from green to blue
+
+Per the author's instruction, all review additions now render in blue
+(`\textcolor{blue}`), the same colour the professor used for his own inserted
+sentence in §4.1 — so blue consistently means "proposed new text" throughout.
+No wording changed; the professor's red TODOs and red flag still render red.
+

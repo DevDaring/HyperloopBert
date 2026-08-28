@@ -24,8 +24,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \newcommand{\TODO}[1]{\textcolor{red}{\textit{[TODO: #1]}}}
-\definecolor{addgreen}{RGB}{0,110,46}   % additions for review, rendered green
-\newcommand{\NEW}[1]{\textcolor{addgreen}{#1}}
+\newcommand{\NEW}[1]{\textcolor{blue}{#1}}   % additions for review, rendered blue
 
 \begin{document}
 
@@ -127,7 +126,7 @@ the measured architecture difference more than the architecture does.
 
 In the present study, we compare four encoder models. 
 \TODO{Briefly but clearly give an overview of the models considered. But more importantly explain \textbf{why looped transformers are considered} in this study. Is the choice arbitrary or has any strong motivation?}
-{\color{addgreen}%
+{\color{blue}%
 A standard encoder is a stack of transformer blocks, each block with its own
 weights. A looped encoder keeps one small set of blocks and applies it several
 times over. Both designs can be equally deep and do the same amount of
@@ -302,7 +301,7 @@ affects scoring and is treated in Section~\ref{sec:rules}.
 
 \emph{WinoBias} \citep{zhao2018winobias} is used as a capability check rather than a bias measure. Each item contains two occupation terms and a pronoun referring to exactly one of them, so resolving it requires representing the sentence, and an encoder at chance cannot be showing a stereotypical preference in resolution. Two splits are evaluated, one in which the stereotypical reading is the correct antecedent and one in which it is not, with 374 items each. 
 \TODO{Why is WinoBias chosen for testing and the remaining two for training? Is it arbitrary or is there an underlying rationale?}
-{\color{addgreen}%
+{\color{blue}%
 The three sets play two different roles, and none of them is used for training;
 all training uses the pre-training corpus above. \emph{CrowS-Pairs} and
 \emph{StereoSet} measure association: each asks which of two nearly identical
@@ -363,7 +362,7 @@ checked against the choice of scorer.
 \subsection{Architectures}
 \TODO{Don't start with quantative values of some parameters. First present a clear and lucid description of the models, including the idea of looped/hyperlooped transformers, then add these details.}
 \textcolor{blue}{We use the following four encoders: \emph{VanillaBERT}, \emph{LoopedBERT}, \emph{ALBERTLoopedBERT}, and \emph{HyperloopBERT}.}
-{\color{addgreen}%
+{\color{blue}%
 A looped encoder splits its stack into three parts: a few entry blocks with
 their own weights, a small core whose blocks are applied several times in a row,
 and a few exit blocks with their own weights. Only the core is reused, so depth
