@@ -125,37 +125,34 @@ at, and \emph{which} scoring formulation is applied. Both are shown below to mov
 the measured architecture difference more than the architecture does.
 
 In the present study, we compare four encoder models. 
-\TODO{Briefly but clearly give an overview of the models considered. But more importantly explain \textbf{why looped transformers are considered} in this study. Is the choice arbitrary or has any strong motivation?}
 {\color{blue}%
-A standard encoder is a stack of transformer blocks, each block with its own
-weights. A looped encoder keeps one small set of blocks and applies it several
+Recollect that a standard encoder is a stack of transformer blocks, each block with its own
+weights. A looped encoder, instead, keeps one small set of blocks and applies it several
 times over. Both designs can be equally deep and do the same amount of
-computation for each token, but the looped one stores far fewer weights.
-
-\emph{VanillaBERT} is the standard design and serves as the unshared baseline:
-twelve independent blocks. \emph{LoopedBERT} applies a two-block core four
-times, between two fixed blocks at entry and two at exit.
-\emph{ALBERTLoopedBERT} takes reuse to its limit: a single block applied twelve
-times, the sharing scheme introduced by ALBERT \citep{lan2020albert} to cut
-model size. \emph{HyperloopBERT} keeps the \emph{LoopedBERT} design and
+computation for each token, but the looped one stores far fewer weights. We use the following models: (1) 
+\emph{VanillaBERT}: the standard design with 
+twelve independent blocks and serves as the unshared baseline; (2) \emph{LoopedBERT}: it applies a two-block core four
+times, between two fixed blocks at entry and two at exit;
+(3) \emph{ALBERTLoopedBERT}: it employs a single block applied twelve
+times, which is the sharing scheme introduced by ALBERT \citep{lan2020albert} to cut
+model size; and (4) \emph{HyperloopBERT}: it keeps the \emph{LoopedBERT} design and
 additionally carries four parallel copies of the token representations through
 the loop, mixed by learned weights \citep{zhu2025hyperconnections}.
 
-Weight reuse suits this question for three reasons. It changes the size of the
+We focus on encoders with weight reuse for several reasons. It changes the size of the
 model, here from 110.1 down to 32.1 million parameters, while everything else is
-identical across the four encoders: the same width of token representations, the
-same number of block applications per token, the same training task and the same
+identical across the four encoders, includeing the width of token representations, the
+ number of block applications per token, the training task and the 
 training text. Reusing weights also changes how fast a model learns, so a looped
-encoder and an unshared one reach the same validation loss after different
-amounts of training; matching on validation loss exists to deal with exactly
-that difference, and these models therefore give it the strictest test. Most of the studies on looped encoders reports quality, speed and reasoning but not
-social bias, although the designs are already proposed for settings where memory
-is scarce.
+encoder and an unshared one can reach the same validation loss after different 
+amounts of training. 
+%matching on validation loss exists to deal with exactly that difference, and these models therefore give it the strictest test. 
+Finally, most studies on looped encoders reports quality, speed and reasoning but not
+social bias, leaving open an area that we address in this paper.}
+%, although the designs are already proposed for settings where memory is scarce.
 
-This comparison is between whole designs rather than one isolated change: the
-stream variant adds extra mixing weights on top of sharing, and it alone needed
-a smaller peak learning rate to train stably (Section~\ref{sec:setup}).
-}%
+%This comparison is between whole designs rather than one isolated change: the stream variant adds extra mixing weights on top of sharing, and it alone needed a smaller peak learning rate to train stably (Section~\ref{sec:setup}).
+%}%
 % --- superseded by the green text above (kept for reference) ------------------
 % All four hold the tokeniser, hidden width, effective depth, pre-training
 % objective and pre-training corpus fixed. They differ only in their
@@ -168,10 +165,9 @@ a smaller peak learning rate to train stably (Section~\ref{sec:setup}).
 % variant adds routing machinery beyond sharing, and it alone required a reduced
 % peak learning rate (Section 5).
 % ------------------------------------------------------------------------------
-Three of the four reuse weights across depth, so any
-claim about ``shared'' encoders must hold for all three.
+%Three of the four reuse weights across depth, so any claim about ``shared'' encoders must hold for all three.
 
-This paper makes three contributions.
+In summary, this paper makes three contributions.
 
 \begin{enumerate}
 \item We specify a comparison protocol that fixes training progress by matching
@@ -454,8 +450,7 @@ ALBERTLoopedBERT  &  1 &  32.1\,M & 0.92 \\
 \end{adjustbox}
 \end{table}
 
-% renamed (was: Matching on validation loss, and its limits)
-\subsection{\texorpdfstring{\textcolor{blue}{Loss-matching protocol}}{Loss-matching protocol}}
+\subsection{Matching on validation loss, and its limits}
 
 A list of target validation loss values is fixed before training. Validation loss
 is measured at a regular interval, and the first time it falls below a target the
@@ -472,7 +467,7 @@ so realised losses differ slightly between encoders at the same band. Matching
 reduces the effect of training progress but does not remove residual capability
 differences, and Section~\ref{sec:cont} tests what remains.
 
-\subsection{Three scoring rules}
+\subsection{Scoring rules}
 \label{sec:rules}
 
 We apply three rules to score a sentence. In all the rules, each position in turn is replaced by a mask, the probability of the original token at that position is evaluated, and those values are combined into a single value for the sentence. This quantity is the pseudo-log-likelihood. A higher value indicates that the model assigns greater probability to the sentence. Scoring is performed in 32-bit precision throughout. Writing $\mathcal{I}$ for the set of positions a rule
@@ -605,8 +600,7 @@ Sections~\ref{sec:allband}--\ref{sec:scorer} is computed on all 1508
 taken against \emph{VanillaBERT}, the unshared baseline, with a positive value
 meaning that the baseline records the larger stereotype effect.
 
-% renamed (was: Quality and the matched points)
-\subsection{\texorpdfstring{\textcolor{blue}{Training dynamics and matched points}}{Training dynamics and matched points}}
+\subsection{Quality and the matched points}
 
 Figure~\ref{fig:training} plots held-out validation loss in nats against
 pre-training tokens for all four encoders. \emph{VanillaBERT} and
@@ -640,8 +634,7 @@ VanillaBERT and LoopedBERT overlap closely and end lowest.}
 \label{fig:training}
 \end{figure}
 
-% renamed (was: The single matched point)
-\subsection{\texorpdfstring{\textcolor{blue}{Results at the deepest matched point}}{Results at the deepest matched point}}
+\subsection{The single matched point}
 
 Table~\ref{tab:band} reports the deepest matched point common to all four
 encoders, the nominal 2.2-nat band, where realised losses span 2.163 to 2.196
@@ -690,8 +683,7 @@ HyperloopBERT    & 2.196 & 0.0466 & [0.022, 0.071] & 0.0241 & 0.0003 \\
 \end{adjustbox}
 \end{table}
 
-% renamed (was: What the encoders predict)
-\subsection{\texorpdfstring{\textcolor{blue}{Qualitative examples}}{Qualitative examples}}
+\subsection{What the encoders predict}
 \label{sec:qualitative}
 
 The numbers above are aggregates, so the model output behind them is shown
@@ -734,8 +726,7 @@ HyperloopBERT    & 0.610 / 0.033 & 0.001 / 0.001 & 0.066 / 0.004 \\
 \end{adjustbox}
 \end{table}
 
-% renamed (was: The contrast does not hold across matched points)
-\subsection{\texorpdfstring{\textcolor{blue}{Results across matched points}}{Results across matched points}}
+\subsection{The contrast does not hold across matched points}
 \label{sec:allband}
 
 Repeating the comparison of Table~\ref{tab:band} at every point where the
@@ -775,8 +766,7 @@ matched point.}
 \label{fig:delta}
 \end{figure}
 
-% renamed (was: Adjusting continuously for capability)
-\subsection{\texorpdfstring{\textcolor{blue}{Controlling for validation loss}}{Controlling for validation loss}}
+\subsection{Adjusting continuously for capability}
 \label{sec:cont}
 
 Matching within a band is a coarse control, since realised losses still differ by
@@ -835,8 +825,7 @@ Realised loss     & $-0.0184$ & \textbf{0.0002} & \textbf{0.0049} \\
 \end{adjustbox}
 \end{table}
 
-% renamed (was: Sensitivity to the scoring rule)
-\subsection{\texorpdfstring{\textcolor{blue}{Effect of the scoring rule}}{Effect of the scoring rule}}
+\subsection{Sensitivity to the scoring rule}
 \label{sec:scorer}
 
 The four band-2.2 snapshots were rescored under the other two rules, so the
@@ -923,8 +912,7 @@ scoring rule and (b) bias category.}
 \label{fig:robust}
 \end{figure*}
 
-% renamed (was: A second instrument)
-\subsection{\texorpdfstring{\textcolor{blue}{Results on StereoSet}}{Results on StereoSet}}
+\subsection{A second instrument}
 \label{sec:stereoset}
 
 Everything above rests on a single benchmark. The same four band-2.2 snapshots
@@ -979,8 +967,7 @@ HyperloopBERT    & 0.0158 & 49.7 & 86.3 & 0.0300 & \textbf{0.0009} \\
 \end{adjustbox}
 \end{table}
 
-% renamed (was: Category heterogeneity)
-\subsection{\texorpdfstring{\textcolor{blue}{Results by bias category}}{Results by bias category}}
+\subsection{Category heterogeneity}
 \label{sec:category}
 
 \emph{CrowS-Pairs} spans nine bias categories, and the aggregate conceals how
@@ -1003,8 +990,7 @@ three comparisons, at $-0.0270$ and $-0.0438$ against \emph{LoopedBERT} and
 confirmatory tests of a pre-stated hypothesis, and emphasise estimates and sign
 structure rather than thresholded significance.
 
-% renamed (was: The capability gate is not met)
-\subsection{\texorpdfstring{\textcolor{blue}{Capability check}}{Capability check}}
+\subsection{The capability gate is not met}
 \label{sec:capability}
 
 On the \emph{WinoBias} coreference instrument all four encoders perform at
