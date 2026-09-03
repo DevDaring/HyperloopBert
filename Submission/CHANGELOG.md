@@ -672,3 +672,34 @@ author will humanise by hand); 19 major findings open in
 `revision_output/UNRESOLVED.md`; 4 small overfull hboxes (≤7.4pt) in the new
 fact tables.
 
+## Seeded revision run applied (run_20260903_175132)
+
+Second supervised run of the multi-agent system, launched with the new
+`--seed-findings` feature: the 19 unresolved findings of the previous run were
+parsed from `revision_output/UNRESOLVED.md` and handed to the round-1 writer,
+which logged one fix per seeded finding. The seeding collapsed the convergence
+trajectory: gates that took the unseeded run three rounds (linter clean,
+references 31/31 verified) were green from round 1, and the checker ended fully
+clean (0 blockers, 0 majors, 0 unsourced, R23 = 0).
+
+Final state: 0 blockers, 6 majors, 26 minors open (`UNRESOLVED.md`); Opus's
+register verdict remains READS_GENERATED, which is the author's hand pass by
+design. The round-4 Kimi score of −1 and the references-gate failure are
+degraded-API artifacts; the reliable round-3 verdicts were Kimi 8/10 and 31/31
+references verified.
+
+Supervisor gate before acceptance, against the pre-run baseline `27eddb3`:
+zero result numbers added or altered in any round; no citation lost; hedges
+intact; no secrets; fig4 crop still correct. Two restorations were needed
+again: the ACM CCSXML block (writer deleted it in round 3 under the checker's
+pre-patch false positive) and the author's title. Both root causes are now
+fixed in the revision system itself (CCSXML masked from prose-number checks;
+a writer title guard), so future runs should need neither restore.
+
+System improvements shipped this session to DevDaring/Paper_Writing:
+`--seed-findings` (32ced91), CCSXML exemption (345cf4a), title guard (795e140),
+bare-JSON-array reviewer fix (32ced91).
+
+Build: 9 pages, references begin page 9, abstract 235/250 words, 1 overfull
+hbox of 7.4 pt, 0 undefined references.
+

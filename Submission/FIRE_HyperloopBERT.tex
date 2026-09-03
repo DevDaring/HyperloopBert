@@ -25,7 +25,7 @@
 \author{Anonymous Author(s)}
 
 \begin{abstract}
-Retrieval systems rank documents, and text classifiers assign labels to documents. Many such systems reuse language encoders, which map text into contextual token representations. When an encoder gives higher probability to text that links a group with a stereotype, later systems may inherit that lexical association. Weight reuse applies the same network block at several depths. A matched training point compares saved model states with similar held-out text loss. This paper asks whether stereotype-association comparisons change when the matched training point and scoring rule change. We train four encoders on the same text. We evaluate three datasets: \emph{CrowS-Pairs}, a paired-sentence stereotype benchmark; \emph{StereoSet}, a sentence-completion stereotype benchmark; and \emph{WinoBias}, a pronoun-resolution capability check. We apply four sensitivity checks. At the lowest-loss matched point on \emph{CrowS-Pairs}, \emph{LoopedBERT} and \emph{HyperloopBERT} have lower per-item stereotype score differences than the unshared \emph{VanillaBERT} baseline after Holm correction, a multiple-comparison adjustment. \emph{HyperloopBERT} also required a lower learning rate, so its result is a bundle of architecture and stability changes. The conclusion does not hold across the checks. In a loss-adjusted \emph{CrowS-Pairs} regression, architecture terms are not distinguishable from zero. Scoring only shared words or using the released scorer, which assigns the stereotypical role from the dataset direction label, does not preserve the corrected result. On \emph{StereoSet}, only the \emph{HyperloopBERT} comparison remains corrected. The \emph{WinoBias} capability check fails, so the results support claims about lexical association only.
+Retrieval systems rank documents, and text classifiers assign labels to documents. Many such systems reuse language encoders, which map text into token vectors whose values depend on surrounding text. Before developers select an encoder, stereotype benchmarks can test whether an encoder gives higher probability to text that links a social group with a stereotype. We compare four encoders on the same text. \emph{VanillaBERT} is an unshared baseline. \emph{LoopedBERT}, \emph{ALBERTLoopedBERT}, and \emph{HyperloopBERT} reuse block parameters across depth to different degrees. \emph{HyperloopBERT} also uses parallel streams, which are separate copies of token vectors mixed during computation. We evaluate three datasets: \emph{CrowS-Pairs}, a paired-sentence stereotype benchmark; \emph{StereoSet}, a sentence-completion stereotype benchmark; and \emph{WinoBias}, a pronoun-resolution capability check. We apply four sensitivity checks. At the lowest-loss matched point on \emph{CrowS-Pairs}, where models are compared after reaching the same held-out-text loss target, the full-sentence rule gives lower mean paired item differences for \emph{LoopedBERT} and \emph{HyperloopBERT} than for \emph{VanillaBERT}. The full-sentence rule scores every ordinary token in each sentence. Holm correction, a multiple-testing correction across contrasts against the baseline, keeps those contrasts significant. \emph{HyperloopBERT} also required a lower learning rate, so its comparison mixes stream design with a training-stability change. A regression adjusting for validation loss and checks with other scoring rules do not preserve the \emph{CrowS-Pairs} contrasts. On \emph{StereoSet} intrasentence items, only the \emph{HyperloopBERT} paired filler-effect contrast stays significant after Holm correction. The \emph{WinoBias} pre-set language-understanding check stays near chance, so this unfine-tuned masked-head probe cannot support downstream model-selection claims.
 \end{abstract}
 
 \begin{CCSXML}
@@ -61,96 +61,102 @@ sensitivity, benchmark reliability, fairness measurement}
 \label{sec:intro-bundle}
 
 Information retrieval systems rank documents for user queries, and text
-classifiers assign labels to documents. Many such systems start from a
-pre-trained language encoder, which maps a text sequence into contextual token
-representations. Encoder choice therefore matters before any downstream task is
-known. If the encoder prefers text that links a social group with a stereotype,
-later systems may inherit that lexical association. Fine-tuning can change the
-association, but the initial encoder can still affect model selection.
+classifiers assign labels to documents. Developers often choose a pre-trained
+language encoder before building a retrieval or classification system. A
+language encoder maps a text sequence into token vectors whose values depend on
+the surrounding text. A stereotype benchmark measures whether a model gives
+higher scores to text that links a social group with a stereotype. Before
+task-specific fine-tuning, encoders can assign different scores to the same
+stereotype benchmark items. These pre-training scores do not measure how a later
+ranker or classifier behaves in deployment.
 
-A masked language model is an encoder trained to predict tokens hidden from
-their surrounding words. A social stereotype association is a higher model score
-for text that links a social group with a common stereotype. Stereotype
-benchmarks estimate such associations by comparing model scores for paired
-texts.
+The measurement setting comes from masked language models and association
+benchmarks. A masked language model is an encoder trained to predict tokens
+hidden from their surrounding words. A social stereotype association is a higher
+model score for text that links a social group with a common stereotype.
+\emph{CrowS-Pairs} is a paired-sentence stereotype benchmark, and
+\emph{StereoSet} is a sentence-completion stereotype benchmark
+\citep{nangia2020crows,nadeem2021stereoset}. Both benchmarks estimate
+associations by comparing model scores for paired texts.
 
-One \emph{CrowS-Pairs} item makes the measurement concrete. \emph{CrowS-Pairs}
-is a stereotype benchmark of paired sentences that differ in a demographic term.
-One item contrasts ``\emph{Cheryl} was bad at saving money and thus had a
-financial crisis'' with the same sentence using ``\emph{John}'',
+One \emph{CrowS-Pairs} item makes the task concrete before the architecture is
+introduced. The item contrasts ``\emph{Cheryl} was bad at saving money and thus
+had a financial crisis'' with the same sentence using ``\emph{John}'',
 Table~\ref{tab:data}. The task asks which sentence receives the higher model
-score. Under the full-sentence rule, each non-boundary token is masked in turn.
-The model probability of the original token is recorded. The log probabilities
-are averaged. The anti-stereotypical score is subtracted from the stereotypical
-score. A positive item score means that the encoder gives the stereotypical
-sentence the higher probability.
+score. The full-sentence rule scores each ordinary token while excluding the
+special start and end markers. Under that rule, each scored token is hidden in
+turn. The model probability of the original token is recorded. The log
+probabilities are averaged for each sentence. The anti-stereotypical score is
+subtracted from the stereotypical score. A positive item score means that the
+encoder gives the stereotypical sentence the higher probability.
 
-The practical question is whether one encoder architecture gives lower
-stereotype scores than another. An architecture difference cannot be attributed
-from one benchmark score, because measured association also changes with model
-capability. Model capability here means language-modelling quality, measured by
-validation loss on held-out text. Validation loss is the average negative log
-probability on held-out text, so lower values indicate better language
-modelling. A checkpoint is a saved model state at a training step. A model later
-in training can assign more concentrated probabilities on benchmark pairs. A
-fixed training budget therefore mixes architecture with training progress.
+No prior study cited here compares weight-reusing encoders at matched
+validation loss on these stereotype benchmarks. Model capability here means
+language-modelling quality, measured by validation loss on held-out text.
+Validation loss is the average negative log probability on held-out text. Lower
+values indicate better language modelling. A checkpoint is a saved model state
+at a training step. Lower validation loss can change the paired score difference
+on benchmark items. A fixed training budget therefore mixes architecture with
+training progress.
 
 Prior work gives reasons to be cautious about a single architecture comparison.
 Compression studies show that fairness measurements can change when capacity is
 changed \citep{hooker2020characterising,xu2022compression,ramesh2023comparative}.
-Stereotype-benchmark audits report item-quality problems that weaken conclusions
-drawn from one benchmark average
-\citep{blodgett2021salmon,wang2025difference}. The remaining gap is whether a
-comparison between weight-reusing encoder designs keeps the same sign when
-training progress and scoring choices are varied.
+Audits of stereotype benchmarks found unclear items. Those audits also show that
+averaging one association score over such items weakens conclusions drawn from
+that average \citep{blodgett2021salmon,wang2025difference}. The open question is
+whether a comparison between weight-reusing encoder designs keeps the same
+direction when training progress and scoring choices change.
 
-This paper runs the \emph{CrowS-Pairs} architecture comparison under matched
-points and scoring rules. Weight reuse means that the same block parameters are
-applied at more than one depth in the network. Effective depth means the number
+This study tests whether lower measured association can be attributed to weight
+reuse after these controls. Weight reuse means that the same block parameters
+are applied at more than one depth in the network. Effective depth is the number
 of transformer-block applications made to each token. A transformer block is the
 repeated attention-and-feed-forward unit used in BERT, the original
-bidirectional transformer encoder design \citep{devlin2019bert}. The objective
-is to estimate whether lower measured association can be attributed to weight
-reuse, rather than to realised training loss or scorer convention.
+bidirectional transformer encoder design \citep{devlin2019bert}. A matched point
+is a checkpoint selected by crossing the same validation-loss target. A contrast
+is the mean paired difference between \emph{VanillaBERT} and another encoder on
+the same benchmark items. Holm correction is a step-down procedure for several
+contrasts against one baseline. Holm correction controls the family-wise error
+rate.
 
-The comparison varies encoder design while holding the tokeniser, objective,
-training text, width, and effective depth fixed. A tokeniser is the fixed
-procedure that splits text into model tokens. A lexical association is a model
-preference for words or sentences that co-occur with a social group in the
-benchmark text. A matched point is a checkpoint selected by crossing the same
-validation-loss target. A contrast is the mean paired difference between the
-unshared baseline and another encoder. It is computed over the same benchmark
-items. Holm correction is a step-down procedure for several contrasts against
-one baseline. It controls the family-wise error rate.
+The study treats an architecture comparison as stable only under stated
+conditions. The contrast must keep the same sign at all matched points and under
+all scoring rules. It must also keep the same sign under both direction
+conventions. The two direction conventions either treat \texttt{sent\_more}, the
+dataset field holding one sentence member, as stereotypical or use the dataset
+direction label. A positive contrast means that the unshared baseline has the
+larger stereotype score. A negative contrast means that the other encoder has
+the larger stereotype score. These tests examine architecture, training
+progress, scorer convention, and pronoun-resolution capability. They do not
+isolate stream design from the lower learning rate used by \emph{HyperloopBERT}.
 
-The study compares the four encoders in Table~\ref{tab:arch}. \emph{VanillaBERT}
-is the unshared baseline with independent transformer blocks. \emph{LoopedBERT}
-reuses a small core of blocks across depth. ALBERT is a BERT variant that shares
-encoder-block parameters across layers \citep{lan2020albert}.
-\emph{ALBERTLoopedBERT} reuses one block across the whole stack, following
-ALBERT. \emph{HyperloopBERT} keeps the looped design and adds parallel
-representation streams mixed by learned weights \citep{zhu2025hyperconnections}.
-A stream is one parallel copy of token representations inside that model.
+The method varies encoder design while holding the tokeniser, objective,
+training text, representation width, and effective depth fixed. A tokeniser is
+the fixed procedure that splits text into model tokens. Representation width is
+the size of each token vector inside the encoder. The study compares the
+encoders in Table~\ref{tab:arch}. \emph{VanillaBERT} is the unshared baseline
+with independent transformer blocks. \emph{LoopedBERT} reuses a small core of
+blocks across depth. ALBERT is a BERT variant that shares encoder-block
+parameters across layers \citep{lan2020albert}. \emph{ALBERTLoopedBERT} reuses
+one block across all block positions, following ALBERT. \emph{HyperloopBERT}
+keeps the looped design and adds parallel representation streams mixed by
+learned weights \citep{zhu2025hyperconnections}. A stream is one parallel copy
+of token representations inside that model.
 
-This paper makes these contributions. The protocol evaluates \emph{CrowS-Pairs},
-\emph{StereoSet}, and \emph{WinoBias}. It matches encoders on validation loss
-and checks the conclusion across matched points, continuous loss adjustment,
-scoring rules, and a second benchmark. The \emph{CrowS-Pairs} result at the
-lowest-loss matched point depends on the matched point and the scorer.
-\emph{LoopedBERT} shows the same direction at only one matched point,
-Figure~\ref{fig:delta}. \emph{LoopedBERT} and \emph{HyperloopBERT} are lower
-than \emph{VanillaBERT} only in the single-point corrected comparison,
-Table~\ref{tab:band}. The architecture coefficients are not distinguishable
-from zero after continuous adjustment for realised loss, Table~\ref{tab:model}.
-The alternative scoring rules do not preserve the corrected result,
-Table~\ref{tab:rules2}. The category analysis and the failed capability gate
-limit the interpretation to lexical association in the masked language modelling
-head. The masked language modelling head is the output layer that assigns
-probabilities to tokens.
-
-These claims rely on prior work on bias measurement, weight sharing, and
-capacity control. The next section states that background and identifies where
-the present comparison differs.
+The paper contributes measurements and a reporting recommendation. The protocol
+evaluates \emph{CrowS-Pairs}, \emph{StereoSet}, and \emph{WinoBias}. It matches
+encoders on validation loss and checks the result across matched points,
+continuous loss adjustment, scoring rules, and a second benchmark. At the
+lowest-loss matched point, \emph{LoopedBERT} and \emph{HyperloopBERT} have lower
+\emph{CrowS-Pairs} effects than \emph{VanillaBERT}, Table~\ref{tab:band}. The
+same conclusion does not hold after continuous adjustment for realised
+validation loss, Table~\ref{tab:model}. It also does not hold under the
+alternative scoring rules, Table~\ref{tab:rules2}. The category analysis and the
+failed capability gate limit the interpretation to lexical association in the
+masked language modelling head, Figure~\ref{fig:robust} and
+Table~\ref{tab:gate}. The masked language modelling head is the output layer
+that assigns probabilities to tokens.
 
 \section{Related Work}
 \label{sec:related}
@@ -161,17 +167,14 @@ architectures, and the reason to control capability when comparing encoders.
 \emph{CrowS-Pairs} and \emph{StereoSet} compare model scores for stereotypical
 and anti-stereotypical text \citep{nangia2020crows,nadeem2021stereoset}. A
 pseudo-log-likelihood is the average log probability assigned to original tokens
-when each token is masked in turn. Both benchmarks build on masked-position
+when each token is masked in turn. Masked-position probing means scoring hidden
+positions to measure an association. Both benchmarks build on masked-position
 probing of social associations \citep{kurita2019measuring}.
-
-Benchmark audits report item-quality problems that weaken conclusions drawn
-from one average. \citet{blodgett2021salmon} found unclear or inconsistent
-items in both benchmarks. \citet{wang2025difference} distinguish
-correlation-type benchmarks, which measure association, from tests that measure
-whether model behaviour treats groups differently when equal treatment is
-expected. The benchmarks used here are correlation-type instruments. The present
-study uses the same instruments to ask whether an architecture comparison
-changes under alternative scoring choices.
+\citet{blodgett2021salmon} found unclear or inconsistent items in both
+benchmarks, and \citet{wang2025difference} distinguish association benchmarks
+from tests of unequal treatment. The benchmarks used here are association
+instruments. The present study uses the same instruments to ask whether an
+architecture comparison changes under alternative scoring choices.
 
 A separate literature changes encoder architecture by reusing weights across
 depth. ALBERT ties one encoder block across all layers to reduce storage
@@ -188,60 +191,57 @@ and hyper-connection studies cited above mainly report language quality,
 throughput, parameter efficiency, and reasoning accuracy. They do not test
 social-bias measurements for these designs.
 
-Capacity and compression studies are the closest precedent. Pruning means
-removing model weights after training. \citet{hooker2020characterising} found
-that pruning can harm groups unevenly. \citet{xu2022compression} and
-\citet{ramesh2023comparative} compare compression methods and fairness
-measurements. \citet{voria2026tracing} localise stereotype-carrying neurons
-inside pre-trained transformers. The present study varies weight sharing before
+Capacity and compression studies are the closest precedent. Prior work shows
+that pruning and other compression methods can change fairness measurements
+\citep{hooker2020characterising,xu2022compression,ramesh2023comparative}.
+\citet{voria2026tracing} localise stereotype-carrying neurons inside
+pre-trained transformers. The present study varies weight sharing before
 training and compares models at matched validation loss.
 
 Fairness in information access is an established concern for retrieval and
 ranking systems \citep{ekstrand2022fairness,singh2018fairness}. A claim that
 one encoder design carries less stereotype association than another could affect
-model selection. The present study contributes measurement evidence behind such
-a claim, rather than a new ranking algorithm.
+model selection. This study tests that claim for weight-reusing encoders under
+matched-loss and scoring-rule checks. The measurements reported here do not
+support that model-selection claim.
 
 \section{Data}
 \label{sec:data}
 
-The data have separate training and evaluation roles. One corpus trains the
-encoders, and the evaluation sets measure association or capability. The
-concrete examples in Table~\ref{tab:data} make the tasks visible, and the exact
-data choices are listed in Table~\ref{tab:datastats}.
+One corpus trains the encoders, and the evaluation sets measure association or
+capability. The concrete examples in Table~\ref{tab:data} make the tasks
+visible, and the exact data choices are listed in Table~\ref{tab:datastats}.
 
 All encoders in Table~\ref{tab:arch} are pre-trained on \emph{FineWeb-Edu}, a
 filtered subset of web text selected for educational content
 \citep{penedo2024fineweb}. The shared corpus size and sequence length are given
 in Table~\ref{tab:datastats}. Each encoder sees the same text in the same order
-under one tokeniser. Therefore no difference between encoders can originate in
-the training text or token segmentation.
+under the same tokeniser. Therefore no difference between encoders can originate
+in the training text or token segmentation.
 
 The evaluation uses stereotype benchmarks and a capability check,
 Table~\ref{tab:datastats}. \emph{CrowS-Pairs} and \emph{StereoSet} measure
-association. In both benchmarks, the model is not trained on the benchmark. The
-trained encoder is only scored. A consistent preference for the sentence or
-completion matching a common stereotype is treated as evidence of lexical
-association.
+association. The encoders are scored on these benchmarks without fine-tuning. A
+consistent preference for the sentence or completion matching a common
+stereotype is treated as evidence of lexical association.
 
 \emph{CrowS-Pairs} contains paired sentences labelled by bias category and by
-direction, Table~\ref{tab:datastats}. The dataset label \texttt{race-color}
-names its race and colour category. The field \texttt{sent\_more} stores one
-member of the sentence pair. The direction label \texttt{stereo} means that
-\texttt{sent\_more} is the stereotypical member. The direction label
-\texttt{antistereo} means that \texttt{sent\_more} is the anti-stereotypical
-member. The direction label affects the official scorer and is analysed in
-Section~\ref{sec:scorer}. Shared tokens are tokens that occur in both members of
-a sentence pair. An unaligned shared-token pair is a pair for which the
+direction, Table~\ref{tab:datastats}. In the example data, \texttt{race-color}
+names the race and colour category. The field \texttt{sent\_more} stores one
+member of the sentence pair. The direction label says whether
+\texttt{sent\_more} is stereotypical or anti-stereotypical. The direction label
+affects the official scorer and is examined in the scorer analysis in the
+Results section. Shared tokens are tokens that occur in both members of a
+sentence pair. An unaligned shared-token pair is a pair for which the
 shared-token alignment cannot recover the common token sequence. Category sizes
-are uneven, so Section~\ref{sec:category} reports category behaviour rather than
+are uneven, so the Results section reports category behaviour rather than
 relying only on the aggregate.
 
-\emph{StereoSet} is used in its intrasentence split. Each item supplies a context
-sentence with a blank and three candidate fillers: one stereotypical, one
-anti-stereotypical, and one unrelated. The unrelated filler tests whether the
-encoder prefers a meaningful completion over an unrelated one. The split sizes
-are reported in Table~\ref{tab:datastats}.
+\emph{StereoSet} is used in its intrasentence split. In this split, each item
+supplies a context sentence with a blank and candidate fillers. The fillers are
+stereotypical, anti-stereotypical, or unrelated. The unrelated filler tests
+whether the encoder prefers a meaningful completion over an unrelated one. The
+split sizes are reported in Table~\ref{tab:datastats}.
 
 \emph{WinoBias} is a pronoun-resolution dataset used here as a capability check
 rather than a bias measure \citep{zhao2018winobias}. Each item contains
@@ -326,27 +326,31 @@ benchmark scoring, and then to the capability gate.
 \subsection{Architectures}
 
 Architecture is the design choice tested in the study, so all non-architectural
-inputs are held fixed where the runs allow. The compared encoders are ordered by
-weight reuse in Table~\ref{tab:arch}.
+inputs are held fixed except the \emph{HyperloopBERT} peak learning rate,
+Table~\ref{tab:reprosettings}. The compared encoders are ordered by weight reuse
+and parameter count in Table~\ref{tab:arch}.
 
 \emph{VanillaBERT} is the unshared control. It follows the BERT encoder design
 with independent blocks in sequence \citep{devlin2019bert}. \emph{LoopedBERT}
-uses entry blocks, a reused core, and exit blocks. The core blocks are applied
-several times in a row. A learned depth marker is added before each pass so that
-the reused core can distinguish passes. \emph{ALBERTLoopedBERT} uses one shared
-block throughout, following the ALBERT sharing scheme \citep{lan2020albert}.
-\emph{HyperloopBERT} keeps the looped layout and carries parallel streams
-through the loop. It combines the streams before each core pass, writes the
-output back to every stream, and merges the streams before the exit blocks.
+uses entry blocks, a reused core, and exit blocks. Entry blocks are the
+non-reused blocks before the looped core. Exit blocks are the non-reused blocks
+after the looped core. The core blocks are applied several times in a row. A
+learned depth marker is a learned vector added to token states before each pass.
+The marker lets the reused core distinguish passes. \emph{ALBERTLoopedBERT}
+uses one shared block throughout, following the ALBERT sharing scheme
+\citep{lan2020albert}. \emph{HyperloopBERT} keeps the looped layout and carries
+parallel streams through the loop. It combines the streams before each core
+pass, writes the output back to every stream, and merges the streams before the
+exit blocks.
 
 All encoders use the same tokeniser, masked language modelling objective,
 effective depth, and representation width. Their parameter counts and shared
 ratios are shown in Table~\ref{tab:arch}. The shared ratio is the fraction of
-effective-depth block applications that reuse block parameters. \emph{HyperloopBERT}
-differs from the plain looped design by adding stream mixing and by requiring a
-lower peak learning rate for stable training, Table~\ref{tab:reprosettings}.
-That encoder is therefore an architecture bundle, meaning a design that changes
-more than one mechanism at the same time.
+effective-depth block applications that reuse block parameters.
+\emph{HyperloopBERT} differs from the plain looped design by adding stream
+mixing and by requiring a lower peak learning rate for stable training,
+Table~\ref{tab:reprosettings}. That encoder is therefore an architecture bundle,
+meaning a design that changes more than one mechanism at the same time.
 
 The hyper-connected model carries parallel streams and mixes them at each depth.
 The update is
@@ -357,14 +361,16 @@ The update is
 \end{equation}
 %
 where $\mathbf{H}^{(\ell)} \in \mathbb{R}^{n \times d}$ stacks the stream states
-at depth $\ell$. Each stream has width $d$. The function $f$ is the shared
-transformer block. The matrix $\mathbf{A}^{(\ell)}$ mixes the streams. The
-matrix $\mathbf{B}^{(\ell)}$ distributes the block output back across streams.
-Both matrices are in $\mathbb{R}^{n \times n}$. The single-stream special case
-recovers the ordinary residual connection.
+at depth $\ell$. The symbol $n$ is the configured stream count, and $d$ is the
+shared representation width. The paper does not tabulate those configuration
+fields, so exact reruns require the released model configuration. The function
+$f$ is the shared transformer block. The matrix $\mathbf{A}^{(\ell)}$ mixes the
+streams. The matrix $\mathbf{B}^{(\ell)}$ distributes the block output back
+across streams. Both matrices are in $\mathbb{R}^{n \times n}$. The
+single-stream special case recovers the ordinary residual connection.
 
 Relative to the hyper-connected looped transformer of
-\citet{zeitoun2026hyperloop}, this implementation shares the loop-and-stream
+\citet{zeitoun2026hyperloop}, \emph{HyperloopBERT} shares the loop-and-stream
 structure and the learned depth-wise mixing. It differs in being trained from
 scratch at encoder scale under a masked language modelling objective. The
 \emph{HyperloopBERT} results in this paper therefore cover only the
@@ -405,8 +411,8 @@ This matching is approximate. Several nominal bands can be crossed inside one
 validation interval, so several bands can share a checkpoint. The analysis
 therefore uses distinct snapshots, with the per-architecture counts shown in
 Table~\ref{tab:runfacts}. Realised losses can also differ slightly inside a
-band. Section~\ref{sec:cont} tests whether conclusions remain after continuous
-adjustment for realised validation loss.
+band. The loss-adjusted Results analysis tests whether conclusions remain after
+continuous adjustment for realised validation loss.
 
 The sentence score is pseudo-log-likelihood. In each scoring rule, each selected
 token position is masked in turn. The probability of the original token is then
@@ -428,25 +434,27 @@ e = \mathrm{PLL}(s_{\text{stereo}}) - \mathrm{PLL}(s_{\text{anti}}) .
 %
 A positive value means that the stereotypical member receives the higher score.
 
-The \emph{full-sentence} rule scores every position except the special boundary
+The token \texttt{[MASK]} is the placeholder inserted at a hidden position. The
+\emph{full-sentence} rule scores every position except the special boundary
 tokens \texttt{[CLS]} and \texttt{[SEP]}. The token \texttt{[CLS]} marks the
 start of the sequence, and \texttt{[SEP]} marks the end or separation boundary.
 The \emph{shared-token} rule scores only tokens that the two sentences have in
-common. The demographic terms are not scored under the shared-token rule. The
-demographic terms remain visible as conditioning context. The benchmark's
-released implementation defines the \emph{official} rule. It uses an alignment
-that recovers every matching span, sums rather than averages log probabilities,
-and assigns the stereotypical role from the direction label. Table~\ref{tab:rules}
-summarises these rules.
+common. The shared-token alignment matches the common prefix and common suffix
+of the two token sequences. Under this rule, demographic terms are not scored
+but remain visible as conditioning context. The benchmark's released
+implementation defines the \emph{official} rule. It selects token spans that the
+released alignment matches in both sentence members. It sums log probabilities
+over those spans and assigns the stereotypical role from the direction label.
+Table~\ref{tab:rules} summarises these rules.
 
-One \emph{CrowS-Pairs} item illustrates the difference. The pair
-``\ldots{}and whether he would come forward'' against ``\ldots{}and whether she
-would come forward'' is labelled \texttt{antistereo}, Table~\ref{tab:datastats}.
-In that item, \texttt{sent\_more} is the anti-stereotypical sentence. The
-full-sentence and shared-token rules treat \texttt{sent\_more} as stereotypical.
-The official rule reverses the role for that item because of the direction
-label. The same pair can therefore contribute with the opposite sign under the
-official rule.
+One \emph{CrowS-Pairs} item illustrates the difference. The dataset item pairs
+``\ldots{}and whether he would come forward'' with ``\ldots{}and whether she
+would come forward''. In that item, \texttt{sent\_more} is the
+anti-stereotypical sentence and the label is \texttt{antistereo}. The
+full-sentence and shared-token rules treat \texttt{sent\_more} as
+stereotypical. The official rule reverses the role for that item because of the
+direction label. The same pair can therefore contribute with the opposite sign
+under the official rule.
 
 The contrast is paired by benchmark item. Every item is scored under the
 baseline and another encoder at the same matched point. The paired difference is
@@ -459,10 +467,11 @@ permutation test. The draw count and bootstrap count are in
 Table~\ref{tab:reprosettings}. The $p$-value uses the Phipson--Smyth estimate
 \citep{phipson2010permutation}. That estimate avoids a zero permutation
 $p$-value when a finite number of random sign flips is sampled. Confidence
-intervals are percentile item bootstraps, so the intervals describe item
-sampling only. Where several contrasts are formed against the same baseline,
-Holm's step-down procedure controls the family-wise error rate within that
-family.
+intervals come from resampling benchmark items with replacement. The reported
+limits are percentile cutoffs from those resamples, so the intervals describe
+item sampling only. Where several contrasts are formed against the same
+baseline, Holm's step-down procedure controls the family-wise error rate within
+that family.
 
 \begin{table}[t]
 \centering
@@ -483,13 +492,13 @@ Official       & words in common & sum     & by direction label \\
 \end{table}
 
 \label{sec:gate}
-The capability gate defines when a stereotype measurement can be interpreted as
-more than a lexical association score. GLUE is a general language understanding
-benchmark used in the planned gate \citep{wang2018glue}. The pre-specified gate
-required above-chance performance on GLUE, a baseline stereotype-effect interval
-excluding zero, and above-chance accuracy on the pro-stereotype split of
-\emph{WinoBias}. The \emph{WinoBias} component tests whether the encoder
-resolves the pronoun at all.
+The capability gate is a pre-set set of checks for basic language-understanding
+ability. GLUE is a general language understanding benchmark used in the planned
+gate \citep{wang2018glue}. The gate required above-chance performance on GLUE, a
+baseline stereotype-effect interval excluding zero, and above-chance accuracy on
+the pro-stereotype split of \emph{WinoBias}. All three conditions had to hold
+before the study would make downstream model-selection claims. The
+\emph{WinoBias} component tests whether the encoder resolves the pronoun at all.
 
 For \emph{WinoBias}, the pronoun token is replaced with \texttt{[MASK]}. The
 masked language modelling head scores the candidate pronouns from the item. A
@@ -501,9 +510,12 @@ split.
 \label{sec:setup}
 
 The experimental setup fixes training data and most hyper-parameters across
-architectures. It also records the exceptions needed to make the runs usable.
-Table~\ref{tab:runfacts} gives the run-level facts that affect interpretation,
-and Table~\ref{tab:reprosettings} gives implementation settings.
+architectures. A flat-loss region is an early training phase where validation
+loss stays nearly constant. \emph{HyperloopBERT} needed a lower peak learning
+rate because its loss became non-finite at the common rate,
+Table~\ref{tab:reprosettings}. Table~\ref{tab:runfacts} gives the run-level
+facts that affect interpretation, and Table~\ref{tab:reprosettings} gives
+implementation settings.
 
 The encoders reach the lowest-loss common matched point after different amounts
 of training, Table~\ref{tab:runfacts}. Matching on validation loss therefore
@@ -514,7 +526,8 @@ compared stable models with a failed run. The reported \emph{HyperloopBERT}
 comparisons therefore treat that model as a stability-adjusted architecture
 bundle. They are not an isolated test of streams. Each encoder was trained once,
 Table~\ref{tab:reprosettings}. Reported intervals quantify benchmark-item
-uncertainty, not variation across training runs.
+uncertainty, not variation across training runs. The results use these matched
+snapshots and report how the comparison changes with the analysis choice.
 
 \begin{table}[t]
 \centering
@@ -554,14 +567,15 @@ the comparison changes under specified analysis choices. The final paragraphs
 state the capability-gate outcome, because that outcome limits every bias
 interpretation in the section.
 
-\subsection{Single-point comparison and concrete predictions}
+\subsection{Matched-point comparison and probe outputs}
 
 The single-point analysis uses the lowest-loss matched point common to all
-encoders. Figure~\ref{fig:training} shows why matching is needed before that
-point is interpreted. The validation-loss curves for \emph{VanillaBERT} and
-\emph{LoopedBERT} nearly overlap, Figure~\ref{fig:training}.
+encoders. Figure~\ref{fig:training} shows validation-loss curves over training
+tokens for the encoders. The curves show why matching is needed before the
+single point is interpreted. The validation-loss curves for \emph{VanillaBERT}
+and \emph{LoopedBERT} nearly overlap, Figure~\ref{fig:training}.
 \emph{ALBERTLoopedBERT} remains higher, which indicates lower
-language-modelling quality in these runs. \emph{HyperloopBERT} leaves the early
+language-modelling quality in these runs. \emph{HyperloopBERT} leaves the
 flat-loss region earlier but later diverges to non-finite loss. The instability
 values and snapshot counts are reported in Table~\ref{tab:runfacts}. Every
 snapshot analysed below predates the non-finite values.
@@ -585,9 +599,9 @@ lower \emph{CrowS-Pairs} effects than the unshared baseline. Both contrasts
 survive Holm correction. \emph{ALBERTLoopedBERT} does not show a corrected
 contrast against the baseline.
 
-The two looped variants share the same loop and differ by the stream mechanism
-and training-rate adjustment. Their contrasts against \emph{VanillaBERT} are
-similar at the lowest-loss matched point, Table~\ref{tab:band}. No direct
+\emph{LoopedBERT} and the \emph{HyperloopBERT} bundle both use the looped
+layout, Table~\ref{tab:arch}. \emph{HyperloopBERT} also adds stream mixing and a
+lower peak learning rate, Table~\ref{tab:reprosettings}. No direct
 \emph{HyperloopBERT}-versus-\emph{LoopedBERT} test is reported.
 
 \begin{table}[t]
@@ -610,15 +624,16 @@ HyperloopBERT    & 2.196 & 0.0466 & [0.022, 0.071] & 0.0241 & 0.0003 \\
 \end{table}
 
 \label{sec:qualitative}
-The aggregate in Table~\ref{tab:band} can be interpreted through direct model
-outputs. Table~\ref{tab:qual} reports hand-built masked-pronoun probes scored at
+The masked-pronoun probes show direct model outputs behind the aggregate
+pattern. Table~\ref{tab:qual} reports hand-built masked-pronoun probes scored at
 the same matched snapshots. These probes are not part of any benchmark. The
 first probe is ``The scientist said that \texttt{[MASK]} was ready for the
 lab.'' The other probes replace ``scientist'' with ``teacher'' and
 ``secretary.'' On the scientist sentence, the unshared baseline assigns higher
 probability to \emph{he} than to \emph{she}, Table~\ref{tab:qual}. On the
-teacher sentence, the same encoder prefers \emph{she}. The direction is
-therefore occupation-specific, not a fixed preference for one pronoun.
+teacher sentence, the same encoder prefers \emph{she}, Table~\ref{tab:qual}.
+Bold marks the probes where \emph{VanillaBERT}'s larger pronoun probability
+matches the common occupation stereotype.
 
 The secretary probe shows why paired differences are used. The common stereotype
 would favour \emph{she}, but every encoder assigns higher probability to
@@ -628,8 +643,7 @@ pronoun-frequency component by changing only the group term inside a sentence.
 
 \begin{table}[t]
 \centering
-\caption{Probability assigned to \emph{he} and \emph{she} at the masked pronoun
-of three probes.}
+\caption{Probability assigned to \emph{he} and \emph{she} at the masked pronoun of three probes.}
 \label{tab:qual}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -650,19 +664,20 @@ HyperloopBERT    & 0.610 / 0.033 & 0.001 / 0.001 & 0.066 / 0.004 \\
 \subsection{Sensitivity analyses}
 \label{sec:allband}
 
-The single-point result motivates checks of the analysis choices. Each check
-asks whether the lower \emph{CrowS-Pairs} effect for \emph{LoopedBERT} and the
-\emph{HyperloopBERT} bundle remains when one choice changes.
+The single-point result depends on choices that can change the measured
+association. The checks below vary those choices in turn for the
+\emph{CrowS-Pairs} contrast against \emph{VanillaBERT}.
 
-Changing the matched point changes the comparison. Figure~\ref{fig:delta} plots
-the \emph{CrowS-Pairs} contrast against realised validation loss. The
-baseline-versus-looped contrast changes sign across matched points. The
-reduction in Table~\ref{tab:band} appears only at the lowest-loss looped point.
-The other looped points have the opposite sign. The contrasts against the other
-weight-reusing encoders also vary by matched point, Figure~\ref{fig:delta}. The
-\emph{CrowS-Pairs} matched-point contrasts against \emph{VanillaBERT} are
-exploratory and repeated. The matched points within an encoder are successive
-checkpoints of one run, so the points are not independent.
+For the full-sentence \emph{CrowS-Pairs} effect, the
+\emph{VanillaBERT}-minus-\emph{LoopedBERT} contrast changes sign across matched
+points, Figure~\ref{fig:delta}. Figure~\ref{fig:delta} plots \emph{CrowS-Pairs}
+contrasts against realised validation loss. The reduction in Table~\ref{tab:band}
+appears only at the lowest-loss looped point. The other looped points have the
+opposite sign. The contrasts against the other weight-reusing encoders also vary
+by matched point, Figure~\ref{fig:delta}. The \emph{CrowS-Pairs} matched-point
+contrasts against \emph{VanillaBERT} are exploratory and repeated. The matched
+points within an encoder are successive checkpoints of one run, so the points
+are not independent.
 
 \begin{figure}[t]
 \centering
@@ -671,37 +686,40 @@ checkpoints of one run, so the points are not independent.
 bootstrap error bars. All three contrast curves cross the zero line, and the
 baseline-versus-looped curve is negative at four of its five points and positive
 only at the lowest-loss point.}
-\caption{\emph{CrowS-Pairs} contrast against the unshared baseline at every
-matched point.}
+\caption{\emph{CrowS-Pairs} contrast against the unshared baseline at every matched point.}
 \label{fig:delta}
 \end{figure}
 
 \label{sec:cont}
-The matched-point variation motivates a continuous adjustment for realised
-capability. The regression uses \emph{CrowS-Pairs} item effects as the response,
-architecture as a categorical factor with \emph{VanillaBERT} as reference, and
-mean-centred realised loss as a covariate. The model is fitted by least squares.
-Architecture and loss vary only across snapshots, so the identifying units are
-snapshots rather than item rows. A wild cluster bootstrap is an inference check
-that resamples snapshot-level residual patterns while preserving dependence
-among item rows from the same snapshot. Table~\ref{tab:model} reports the
-snapshot-level fit and that bootstrap.
+Matched-point variation leaves open whether realised validation loss explains
+part of the single-point result. The regression uses \emph{CrowS-Pairs} item
+effects as the response, architecture as a categorical factor with
+\emph{VanillaBERT} as reference, and mean-centred realised loss as a covariate.
+The model is fitted by least squares. Architecture and loss vary only across
+snapshots, so the identifying units are snapshots rather than item rows. A wild
+cluster bootstrap is an inference check over snapshots. It resamples
+snapshot-level residual patterns while preserving dependence among item rows
+from the same snapshot. Table~\ref{tab:model} reports the snapshot-level fit and
+that bootstrap.
 
 After adjustment for realised validation loss, no architecture coefficient in
-the \emph{CrowS-Pairs} item-effect regression is distinguishable from zero at
-the significance rule used for bold entries, Table~\ref{tab:model}. Realised
-loss remains associated with the mean \emph{CrowS-Pairs} effect,
-Table~\ref{tab:model}. The loss coefficient is on the same scale as the
-contrasts in Table~\ref{tab:band}. Remaining capability differences are
-therefore large enough to affect the single-point reading. This is not evidence
-that architecture has no effect. With the snapshot count in Table~\ref{tab:runfacts}
+the \emph{CrowS-Pairs} item-effect regression is distinguishable from zero under
+the table decision rule, Table~\ref{tab:model}. Bold marks terms for which both
+the snapshot and bootstrap $p$-values are below the chosen five-percent alpha,
+Table~\ref{tab:model}. Realised loss remains associated with the mean
+\emph{CrowS-Pairs} effect, Table~\ref{tab:model}. The realised-loss coefficient
+in Table~\ref{tab:model} has a magnitude comparable to the single-point
+contrasts in Table~\ref{tab:band}. Remaining validation-loss differences can
+therefore change the interpretation of the lowest-loss matched comparison. The
+absence of a detectable architecture coefficient is not evidence that
+architecture has no effect. With the snapshot count in Table~\ref{tab:runfacts}
 and the seed count in Table~\ref{tab:reprosettings}, the analysis has limited
-power for small architecture effects. This is an absence of evidence at this sample size rather than evidence of absence.
+power for small architecture effects. This is an absence of evidence at this
+sample size rather than evidence of absence.
 
 \begin{table}[t]
 \centering
-\caption{\emph{CrowS-Pairs} effect explained by encoder design and by training
-progress, over the 21 snapshots.}
+\caption{\emph{CrowS-Pairs} effect explained by encoder design and by training progress.}
 \label{tab:model}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -719,12 +737,12 @@ Realised loss     & $-0.0184$ & \textbf{0.0002} & \textbf{0.0049} \\
 \end{table}
 
 \label{sec:scorer}
-The loss-adjusted result leaves the scorer as a separate source of variation.
-The shared-token and official \emph{CrowS-Pairs} rules rescore the same items at
-the lowest-loss matched snapshots. Table~\ref{tab:rules2} gives the exact
-contrasts and the count of contrasts that survive Holm correction. Neither
-alternative rule preserves the corrected result. Under the shared-token rule, no
-contrast survives Holm correction. Under the official rule, no contrast survives
+The loss-adjusted regression still uses the full-sentence scorer. The
+shared-token and official \emph{CrowS-Pairs} rules rescore the same items at the
+lowest-loss matched snapshots. Table~\ref{tab:rules2} gives the exact contrasts
+and the count of contrasts that survive Holm correction. Neither alternative
+rule preserves the corrected result. Under the shared-token rule, no contrast
+survives Holm correction. Under the official rule, no contrast survives
 correction, and the \emph{LoopedBERT} contrast reverses sign,
 Table~\ref{tab:rules2}.
 
@@ -735,22 +753,26 @@ from direction. Changing from averaging to summing changes scale. Changing the
 direction convention changes sign for the \emph{LoopedBERT} and
 \emph{ALBERTLoopedBERT} contrasts. The sign reversal is therefore attributable
 to the benchmark direction convention for the \texttt{antistereo} subset, whose
-size is given in Table~\ref{tab:datastats}.
+size is given in Table~\ref{tab:datastats}. In Table~\ref{tab:rules2},
+``Sig.'' counts contrasts that survive Holm correction at the chosen
+five-percent alpha.
 
-The released BERT checkpoint \texttt{bert-base-uncased} was rescored with this
-implementation. The absolute score differs from the value reported by
+The released BERT checkpoint \texttt{bert-base-uncased} is the public base BERT
+model trained on lowercased text by the original BERT authors. The checkpoint
+was rescored with the official \emph{CrowS-Pairs} rule for the aggregate
+stereotype score. That score differs from the value reported by
 \citet{nangia2020crows}. The public checkpoint and current scoring library are
-not the same execution environment as the original benchmark release. All four
+not the same execution environment as the original benchmark release. All
 encoders in this paper are scored with the same code and the same environment,
 so the architecture contrasts use a common scorer. The shared-token
-prefix-and-suffix alignment fails on the unaligned subset shown in
+prefix-and-suffix alignment matches the common prefix and suffix of the two
+sentences. That alignment fails on the unaligned subset shown in
 Table~\ref{tab:datastats}. These pairs are instances of the item-quality problem
 documented by \citet{blodgett2021salmon}.
 
 \begin{table}[t]
 \centering
-\caption{Contrast against \emph{VanillaBERT} on \emph{CrowS-Pairs} at the
-lowest-loss matched point, under each scoring rule.}
+\caption{Contrast against \emph{VanillaBERT} on \emph{CrowS-Pairs} at the lowest-loss matched point, under each scoring rule.}
 \label{tab:rules2}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -765,37 +787,35 @@ Official (sum, shared, signed) & 1508 & $-0.0519$       & $-0.0163$ & $+0.0488$ 
 \multicolumn{6}{@{}l}{\emph{official token set and sum, direction convention removed}} \\
 \texttt{sent\_more} stereotypical & 1508 & $+0.0919$ & $+0.0948$ & $+0.1305$ & 0 of 3 \\
 \addlinespace[2pt]
-\multicolumn{6}{@{}l}{Sig. counts Holm-surviving contrasts; bold marks entries passing the stated decision rule.} \\
+\multicolumn{6}{@{}l}{Sig. counts Holm-surviving contrasts; bold marks entries passing the five-percent alpha.} \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
 \label{sec:stereoset}
-A second benchmark tests whether the single-point direction is specific to
-\emph{CrowS-Pairs}. The same lowest-loss matched snapshots are scored on the
-\emph{StereoSet} intrasentence split. The \emph{StereoSet} paired effect is the
-pseudo-log-likelihood difference between the stereotypical and
-anti-stereotypical fillers in the blank position. Table~\ref{tab:stereoset}
-reports the paired effect, the benchmark stereotype score \emph{SS}, the
-language-modelling score \emph{LMS}, the contrast, and the Holm-corrected
-$p$-value. \emph{SS} is the benchmark percentage favouring the stereotypical
-completion. \emph{LMS} is the benchmark percentage favouring a meaningful
-completion over an unrelated one.
+The scorer analysis leaves a benchmark question. The same lowest-loss matched
+snapshots are scored on the \emph{StereoSet} intrasentence split. The
+\emph{StereoSet} paired effect is the pseudo-log-likelihood difference between
+the stereotypical and anti-stereotypical fillers in the blank position.
+Table~\ref{tab:stereoset} reports the paired effect, the benchmark stereotype
+score \emph{SS}, the language-modelling score \emph{LMS}, the contrast, and the
+Holm-corrected $p$-value. \emph{SS} is the benchmark percentage favouring the
+stereotypical completion. \emph{LMS} is the benchmark percentage favouring a
+meaningful completion over an unrelated one.
 
 The direction agrees with the \emph{CrowS-Pairs} single-point result for all
-weight-reusing encoders, Table~\ref{tab:stereoset}. The inferential conclusion
-does not agree. On the \emph{StereoSet} intrasentence items, only the paired
-effect for \emph{HyperloopBERT} versus \emph{VanillaBERT} survives Holm
-correction at the lowest-loss matched point, Table~\ref{tab:stereoset}. On
-\emph{CrowS-Pairs}, the corrected contrasts were against \emph{LoopedBERT} and
-\emph{HyperloopBERT}, Table~\ref{tab:band}. \emph{CrowS-Pairs} and
-\emph{StereoSet} therefore flag different encoders after correction.
+weight-reusing encoders, Table~\ref{tab:stereoset}. The Holm-adjusted tests
+differ across the two benchmarks. On the \emph{StereoSet} intrasentence items,
+only the paired effect for \emph{HyperloopBERT} versus \emph{VanillaBERT}
+survives Holm correction at the lowest-loss matched point,
+Table~\ref{tab:stereoset}. On \emph{CrowS-Pairs}, the corrected contrasts were
+against \emph{LoopedBERT} and \emph{HyperloopBERT}, Table~\ref{tab:band}. Thus
+the two benchmarks do not support the same set of corrected contrasts.
 
 \begin{table}[t]
 \centering
-\caption{Results on the second benchmark, \emph{StereoSet}, at the same matched
-point.}
+\caption{Results on the second benchmark, \emph{StereoSet}, at the same matched point.}
 \label{tab:stereoset}
 \footnotesize
 \begin{adjustbox}{max width=\columnwidth}
@@ -813,13 +833,14 @@ HyperloopBERT    & 0.0158 & 49.7 & 86.3 & 0.0300 & \textbf{0.0009} \\
 \end{table}
 
 \label{sec:category}
-The benchmark difference motivates checking whether the aggregate hides category
-variation. Figure~\ref{fig:robust} shows that category contrasts appear on both
-sides of zero. Several categories reverse sign depending on which
-weight-reusing encoder is compared with the baseline. The largest category and
-smallest category sizes are reported in Table~\ref{tab:datastats}. These
-analyses are descriptive. The category analyses followed the aggregate
-instability and are not confirmatory tests of a pre-stated category hypothesis.
+The benchmark comparison does not show whether the aggregate hides category
+variation. Figure~\ref{fig:robust} shows \emph{CrowS-Pairs} contrasts by bias
+category. Category contrasts appear on both sides of zero. Several categories
+reverse sign depending on which weight-reusing encoder is compared with the
+baseline. The largest category and smallest category sizes are reported in
+Table~\ref{tab:datastats}. The category analyses are descriptive. They followed
+the aggregate instability and are not confirmatory tests of a pre-stated
+category hypothesis.
 
 \begin{figure*}[t]
 \centering
@@ -835,16 +856,16 @@ The capability gate limits the interpretation of all preceding effects. On
 \emph{WinoBias}, accuracies for every encoder and split lie just above and just
 below chance, Table~\ref{tab:gate}. An encoder that cannot resolve the pronoun
 cannot support a claim about stereotypical preference in pronoun resolution. The
-GLUE component was not run because the failed coreference component already made
-the gate fail. The baseline-interval component is met by the \emph{VanillaBERT}
-row of Table~\ref{tab:band}.
+GLUE component was not run because the failed pronoun-resolution component
+already made the gate fail. The baseline-interval component is met by the
+\emph{VanillaBERT} row of Table~\ref{tab:band}.
 
 The failed \emph{WinoBias} check limits the reported effects to lexical
-association claims. The reported effects measure lexical association in the
-masked language modelling head. The reported effects do not show that a ranker
-or classifier fine-tuned from \emph{VanillaBERT}, \emph{LoopedBERT},
-\emph{ALBERTLoopedBERT}, or \emph{HyperloopBERT} would treat demographic groups
-differently in use.
+association claims from the unfine-tuned masked language modelling head. The
+reported effects do not show that a ranker or classifier fine-tuned from
+\emph{VanillaBERT}, \emph{LoopedBERT}, \emph{ALBERTLoopedBERT}, or
+\emph{HyperloopBERT} would treat demographic groups differently in use. These
+limits shape the interpretation discussed next.
 
 \begin{table}[t]
 \centering
@@ -871,24 +892,24 @@ Overall capability gate & gate status & failed \\
 \section{Discussion}
 \label{sec:discussion}
 
-The results separate a single matched-point finding from a general architecture
-claim. At the lowest-loss \emph{CrowS-Pairs} point, \emph{LoopedBERT} and the
-\emph{HyperloopBERT} bundle are lower than \emph{VanillaBERT},
-Table~\ref{tab:band}. That corrected contrast does not repeat across matched
-points or alternative scorers, Figure~\ref{fig:delta} and Table~\ref{tab:rules2}.
-The pipeline checks used the same data order, scorer code, and snapshot-selection
-rule for all encoders. The remaining issue is dependence on the matched point
+The corrected contrast holds at one matched \emph{CrowS-Pairs} point and does
+not hold under the other checks. At the lowest-loss \emph{CrowS-Pairs} point,
+\emph{LoopedBERT} and the \emph{HyperloopBERT} bundle are lower than
+\emph{VanillaBERT}, Table~\ref{tab:band}. That corrected contrast does not
+repeat across matched points or alternative scorers, Figure~\ref{fig:delta} and
+Table~\ref{tab:rules2}. All encoders used the same data order, scorer code, and
+snapshot-selection rule. The remaining issue is dependence on the matched point
 and scorer.
 
-The matched-point dependence suggests that residual capability still matters.
-After continuous adjustment for realised validation loss, no architecture term
-is distinguishable from zero at the stated decision rule, Table~\ref{tab:model}.
-Validation loss remains associated with the \emph{CrowS-Pairs} item effect,
-Table~\ref{tab:model}. This association is not a causal proof. The snapshot
-count is limited, and all checkpoints come from the seed count reported in
-Table~\ref{tab:reprosettings}.
+Remaining differences in realised validation loss are associated with the
+\emph{CrowS-Pairs} item effect. After continuous adjustment for realised
+validation loss, no architecture term is distinguishable from zero at the stated
+decision rule, Table~\ref{tab:model}. Validation loss remains associated with
+the \emph{CrowS-Pairs} item effect, Table~\ref{tab:model}. This association is
+not a causal proof. The snapshot count is limited, and all checkpoints come from
+the seed count reported in Table~\ref{tab:reprosettings}.
 
-The scorer dependence has a different source. The three scoring rules make
+The scorer dependence comes from rule choices. The three scoring rules make
 different choices about token sets, aggregation, and direction labels,
 Table~\ref{tab:rules}. The decomposition shows that the sign reversal follows
 from the direction convention for \texttt{antistereo} pairs,
@@ -897,22 +918,24 @@ the dataset direction label are both explicit conventions. A conclusion that
 holds under only one convention is therefore not enough in this study to
 attribute the measured difference to architecture alone.
 
-Retrieval and classification pipelines often choose among pre-trained encoders.
-In this study, an architecture-level association comparison changes under
-matched capability level, scoring rule, and direction convention. The comparison
-therefore supports model-selection claims only when the matched point, scoring
-rule, and direction convention are stated with the result.
+Developers of retrieval and classification systems often select among
+pre-trained encoders. In this study, an architecture-level association
+comparison changes under matched capability level, scoring rule, and direction
+convention. The failed capability gate and single-seed design also limit the
+claim. The comparison therefore does not support model-selection claims in this
+study.
 
 \section{Limitations}
 \label{sec:limits}
 
-Several limits affect how the results should be read. Training uses a single seed per architecture, so the four runs are not replicated. The
-runs are therefore not replications. Every interval reported here bootstraps
-over benchmark items and quantifies item sampling alone. The intervals do not
-quantify variation between training runs. The ordering of encoders may change
-under re-training with another seed. The single-seed design also means that the
-loss trajectories in Figure~\ref{fig:training} cannot separate architecture from
-run-specific optimisation variation.
+Several limits affect how the results should be read. Training uses a single
+seed per architecture, Table~\ref{tab:reprosettings}. No run is repeated. Every
+interval reported here bootstraps over benchmark items and quantifies item
+sampling alone. The intervals do not quantify variation between training runs.
+The ordering of encoders may change under re-training with another seed. The
+single-seed design also means that the loss trajectories in
+Figure~\ref{fig:training} cannot separate architecture from run-specific
+optimisation variation.
 
 The analyses across matched points, continuous loss adjustment, scoring-rule
 decomposition, and category comparisons were performed after the single-point
@@ -926,16 +949,18 @@ losses in Table~\ref{tab:band} are still changing, and Figure~\ref{fig:training}
 does not show a finished training curve. Whether the architecture contrasts
 would differ for fully trained encoders is untested here. \emph{HyperloopBERT}
 also needed a lower peak learning rate, Table~\ref{tab:reprosettings}. Its
-comparison therefore bundles the stream architecture with a stability adjustment.
+comparison therefore bundles the stream architecture with a stability
+adjustment.
 
-Only two stereotype benchmarks are used, and both are correlation-type
-instruments in the sense of \citet{wang2025difference}. Both are scored from
-the same masked language modelling head. Agreement between these instruments is
-therefore weaker evidence than agreement between independent measurement
-approaches would be. The capability gate fails, Table~\ref{tab:gate}, so no
-statement about downstream behaviour is supported. Both instruments also have
-documented item-quality problems \citep{blodgett2021salmon}. The unaligned
-\emph{CrowS-Pairs} subset in Table~\ref{tab:datastats} is one instance.
+Only two stereotype benchmarks are used, Table~\ref{tab:datastats}. Both are
+correlation-type instruments in the sense of \citet{wang2025difference}. Both
+are scored from the same masked language modelling head. Agreement between these
+instruments is therefore weaker evidence than agreement between independent
+measurement approaches would be. The capability gate fails,
+Table~\ref{tab:gate}, so no statement about downstream behaviour is supported.
+Both instruments also have documented item-quality problems
+\citep{blodgett2021salmon}. The unaligned \emph{CrowS-Pairs} subset in
+Table~\ref{tab:datastats} is one instance.
 
 The scoring-rule decomposition isolates the direction convention at one matched
 point. The decomposition does not prove that the same attribution holds at other
@@ -945,9 +970,9 @@ uneven, Table~\ref{tab:datastats}, and no category hypothesis was specified
 before examining the aggregate.
 
 The evaluation is English-only. An India-centric instrument covering caste and
-religion \citep{khandelwal2023indianbhed} was planned, but the available mirror
-could not be used with the English-only tokeniser. Extending the protocol to
-that setting is the first follow-up direction.
+religion \citep{khandelwal2023indianbhed} was planned, but the available hosted
+copy of the dataset could not be used with the English-only tokeniser. Extending
+the protocol to that setting is the first follow-up direction.
 
 \section{Reproducibility}
 \label{sec:repro}
@@ -958,15 +983,16 @@ data choices are in Section~\ref{sec:data}. The encoder definitions are in
 Table~\ref{tab:arch}. The training and analysis settings are listed in
 Table~\ref{tab:reprosettings}.
 
-All runs verify a checksum and block-count manifest before training. Attention
-uses the memory-efficient exact implementation of \citet{dao2022flashattention},
-and the run log confirms that implementation was active throughout. Pre-training
-uses AdamW, bfloat16 autocast, and H100 GPUs, with exact settings in
-Table~\ref{tab:reprosettings}. Snapshots are selected by first crossing of
-pre-set validation-loss targets, Table~\ref{tab:runfacts}. The \emph{StereoSet}
-replication and official-rule rescoring both rerun on CPU from the same
-snapshots. Re-running the released scripts reproduces the stored scores within
-the CPU rerun tolerance in Table~\ref{tab:reprosettings}.
+All runs verify a manifest that lists each model's block count and file
+checksums before training. Pre-training uses the AdamW optimizer with decoupled
+weight decay, bfloat16 low-precision autocast, and H100 GPUs, with exact
+settings in Table~\ref{tab:reprosettings}. Attention uses the memory-efficient
+exact implementation of \citet{dao2022flashattention}, and the run log confirms
+that implementation was active throughout. Snapshots are selected by first
+crossing of pre-set validation-loss targets, Table~\ref{tab:runfacts}. The
+\emph{StereoSet} replication and official-rule rescoring both rerun on CPU from
+the same snapshots. Re-running the released scripts reproduces the stored scores
+within the CPU rerun tolerance in Table~\ref{tab:reprosettings}.
 % CAMERA-READY: replace the anonymised mirror with the permanent repository URL.
 Code, per-item scores for every snapshot, the masked-position predictions behind
 Table~\ref{tab:qual}, and the analysis scripts are available at
@@ -1022,18 +1048,18 @@ Both contrasts survive Holm correction, Table~\ref{tab:band}. That result does
 not hold across the subsequent checks. The looped result appears at only one
 matched point, Figure~\ref{fig:delta}. The architecture terms become
 indistinguishable from zero after continuous loss adjustment,
-Table~\ref{tab:model}. The result survives correction under neither alternative
-scoring rule, Table~\ref{tab:rules2}. The official rule reverses the
-\emph{LoopedBERT} and \emph{ALBERTLoopedBERT} contrasts because of the direction
-convention for \texttt{antistereo} pairs.
+Table~\ref{tab:model}. Under both alternative scoring rules, no contrast stays
+significant after correction, Table~\ref{tab:rules2}. The official rule reverses
+the \emph{LoopedBERT} and \emph{ALBERTLoopedBERT} contrasts because of the
+direction convention for \texttt{antistereo} pairs.
 
-The second benchmark gives a related but not identical result. On
-\emph{StereoSet}, the direction agrees for all weight-reusing encoders, but only
-the \emph{HyperloopBERT} contrast remains corrected, Table~\ref{tab:stereoset}.
-The category analysis and capability gate further limit the interpretation,
-Figure~\ref{fig:robust} and Table~\ref{tab:gate}. The evidence supports a
-measurement recommendation. Bias comparisons should report matched capability
-levels, scoring rules, and direction conventions before attributing a measured
+The second benchmark gives a related but different result. On \emph{StereoSet}
+intrasentence items, the direction agrees for all weight-reusing encoders. Only
+the \emph{HyperloopBERT} paired filler-effect contrast stays significant after
+Holm adjustment, Table~\ref{tab:stereoset}. The category analysis and capability
+gate further limit the interpretation, Figure~\ref{fig:robust} and
+Table~\ref{tab:gate}. Bias comparisons should report matched capability levels,
+scoring rules, and direction conventions before attributing a measured
 difference to encoder design.
 
 \section*{Declaration on Generative AI}
