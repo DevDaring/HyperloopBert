@@ -615,3 +615,29 @@ for evaluation, no model is trained on them or any benchmark, and WinoBias is a
 third evaluation set used as a capability check, not "the test dataset". The
 incorrect original is commented out in the source with a note, not deleted.
 
+## Section names replaced with conventional ones, in blue
+
+Responding to the supervisor's comment that headings like "The contrast does not
+hold across matched points" and "A second instrument" read as essay claims
+rather than paper sections. Each heading now names the section's object, not its
+conclusion; the conclusion already stands in each section's first sentence, so
+nothing is lost. New names render in blue per the review convention
+(`\texorpdfstring` keeps PDF bookmarks plain). The old name is kept as a source
+comment above each heading.
+
+| old | new |
+|---|---|
+| Matching on validation loss, and its limits | Loss-matching protocol |
+| Quality and the matched points | Training dynamics and matched points |
+| The single matched point | Results at the deepest matched point |
+| What the encoders predict | Qualitative examples |
+| The contrast does not hold across matched points | Results across matched points |
+| Adjusting continuously for capability | Controlling for validation loss |
+| Sensitivity to the scoring rule | Effect of the scoring rule |
+| A second instrument | Results on StereoSet |
+| Category heterogeneity | Results by bias category |
+| The capability gate is not met | Capability check |
+
+Build: 10 pages, 0 overfull hboxes, 0 undefined references, all cross-references
+resolve.
+

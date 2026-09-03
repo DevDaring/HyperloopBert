@@ -148,8 +148,7 @@ same number of block applications per token, the same training task and the same
 training text. Reusing weights also changes how fast a model learns, so a looped
 encoder and an unshared one reach the same validation loss after different
 amounts of training; matching on validation loss exists to deal with exactly
-that difference, and these models therefore give it the strictest test. Finally,
-published work on looped encoders reports quality, speed and reasoning but not
+that difference, and these models therefore give it the strictest test. Most of the studies on looped encoders reports quality, speed and reasoning but not
 social bias, although the designs are already proposed for settings where memory
 is scarce.
 
@@ -179,14 +178,13 @@ This paper makes three contributions.
       encoders on validation loss, and subject its conclusion to four robustness
       checks: other matched points, continuous adjustment for realised loss,
       alternative scoring rules, and a second benchmark.
-\item We show the apparent architecture effect on \emph{CrowS-Pairs} to be an
-      artefact of two reporting choices. It holds at one of the five matched
+\item This study shows the apparent architecture effect on \emph{CrowS-Pairs} to be an artefact of two reporting choices. It holds at one of the five matched
       points available for the looped encoder, vanishes once realised loss is
       adjusted for continuously under four dependence models, and survives Holm
       correction under neither alternative scoring rule. We trace the sign
       reversal under the benchmark's released implementation to one convention
       affecting 218 of its 1508 pairs.
-\item We show that the aggregate conceals sign reversals across four of the
+\item This work shows that the aggregate conceals sign reversals across four of the
       nine bias categories, and that a pre-specified capability gate fails,
       which bounds what these measurements demonstrate.
 \end{enumerate}
@@ -456,7 +454,8 @@ ALBERTLoopedBERT  &  1 &  32.1\,M & 0.92 \\
 \end{adjustbox}
 \end{table}
 
-\subsection{Matching on validation loss, and its limits}
+% renamed (was: Matching on validation loss, and its limits)
+\subsection{\texorpdfstring{\textcolor{blue}{Loss-matching protocol}}{Loss-matching protocol}}
 
 A list of target validation loss values is fixed before training. Validation loss
 is measured at a regular interval, and the first time it falls below a target the
@@ -606,7 +605,8 @@ Sections~\ref{sec:allband}--\ref{sec:scorer} is computed on all 1508
 taken against \emph{VanillaBERT}, the unshared baseline, with a positive value
 meaning that the baseline records the larger stereotype effect.
 
-\subsection{Quality and the matched points}
+% renamed (was: Quality and the matched points)
+\subsection{\texorpdfstring{\textcolor{blue}{Training dynamics and matched points}}{Training dynamics and matched points}}
 
 Figure~\ref{fig:training} plots held-out validation loss in nats against
 pre-training tokens for all four encoders. \emph{VanillaBERT} and
@@ -640,7 +640,8 @@ VanillaBERT and LoopedBERT overlap closely and end lowest.}
 \label{fig:training}
 \end{figure}
 
-\subsection{The single matched point}
+% renamed (was: The single matched point)
+\subsection{\texorpdfstring{\textcolor{blue}{Results at the deepest matched point}}{Results at the deepest matched point}}
 
 Table~\ref{tab:band} reports the deepest matched point common to all four
 encoders, the nominal 2.2-nat band, where realised losses span 2.163 to 2.196
@@ -689,7 +690,8 @@ HyperloopBERT    & 2.196 & 0.0466 & [0.022, 0.071] & 0.0241 & 0.0003 \\
 \end{adjustbox}
 \end{table}
 
-\subsection{What the encoders predict}
+% renamed (was: What the encoders predict)
+\subsection{\texorpdfstring{\textcolor{blue}{Qualitative examples}}{Qualitative examples}}
 \label{sec:qualitative}
 
 The numbers above are aggregates, so the model output behind them is shown
@@ -732,7 +734,8 @@ HyperloopBERT    & 0.610 / 0.033 & 0.001 / 0.001 & 0.066 / 0.004 \\
 \end{adjustbox}
 \end{table}
 
-\subsection{The contrast does not hold across matched points}
+% renamed (was: The contrast does not hold across matched points)
+\subsection{\texorpdfstring{\textcolor{blue}{Results across matched points}}{Results across matched points}}
 \label{sec:allband}
 
 Repeating the comparison of Table~\ref{tab:band} at every point where the
@@ -772,7 +775,8 @@ matched point.}
 \label{fig:delta}
 \end{figure}
 
-\subsection{Adjusting continuously for capability}
+% renamed (was: Adjusting continuously for capability)
+\subsection{\texorpdfstring{\textcolor{blue}{Controlling for validation loss}}{Controlling for validation loss}}
 \label{sec:cont}
 
 Matching within a band is a coarse control, since realised losses still differ by
@@ -831,7 +835,8 @@ Realised loss     & $-0.0184$ & \textbf{0.0002} & \textbf{0.0049} \\
 \end{adjustbox}
 \end{table}
 
-\subsection{Sensitivity to the scoring rule}
+% renamed (was: Sensitivity to the scoring rule)
+\subsection{\texorpdfstring{\textcolor{blue}{Effect of the scoring rule}}{Effect of the scoring rule}}
 \label{sec:scorer}
 
 The four band-2.2 snapshots were rescored under the other two rules, so the
@@ -918,7 +923,8 @@ scoring rule and (b) bias category.}
 \label{fig:robust}
 \end{figure*}
 
-\subsection{A second instrument}
+% renamed (was: A second instrument)
+\subsection{\texorpdfstring{\textcolor{blue}{Results on StereoSet}}{Results on StereoSet}}
 \label{sec:stereoset}
 
 Everything above rests on a single benchmark. The same four band-2.2 snapshots
@@ -973,7 +979,8 @@ HyperloopBERT    & 0.0158 & 49.7 & 86.3 & 0.0300 & \textbf{0.0009} \\
 \end{adjustbox}
 \end{table}
 
-\subsection{Category heterogeneity}
+% renamed (was: Category heterogeneity)
+\subsection{\texorpdfstring{\textcolor{blue}{Results by bias category}}{Results by bias category}}
 \label{sec:category}
 
 \emph{CrowS-Pairs} spans nine bias categories, and the aggregate conceals how
@@ -996,7 +1003,8 @@ three comparisons, at $-0.0270$ and $-0.0438$ against \emph{LoopedBERT} and
 confirmatory tests of a pre-stated hypothesis, and emphasise estimates and sign
 structure rather than thresholded significance.
 
-\subsection{The capability gate is not met}
+% renamed (was: The capability gate is not met)
+\subsection{\texorpdfstring{\textcolor{blue}{Capability check}}{Capability check}}
 \label{sec:capability}
 
 On the \emph{WinoBias} coreference instrument all four encoders perform at
