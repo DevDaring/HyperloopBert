@@ -23,8 +23,6 @@
 \usepackage{adjustbox}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\newcommand{\TODO}[1]{\textcolor{red}{\textit{[TODO: #1]}}}
-\newcommand{\NEW}[1]{\textcolor{blue}{#1}}   % additions for review, rendered blue
 
 \begin{document}
 
@@ -117,7 +115,7 @@ sometimes opposing directions
 them separates the two explicitly.
 
 Matching checkpoints at equal validation loss is the standard control and is the
-design adopted here. Each encoder is trained until its validation loss crosses \textcolor{red}{a list of targets} \NEW{(seven values, from 5.0 down to 2.2 nats)} fixed before training, and a snapshot is recorded at each first
+design adopted here. Each encoder is trained until its validation loss crosses a list of targets (seven values, from 5.0 down to 2.2 nats) fixed before training, and a snapshot is recorded at each first
 crossing. This paper evaluates whether that control is sufficient. Matching
 removes gross differences in training progress. It leaves two rarely reported
 degrees of freedom: \emph{which} matched capability level the comparison is read
@@ -125,7 +123,6 @@ at, and \emph{which} scoring formulation is applied. Both are shown below to mov
 the measured architecture difference more than the architecture does.
 
 In the present study, we compare four encoder models. 
-{\color{blue}%
 Recollect that a standard encoder is a stack of transformer blocks, each block with its own
 weights. A looped encoder, instead, keeps one small set of blocks and applies it several
 times over. Both designs can be equally deep and do the same amount of
@@ -148,7 +145,7 @@ encoder and an unshared one can reach the same validation loss after different
 amounts of training. 
 %matching on validation loss exists to deal with exactly that difference, and these models therefore give it the strictest test. 
 Finally, most studies on looped encoders reports quality, speed and reasoning but not
-social bias, leaving open an area that we address in this paper.}
+social bias, leaving open an area that we address in this paper.
 %, although the designs are already proposed for settings where memory is scarce.
 
 %This comparison is between whole designs rather than one isolated change: the stream variant adds extra mixing weights on top of sharing, and it alone needed a smaller peak learning rate to train stably (Section~\ref{sec:setup}).
@@ -284,7 +281,6 @@ them can originate in the training text.
 
 \subsection{Stereotype benchmarks}
 
-{\color{blue}%
 We use two stereotype benchmarks for evaluation, namely, \emph{CrowS-Pairs}
 \citep{nangia2020crows} and \emph{StereoSet} \citep{nadeem2021stereoset}. No
 model is trained on either of them, or on any benchmark: training uses only the
@@ -296,7 +292,6 @@ a common stereotype is taken as evidence of an association.
 Table~\ref{tab:data} shows one item from each, as well as an item from
 \emph{WinoBias} \citep{zhao2018winobias}, a third evaluation set used as a
 capability check rather than a bias measure.
-}%
 % --- superseded (factually incorrect: benchmarks are not used for training) ---
 % We use two stereotype benchmarks for training, namely, CrowS-Pairs and
 % StereoSet. They share a common design: each item presents two or more
@@ -314,8 +309,6 @@ affects scoring and is treated in Section~\ref{sec:rules}.
 \emph{StereoSet} \citep{nadeem2021stereoset} is used in its intrasentence split: 2106 items over four bias types, of which 962 are race, 810 profession, 255 gender and 79 religion. Each supplies a context sentence with a blank and three candidate fillers, one stereotypical, one anti-stereotypical and one unrelated; the last supports a separate check that the encoder can perform the task at all.
 
 \emph{WinoBias} \citep{zhao2018winobias} is used as a capability check rather than a bias measure. Each item contains two occupation terms and a pronoun referring to exactly one of them, so resolving it requires representing the sentence, and an encoder at chance cannot be showing a stereotypical preference in resolution. Two splits are evaluated, one in which the stereotypical reading is the correct antecedent and one in which it is not, with 374 items each. 
-\TODO{Why is WinoBias chosen for testing and the remaining two for training? Is it arbitrary or is there an underlying rationale?}
-{\color{blue}%
 The three sets play two different roles, and none of them is used for training;
 all training uses the pre-training corpus above. \emph{CrowS-Pairs} and
 \emph{StereoSet} measure association: each asks which of two nearly identical
@@ -328,7 +321,6 @@ than as a preference between two sentences. \emph{WinoBias} is that test:
 linking the pronoun to the correct occupation is possible only if the encoder
 has understood the sentence. It is therefore used to decide whether the other
 two measurements can be interpreted at all, not as a third bias measure.
-}%
 
 \begin{table}[t]
 \centering
@@ -374,9 +366,7 @@ budget, and the benchmark is scored three ways so that the conclusion can be
 checked against the choice of scorer.
 
 \subsection{Architectures}
-\TODO{Don't start with quantative values of some parameters. First present a clear and lucid description of the models, including the idea of looped/hyperlooped transformers, then add these details.}
-\textcolor{blue}{We use the following four encoders: \emph{VanillaBERT}, \emph{LoopedBERT}, \emph{ALBERTLoopedBERT}, and \emph{HyperloopBERT}.}
-{\color{blue}%
+We use the following four encoders: \emph{VanillaBERT}, \emph{LoopedBERT}, \emph{ALBERTLoopedBERT}, and \emph{HyperloopBERT}.
 A looped encoder splits its stack into three parts: a few entry blocks with
 their own weights, a small core whose blocks are applied several times in a row,
 and a few exit blocks with their own weights. Only the core is reused, so depth
@@ -400,7 +390,6 @@ depth of twelve block applications, the same tokeniser, so text is split into
 tokens identically, and the same masked language modelling objective
 \citep{devlin2019bert}. As noted in Section~\ref{sec:intro-bundle}, the fourth
 encoder therefore differs from the others in more than sharing alone.
-}%
 % --- superseded by the green text above (kept for reference) ------------------
 % All four encoders use hidden size 768, twelve effective depths, one tokeniser
 % and the same masked language modelling objective. Their intended difference is
