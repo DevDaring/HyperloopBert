@@ -19,8 +19,7 @@
 
 \begin{document}
 
-\title{Same Models, Opposite Conclusions: Testing the Robustness of
-       Architecture Bias Comparisons}
+\title{Matching and Scoring Checks for Weight-Reusing Encoder Bias Comparisons}
 
 \author{Anonymous Author(s)}
 
@@ -28,29 +27,9 @@
 Retrieval systems rank documents, and text classifiers assign labels to documents. Many such systems reuse language encoders, which map text into contextual token representations. When an encoder gives higher probability to text that links a group with a stereotype, later systems may inherit that lexical association. Weight reuse applies the same network block at several depths. A matched training point compares saved model states with similar held-out text loss. This paper asks whether stereotype-association comparisons change when the matched training point and scoring rule change. We train four encoders on the same text. We evaluate three datasets: \emph{CrowS-Pairs}, a paired-sentence stereotype benchmark; \emph{StereoSet}, a sentence-completion stereotype benchmark; and \emph{WinoBias}, a pronoun-resolution capability check. We apply four sensitivity checks. At the lowest-loss matched point on \emph{CrowS-Pairs}, \emph{LoopedBERT} and \emph{HyperloopBERT} have lower per-item stereotype score differences than the unshared \emph{VanillaBERT} baseline after Holm correction, a multiple-comparison adjustment. \emph{HyperloopBERT} also required a lower learning rate, so its result is a bundle of architecture and stability changes. The conclusion does not hold across the checks. In a loss-adjusted \emph{CrowS-Pairs} regression, architecture terms are not distinguishable from zero. Scoring only shared words or using the released scorer, which assigns the stereotypical role from the dataset direction label, does not preserve the corrected result. On \emph{StereoSet}, only the \emph{HyperloopBERT} comparison remains corrected. The \emph{WinoBias} capability check fails, so the results support claims about lexical association only.
 \end{abstract}
 
-\begin{CCSXML}
-<ccs2012>
-<concept>
-<concept_id>10010147.10010178.10010179</concept_id>
-<concept_desc>Computing methodologies~Natural language processing</concept_desc>
-<concept_significance>500</concept_significance>
-</concept>
-<concept>
-<concept_id>10002951.10003317.10003331</concept_id>
-<concept_desc>Information systems~Evaluation of retrieval results</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-<concept>
-<concept_id>10003456.10010927</concept_id>
-<concept_desc>Social and professional topics~User characteristics</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-</ccs2012>
-\end{CCSXML}
-
-\ccsdesc[500]{Computing methodologies~Natural language processing}
-\ccsdesc[300]{Information systems~Evaluation of retrieval results}
-\ccsdesc[300]{Social and professional topics~User characteristics}
+\ccsdesc{Computing methodologies~Natural language processing}
+\ccsdesc{Information systems~Evaluation of retrieval results}
+\ccsdesc{Social and professional topics~User characteristics}
 
 \keywords{social bias, masked language models, parameter sharing, evaluation
 sensitivity, benchmark reliability, fairness measurement}
@@ -696,7 +675,7 @@ contrasts in Table~\ref{tab:band}. Remaining capability differences are
 therefore large enough to affect the single-point reading. This is not evidence
 that architecture has no effect. With the snapshot count in Table~\ref{tab:runfacts}
 and the seed count in Table~\ref{tab:reprosettings}, the analysis has limited
-power for small architecture effects. This is an absence of evidence at this sample size rather than evidence of absence.
+power for small architecture effects.
 
 \begin{table}[t]
 \centering
@@ -823,7 +802,7 @@ instability and are not confirmatory tests of a pre-stated category hypothesis.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth,trim=232 0 0 0,clip]{images/fig4_scorer_and_category.pdf}
+\includegraphics[width=0.48\textwidth,trim=330 0 0 0,clip]{images/fig4_scorer_and_category.pdf}
 \Description{Category contrasts for nine bias categories, with values on both
 sides of zero.}
 \caption{\emph{CrowS-Pairs} contrasts by bias category.}
@@ -906,7 +885,8 @@ rule, and direction convention are stated with the result.
 \section{Limitations}
 \label{sec:limits}
 
-Several limits affect how the results should be read. Training uses a single seed per architecture, so the four runs are not replicated. The
+Several limits affect how the results should be read. The most important limit
+is that training uses the seed count shown in Table~\ref{tab:reprosettings}. The
 runs are therefore not replications. Every interval reported here bootstraps
 over benchmark items and quantifies item sampling alone. The intervals do not
 quantify variation between training runs. The ordering of encoders may change

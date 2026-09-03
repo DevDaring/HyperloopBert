@@ -641,3 +641,34 @@ comment above each heading.
 Build: 10 pages, 0 overfull hboxes, 0 undefined references, all cross-references
 resolve.
 
+## Multi-agent revision applied under supervision (run_20260903_163405)
+
+The LangGraph Writer/Reviewers/Aggregator system (Paper_Writing/Codes) ran 4
+rounds on the paper: gpt-5.5 writer; Opus, Kimi and Grok reviewers; DeepSeek
+linter; Mistral checker; 1,207,007 ground-truth numbers indexed from the results
+files. One crash (reviewer returned a bare JSON list) was patched in
+`revision_system/nodes/reviewers.py` and the run resumed from checkpoint with no
+API call repaid.
+
+Trajectory: round 1 cut 8257→6026 words and moved dataset counts into new fact
+tables; rounds 2–4 worked through 32→36→64 consolidated findings. Kimi (the
+naive-reader gate) reached 8/10 with an accurate full restatement of the paper.
+Abstract 235/250 words; content ends page 7–8 of 9.
+
+Supervisor gate applied before acceptance (all verified against the pre-run
+baseline `1309677`):
+- **zero result numbers added or altered across all four rounds** (one benign
+  layout constant 0.48\textwidth); no citation key lost; no secrets
+- restored the ACM CCSXML block the writer deleted to appease a checker false
+  positive on concept-ID numbers
+- restored the "absence of evidence rather than evidence of absence" hedge and
+  the plain single-seed sentence in Limitations
+- restored the author's chosen title, which the writer had replaced
+- fixed the writer's broken fig4 crop (trim 330→232pt; category labels were
+  sliced off)
+
+Known residue, left deliberately: Opus's verdict remains READS_GENERATED (the
+author will humanise by hand); 19 major findings open in
+`revision_output/UNRESOLVED.md`; 4 small overfull hboxes (≤7.4pt) in the new
+fact tables.
+
