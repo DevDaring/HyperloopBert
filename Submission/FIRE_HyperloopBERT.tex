@@ -140,20 +140,24 @@ of token representations inside that model.
 This paper makes three contributions.
 
 \begin{enumerate}
-\item At the matched point where the encoders are furthest trained,
-      \emph{LoopedBERT} and \emph{HyperloopBERT} give lower mean item scores on
-      \emph{CrowS-Pairs} than the baseline does, and both contrasts survive Holm
-      correction,
-      Table~\ref{tab:band}. Both differences disappear once validation loss is
-      adjusted for across all matched points, Table~\ref{tab:model}, and again
+\item At the deepest matched point, \emph{LoopedBERT} and
+      \emph{HyperloopBERT} score below the baseline on \emph{CrowS-Pairs} and
+      both contrasts survive Holm correction, Table~\ref{tab:band}. Both
+      disappear once validation loss is adjusted for, Table~\ref{tab:model}, and
       under either alternative scoring rule, Table~\ref{tab:rules2}.
+      Single-point comparisons therefore cannot settle whether a design carries
+      less association, which offers one account of why existing studies of
+      capacity and fairness disagree.
 \item On \emph{StereoSet} the direction agrees, but only one contrast stays
       significant, and for a different encoder. On \emph{WinoBias} all four
-      encoders answer at chance, Table~\ref{tab:gate}, which limits what any of
-      these measurements can show about later use.
+      encoders answer at chance, Table~\ref{tab:gate}. Corroboration by a second
+      benchmark of the same type is therefore weaker evidence than it is usually
+      treated as, and scores read from an untuned masked head do not support
+      claims about deployed behaviour.
 \item An architecture comparison should be reported across several matched
       points and more than one scoring rule before a difference is credited to
-      the design.
+      the design. This gives later work a reporting standard against which a
+      published architecture-bias comparison can be judged.
 \end{enumerate}
 
 Section~\ref{sec:related} places the study among work on stereotype
