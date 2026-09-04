@@ -140,22 +140,32 @@ of token representations inside that model.
 This paper makes three contributions.
 
 \begin{enumerate}
-\item \textbf{A result that does not survive its own checks.} At the matched
-      point where the encoders are furthest trained, \emph{LoopedBERT} and
-      \emph{HyperloopBERT} give lower mean item scores than \emph{VanillaBERT}
-      on \emph{CrowS-Pairs}, and both contrasts survive Holm correction,
+\item At the matched point where the encoders are furthest trained,
+      \emph{LoopedBERT} and \emph{HyperloopBERT} give lower mean item scores on
+      \emph{CrowS-Pairs} than the baseline does, and both contrasts survive Holm
+      correction,
       Table~\ref{tab:band}. Both differences disappear once validation loss is
       adjusted for across all matched points, Table~\ref{tab:model}, and again
       under either alternative scoring rule, Table~\ref{tab:rules2}.
-\item \textbf{A second benchmark, and a check on the encoders themselves.} On
-      \emph{StereoSet} the direction agrees, but only one contrast stays
+\item On \emph{StereoSet} the direction agrees, but only one contrast stays
       significant, and for a different encoder. On \emph{WinoBias} all four
       encoders answer at chance, Table~\ref{tab:gate}, which limits what any of
       these measurements can show about later use.
-\item \textbf{A reporting recommendation.} An architecture comparison should be
-      reported across several matched points and more than one scoring rule
-      before a difference is credited to the design.
+\item An architecture comparison should be reported across several matched
+      points and more than one scoring rule before a difference is credited to
+      the design.
 \end{enumerate}
+
+Section~\ref{sec:related} places the study among work on stereotype
+measurement, weight reuse, and model capacity. Section~\ref{sec:data} describes
+the training corpus and the three evaluation sets.
+Section~\ref{sec:method} defines the encoders, the matching protocol, and the
+three scoring rules, and Section~\ref{sec:setup} reports the training runs.
+Section~\ref{sec:results} gives the measurements and the checks applied to them,
+and Section~\ref{sec:discussion} reads them together.
+Section~\ref{sec:limits} states what the study cannot show,
+Section~\ref{sec:repro} records what a reader needs to repeat it, and
+Section~\ref{sec:conclusion} closes.
 
 \section{Related Work}
 \label{sec:related}
