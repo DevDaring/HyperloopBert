@@ -137,12 +137,9 @@ keeps the looped design and adds parallel representation streams mixed by
 learned weights \citep{zhu2025hyperconnections}. A stream is one parallel copy
 of token representations inside that model.
 
-This paper makes four contributions.
+This paper makes three contributions.
 
 \begin{enumerate}
-\item \textbf{A comparison protocol.} The four encoders are trained on the same
-      text and compared only at matched points, so a difference between them
-      cannot come from one encoder having trained further than another.
 \item \textbf{A result that does not survive its own checks.} At the matched
       point where the encoders are furthest trained, \emph{LoopedBERT} and
       \emph{HyperloopBERT} give lower mean item scores than \emph{VanillaBERT}
