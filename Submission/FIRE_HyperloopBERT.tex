@@ -99,8 +99,10 @@ at a training step. Lower validation loss can change the paired score difference
 on benchmark items. A fixed training budget therefore mixes architecture with
 training progress.
 
-This study tests whether lower measured association can be attributed to weight
-reuse after these controls. Weight reuse means that the same block parameters
+This study holds the tokeniser, the training text, the representation width and
+the effective depth fixed, and compares encoders only where they have reached
+the same validation loss. It then tests whether a lower measured association can
+still be attributed to weight reuse. Weight reuse means that the same block parameters
 are applied at more than one depth in the network. Effective depth is the number
 of transformer-block applications made to each token. A transformer block is the
 repeated attention-and-feed-forward unit used in BERT, the original
