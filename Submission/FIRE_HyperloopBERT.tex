@@ -144,19 +144,28 @@ keeps the looped design and adds parallel representation streams mixed by
 learned weights \citep{zhu2025hyperconnections}. A stream is one parallel copy
 of token representations inside that model.
 
-The paper contributes measurements and a reporting recommendation. The protocol
-evaluates \emph{CrowS-Pairs}, \emph{StereoSet}, and \emph{WinoBias}. It matches
-encoders on validation loss and checks the result across matched points,
-continuous loss adjustment, scoring rules, and a second benchmark. At the
-lowest-loss matched point, \emph{LoopedBERT} and \emph{HyperloopBERT} have lower
-\emph{CrowS-Pairs} effects than \emph{VanillaBERT}, Table~\ref{tab:band}. The
-same conclusion does not hold after continuous adjustment for realised
-validation loss, Table~\ref{tab:model}. It also does not hold under the
-alternative scoring rules, Table~\ref{tab:rules2}. The category analysis and the
-failed capability gate limit the interpretation to lexical association in the
-masked language modelling head, Figure~\ref{fig:robust} and
-Table~\ref{tab:gate}. The masked language modelling head is the output layer
-that assigns probabilities to tokens.
+This paper makes four contributions.
+
+\begin{enumerate}
+\item \textbf{A comparison protocol.} The four encoders are trained on the same
+      text and compared only at matched points, so a difference between them
+      cannot come from one encoder having trained further than another.
+\item \textbf{A result that does not survive its own checks.} At the matched
+      point where the encoders are furthest trained, \emph{LoopedBERT} and
+      \emph{HyperloopBERT} give lower mean item scores than \emph{VanillaBERT}
+      on \emph{CrowS-Pairs}, and both contrasts survive Holm correction,
+      Table~\ref{tab:band}. Both differences disappear once validation loss is
+      adjusted for across all matched points, Table~\ref{tab:model}, and again
+      under either alternative scoring rule, Table~\ref{tab:rules2}.
+\item \textbf{A second benchmark, and a check on the encoders themselves.} On
+      \emph{StereoSet} the direction agrees, but only one contrast stays
+      significant, and for a different encoder. On \emph{WinoBias} all four
+      encoders answer at chance, Table~\ref{tab:gate}, which limits what any of
+      these measurements can show about later use.
+\item \textbf{A reporting recommendation.} An architecture comparison should be
+      reported across several matched points and more than one scoring rule
+      before a difference is credited to the design.
+\end{enumerate}
 
 \section{Related Work}
 \label{sec:related}
