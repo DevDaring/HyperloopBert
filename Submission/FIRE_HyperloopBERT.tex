@@ -99,15 +99,6 @@ at a training step. Lower validation loss can change the paired score difference
 on benchmark items. A fixed training budget therefore mixes architecture with
 training progress.
 
-Prior work gives reasons to be cautious about a single architecture comparison.
-Compression studies show that fairness measurements can change when capacity is
-changed \citep{hooker2020characterising,xu2022compression,ramesh2023comparative}.
-Audits of stereotype benchmarks found unclear items. Those audits also show that
-averaging one association score over such items weakens conclusions drawn from
-that average \citep{blodgett2021salmon,wang2025difference}. The open question is
-whether a comparison between weight-reusing encoder designs keeps the same
-direction when training progress and scoring choices change.
-
 This study tests whether lower measured association can be attributed to weight
 reuse after these controls. Weight reuse means that the same block parameters
 are applied at more than one depth in the network. Effective depth is the number
