@@ -6,6 +6,9 @@ STAGE = 'stage3'
 # Primary confirmatory set (pre-registered contrasts need all four):
 #   Vanilla vs Hyperloop (primary), Vanilla vs Looped, Looped vs Hyperloop.
 ARCHITECTURES = ['VanillaBERT', 'LoopedBERT', 'ALBERTLoopedBERT', 'HyperloopBERT']
+# Seed-replication override (FIRE revision): STAGE3_ARCHS=VanillaBERT,LoopedBERT
+if os.environ.get('STAGE3_ARCHS'):
+    ARCHITECTURES = os.environ['STAGE3_ARCHS'].split(',')
 
 # Ablations:
 #   - Stream-count dose-response, n in {1, 2, 4} (n=4 is the primary Hyperloop).
@@ -24,7 +27,7 @@ EARLY_MERGE_POINTS = [1, 2, 3]   # eval-time only, costs no training
 ABLATION_SEEDS = [42, 43, 44]
 
 SIZES = ['base']  # Only base scale for Stage 3
-DEFAULT_SEEDS = [42]  # H100 budget: 1 seed x 4 architectures (item-level test
+DEFAULT_SEEDS = [int(x) for x in os.environ.get('STAGE3_SEEDS', '42').split(',')]  # H100 budget: 1 seed x 4 architectures (item-level test
                       # with n~1508 pairs is the PRE-REGISTERED PRIMARY test;
                       # seed-level is robustness only, and is the disclosed
                       # limitation of this run)
@@ -155,6 +158,8 @@ VAL_DATASET_NAMESPACE = 'Debk'
 
 # GLUE fine-tuning params
 GLUE_TASKS = ['sst2', 'mrpc', 'qnli', 'rte']  # full screen for the final paper
+if os.environ.get('GLUE_TASKS'):
+    GLUE_TASKS = os.environ['GLUE_TASKS'].split(',')
 GLUE_LR = 2e-5
 GLUE_EPOCHS = 3
 GLUE_BATCH_SIZE = 32
@@ -167,3 +172,16 @@ RESULTS_DIR = 'results/stage3'
 MODELS_DIR = 'models/stage3'
 FIGURES_DIR = 'figures/stage3'
 CHECKPOINTS_DIR = 'checkpoints/stage3'
+
+
+# ---- Smoke test (SMOKE=1): exercises every step of the seed-43 job in minutes.
+# Never set for a real run; the values below make no scientific sense.
+if os.environ.get('SMOKE') == '1':
+    MAX_TOKENS = 3_000_000
+    TOKEN_MARKERS = [1_500_000]
+    DEFAULT_ISO_BANDS = [12.0, 11.0]
+    VAL_EVERY_STEPS = 5
+    VAL_FINE_EVERY_STEPS = 5
+    CHECKPOINT_EVERY_STEPS = 10
+    VAL_SAMPLES = 64
+    PSEUDO_PERPLEXITY_QUALITY_THRESHOLD = 1e12

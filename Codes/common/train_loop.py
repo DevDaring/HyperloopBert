@@ -648,6 +648,13 @@ def run_mlm_training(*, model, run_id: str, arch: str, size: str, seed: int,
                                          model_info, stream_count, merge_at,
                                          band, val_loss, actual_step,
                                          os.path.join(models_dir, 'iso_band_models', run_id))
+                # Seed replication: the LR schedule stays sized to MAX_TOKENS, but
+                # training stops once every band has its snapshot.
+                if (os.environ.get('STOP_WHEN_BANDS_DONE') == '1'
+                        and not iso_tracker.get_remaining_bands()):
+                    logger.info(f"All bands crossed for {run_id}; stopping early "
+                                f"at {tokens_processed / 1e6:.1f}M tokens.")
+                    break
 
             if token_markers and tokens_processed >= token_markers[0]:
                 marker = token_markers.pop(0)

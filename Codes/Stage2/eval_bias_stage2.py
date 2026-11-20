@@ -202,6 +202,9 @@ def eval_winobias(model, tokenizer, device, winobias_dir, meta, model_info, summ
 
     pro_df = pd.read_csv(pro_path1)
     anti_df = pd.read_csv(anti_path1)
+    _lim = int(os.environ.get('EVAL_LIMIT', '0') or 0)   # smoke test only
+    if _lim:
+        pro_df, anti_df = pro_df.head(_lim), anti_df.head(_lim)
 
     for name, df in (('pro', pro_df), ('anti', anti_df)):
         if 'sentence' not in df.columns or 'pronoun' not in df.columns:

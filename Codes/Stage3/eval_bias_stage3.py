@@ -58,6 +58,8 @@ def main():
     datasets_to_eval = {}
     if os.path.exists(multicrows_path):
         datasets_to_eval['multicrows'] = pd.read_csv(multicrows_path)
+        if int(os.environ.get('EVAL_LIMIT', '0') or 0):   # smoke test only
+            datasets_to_eval['multicrows'] = datasets_to_eval['multicrows'].head(int(os.environ.get('EVAL_LIMIT', '0') or 0))
     if os.path.exists(indian_path):
         datasets_to_eval['indian_bias'] = pd.read_csv(indian_path)
         

@@ -80,8 +80,12 @@ def main():
                     except:
                         pass
                         
-        pp = get_snapshot_mlm_quality(results_dir, meta['Architecture'], meta['Model_Size'], 
-                                      meta['Seed'], meta['Band'], meta['Token_Marker'])
+        # The quality-screen row of a Hyperloop run is keyed by its stream count;
+        # without it the lookup misses and the snapshot is silently skipped.
+        pp = get_snapshot_mlm_quality(results_dir, meta['Architecture'], meta['Model_Size'],
+                                      meta['Seed'], meta['Band'], meta['Token_Marker'],
+                                      stream_count=num_streams if 'Hyperloop' in meta['Architecture'] else None,
+                                      merge_at=meta.get('Merge_At'))
                                       
         if not passes_quality_screen(pp, cfg.PSEUDO_PERPLEXITY_QUALITY_THRESHOLD):
             continue
@@ -104,8 +108,10 @@ def main():
         for task in cfg.GLUE_TASKS:
             model_path = os.path.join(cp_dir, 'pytorch_model.bin')
             metrics = train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device)
+            if metrics is None:
+                continue
             task_metrics[task] = metrics
-            
+
             glue_avg = sum(m['Accuracy'] for m in task_metrics.values()) / len(task_metrics)
             
             res_row = {
@@ -118,9 +124,13 @@ def main():
                 'Total_Parameters': model_info['Total_Parameters'],
                 'Effective_Depth': model_info['Effective_Depth'],
                 'Shared_Ratio': model_info['Shared_Ratio'],
+                'Band': meta['Band'],
+                'Token_Marker': meta['Token_Marker'],
+                'Stream_Count': meta.get('Stream_Count'),
                 'Task': task,
                 'Accuracy': metrics['Accuracy'],
                 'F1': metrics['F1'],
+                'Eval_Example_Count': metrics.get('N_Examples'),
                 'GLUE_Average': glue_avg,
                 'Timestamp': datetime.utcnow().isoformat() + 'Z'
             }

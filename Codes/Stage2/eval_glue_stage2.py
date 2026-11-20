@@ -64,6 +64,10 @@ def train_and_eval_glue(model_path, meta, model_info, task, tokenizer, device,
     # Load dataset
     try:
         dataset = load_dataset('glue', task)
+        _lim = int(os.environ.get('EVAL_LIMIT', '0') or 0)   # smoke test only
+        if _lim:
+            for _k in list(dataset.keys()):
+                dataset[_k] = dataset[_k].select(range(min(_lim, len(dataset[_k]))))
     except Exception as e:
         logger.error(f"Failed to load GLUE task {task}: {e}. NO row will be "
                      f"written for this task (never record 0.0 as a result).")
