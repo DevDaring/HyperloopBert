@@ -1,11 +1,8 @@
 % =============================================================================
-% FIRE 2026 — Regular Paper (DOUBLE-BLIND)
+% FIRE 2026 — Regular Paper (CAMERA-READY)
 % ACM ICPS, sigconf, two columns. Maximum 9 pages of content, references excluded.
-%
-% Anonymity: no author names, no affiliation, no repository URL that identifies
-% the authors. Concrete artefact locations are restored in the camera-ready.
 % =============================================================================
-\documentclass[sigconf,natbib=true,anonymous=true]{acmart}
+\documentclass[sigconf,natbib=true]{acmart}
 
 \AtBeginDocument{%
   \providecommand\BibTeX{{\normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
@@ -29,7 +26,30 @@
 \title{Same Models, Opposite Conclusions: Testing the Robustness of
        Architecture Bias Comparisons}
 
-\author{Anonymous Author(s)}
+\author{Koushik Deb}
+\email{koushik\_phd21@iiitkalyani.ac.in}
+\affiliation{%
+  \institution{Indian Institute of Information Technology Kalyani}
+  \city{Kalyani}
+  \state{West Bengal}
+  \country{India}}
+
+\author{Imon Mukherjee}
+\affiliation{%
+  \institution{Indian Institute of Information Technology Kalyani}
+  \city{Kalyani}
+  \state{West Bengal}
+  \country{India}}
+
+\author{Debarshi Kumar Sanyal}
+\affiliation{%
+  \institution{Indian Association for the Cultivation of Science}
+  \city{Kolkata}
+  \state{West Bengal}
+  \country{India}}
+
+% Running head: first author's surname, then et al.
+\renewcommand{\shortauthors}{Deb et al.}
 
 % ------------------------------------------------------------------- abstract
 \begin{abstract}
@@ -809,7 +829,7 @@ several matched training levels, several training runs and the official scoring
 rule. Larger encoders and an India-centric benchmark would test whether the
 instability persists beyond this setting. Code, per-item scores for every snapshot, the masked-position
 predictions behind Table~\ref{tab:qual} and the analysis scripts are available at
-\url{https://anonymous.4open.science/r/HyperloopBert/}.
+\url{https://github.com/DevDaring/HyperloopBert}.
 
 \section*{Declaration on Generative AI}
 
