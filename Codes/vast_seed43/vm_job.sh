@@ -27,10 +27,18 @@ run()   { stage "RUN $*"; "$@" >>"$LOG" 2>&1; local rc=$?; stage "rc=$rc $1"; [ 
 
 selfstop() {   # $1 = stop | destroy
   [ "${SMOKE:-0}" = 1 ] && { stage "SMOKE: would self-$1"; return 0; }
-  local key="${CONTAINER_API_KEY:-$VAST_KEY}"; local Y=""; [ "$1" = destroy ] && Y="-y"
+  # Newer vastai CLIs prompt on destroy and need -y; older ones reject -y.
+  # Try both forms with each key, answering any prompt with "y" on stdin.
+  local k Y
   stage "self-$1 instance ${CONTAINER_ID:-?}"
-  vastai "$1" instance "$CONTAINER_ID" $Y --api-key "$key" >>"$LOG" 2>&1 \
-    || vastai "$1" instance "$CONTAINER_ID" $Y --api-key "$VAST_KEY" >>"$LOG" 2>&1
+  for k in "${CONTAINER_API_KEY:-}" "$VAST_KEY"; do
+    [ -n "$k" ] || continue
+    for Y in "-y" ""; do
+      [ "$1" = stop ] && [ -n "$Y" ] && continue
+      echo y | vastai "$1" instance "$CONTAINER_ID" $Y --api-key "$k" >>"$LOG" 2>&1 && return 0
+    done
+  done
+  stage "self-$1 FAILED"
 }
 
 upload() { if [ "${SMOKE:-0}" = 1 ]; then stage "SMOKE: upload skipped"; else bash $C/vast_seed43/upload.sh >>"$LOG" 2>&1; fi; }

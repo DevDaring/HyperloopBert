@@ -1,0 +1,15 @@
+Stage,Architecture,Model_Size,Hidden_Size,Seed,Unique_Parameters,Total_Parameters,Effective_Depth,Shared_Ratio,Band,Snapshot_Path,Validation_Loss_At_Snapshot,Crossed_At_Step,Timestamp
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,5.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_5p00,2.927369801345507,24000,2026-11-19T22:30:35.598011Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,4.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_4p00,2.927369801345507,24000,2026-11-19T22:30:35.600513Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,3.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_3p40,2.927369801345507,24000,2026-11-19T22:30:35.602791Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_3p00,2.927369801345507,24000,2026-11-19T22:30:35.604971Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_2p70,2.5771857646943763,26000,2026-11-19T22:43:18.033199Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,2.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_2p40,2.3982426162271517,28000,2026-11-19T22:55:59.917794Z
+stage3,VanillaBERT,base,768,43,110104890,110104890,12,0.0,2.2,/root/HyperloopBert/Codes/models/stage3/iso_band_models/VanillaBERT_base_seed43/band_2p20,2.199001555201245,32000,2026-11-19T23:21:29.313869Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,5.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_5p00,3.0166467022723267,24000,2026-11-20T01:52:49.487643Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,4.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_4p00,3.0166467022723267,24000,2026-11-20T01:52:49.489843Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,3.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_3p40,3.0166467022723267,24000,2026-11-20T01:52:49.491913Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,3.0,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_3p00,2.98674802167104,24500,2026-11-20T01:56:00.556668Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,2.7,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_2p70,2.6670650236958795,26000,2026-11-20T02:05:28.524964Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,2.4,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_2p40,2.36398717783623,29500,2026-11-20T02:27:38.029844Z
+stage3,LoopedBERT,base,768,43,67580730,67580730,12,0.5,2.2,/root/HyperloopBert/Codes/models/stage3/iso_band_models/LoopedBERT_base_seed43/band_2p20,2.181047714837514,33500,2026-11-20T02:53:03.603239Z
