@@ -20,13 +20,15 @@
 \usepackage{adjustbox}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{orcidlink}
 
 \begin{document}
 
 \title{Same Models, Opposite Conclusions: Testing the Robustness of
        Architecture Bias Comparisons}
 
-\author{Koushik Deb}
+\author{Koushik Deb\,\orcidlink{0000-0001-7902-4387}}
+\orcid{0000-0001-7902-4387}
 \email{koushik\_phd21@iiitkalyani.ac.in}
 \affiliation{%
   \institution{Indian Institute of Information Technology Kalyani}
@@ -34,14 +36,16 @@
   \state{West Bengal}
   \country{India}}
 
-\author{Imon Mukherjee}
+\author{Imon Mukherjee\,\orcidlink{0000-0002-8598-148X}}
+\orcid{0000-0002-8598-148X}
 \affiliation{%
   \institution{Indian Institute of Information Technology Kalyani}
   \city{Kalyani}
   \state{West Bengal}
   \country{India}}
 
-\author{Debarshi Kumar Sanyal}
+\author{Debarshi Kumar Sanyal\,\orcidlink{0000-0001-8723-5002}}
+\orcid{0000-0001-8723-5002}
 \affiliation{%
   \institution{Indian Association for the Cultivation of Science}
   \city{Kolkata}
@@ -64,7 +68,7 @@ compared at checkpoints of equal validation loss on two stereotype benchmarks.
 At the most-trained common checkpoint, two block-reusing encoders scored about
 one third lower than the unshared encoder. Closer testing did not support
 crediting that gap to block reuse. The gap reversed at less-trained checkpoints
-and was absent under the benchmark's official scoring rule. A second training
+and was not significant under the benchmark's official scoring rule. A second training
 run of two encoders did not reproduce the gap. Two runs of one design differed
 nearly as much as the two designs did. The study covers four encoders, two
 benchmarks, three scoring rules and seven training levels. A bias comparison
@@ -163,8 +167,9 @@ This paper makes three contributions.
       official scoring rule nor a second training run reproduced the gap. In
       these four encoders, a single matched comparison did not show that block
       reuse lowers stereotype association.
-\item Zero-shot pronoun resolution stayed near chance for every encoder and for a
-      public BERT model. After fine-tuning, the same encoders classified
+\item Zero-shot pronoun resolution was not significantly above chance for any
+      encoder trained here. A public BERT model was above chance only on the items that syntax can
+      resolve. After fine-tuning, the encoders trained here classified
       sentence sentiment with similar accuracy. Stereotype scores of encoders at
       this scale describe word association. Evidence of sentence understanding
       has to come from fine-tuned tasks.
@@ -677,15 +682,16 @@ Target loss & $\Delta$ seed 42 & $p$ seed 42 & $\Delta$ seed 43 & $p$ seed 43 \\
 
 A robustness check repeats a finding under analysis choices that could
 reasonably have been made differently. A finding that holds under only one set of
-choices belongs to the analysis rather than to the design. Five choices are
+choices belongs to the analysis rather than to the architectural design. Five choices are
 varied: the matched point, the treatment of the remaining loss gap, the scoring
 rule, the benchmark and the training seed.
 
 The gap at the lowest-loss point does not hold at the other matched points
 (Figure~\ref{fig:delta}). \emph{VanillaBERT} minus \emph{LoopedBERT} is negative
 at all four less-trained distinct comparisons, so \emph{LoopedBERT} scores
-higher there. At target 3.0 the opposite gap is itself significant, with loss
-matched more closely than at the lowest point (Table~\ref{tab:seed}). Over the
+higher there. At target 3.0 the opposite gap is itself significant
+(Table~\ref{tab:seed}). Loss is matched less closely there, with a difference of
+0.029 against 0.009 at the lowest-loss point. Over the
 seven matched points, the sign of the comparison depends on where the encoders
 are compared.
 
@@ -756,21 +762,24 @@ matches the occupational stereotype. Every encoder run lies between 0.489 and
 pro-stereotypical and anti-stereotypical versions give the same masked input, so
 these values carry no information about pronoun resolution.
 
-Zero-shot pronoun resolution is near chance for every encoder and for the public
-\texttt{bert-base-uncased} model. On type 1 the antecedent accuracy of the six
-encoder runs lies between 0.486 and 0.522, against 0.544 for
-\texttt{bert-base-uncased}. On type 2 every model stays near or below one half,
+Zero-shot pronoun resolution is not significantly above chance for any encoder
+trained here.
+On type 1 the antecedent accuracy of the six encoder runs lies between 0.486 and
+0.522. The public \texttt{bert-\allowbreak base-\allowbreak uncased} model scores slightly higher, but its
+95\% interval includes one half. On type 2 no encoder run exceeds one half,
 although the referred occupation is almost always the one named second.
-Zero-shot antecedent scoring therefore cannot separate an encoder that follows
-the sentence from one that does not.
+The public model reaches 0.593 on type 2, and its interval lies above
+one half. The test therefore detects some pronoun resolution in
+the public model and gives no evidence of it in the encoders trained
+here.
 
-Fine-tuning shows that every encoder can use sentence content. After three epochs
+Fine-tuning shows a similar ability to classify sentiment in every encoder. After three epochs
 per task, all six encoder runs reach between 0.865 and 0.883 accuracy on
 \emph{SST-2} sentiment classification. Accuracy on \emph{MRPC} paraphrase
 detection spreads more widely, from 0.686 to 0.762, on a small validation set.
 On \emph{SST-2}, the two \emph{VanillaBERT} runs differ by as much as the
-seed-42 designs do. The near-chance antecedent scores therefore reflect
-zero-shot scoring rather than an inability to process sentences.
+seed-42 designs do. Zero-shot antecedent scores and fine-tuned accuracy therefore
+measure different abilities.
 
 % =============================================================== discussion
 \section{Discussion}
@@ -786,8 +795,9 @@ entangled at any one checkpoint, even after matching on validation loss.
 
 The second seed weakens the architecture claim further. Its significant contrasts
 fall at less-trained points, where the first seed found a smaller difference of
-opposite sign. Variation between two runs of one design matched the gap between
-designs at the lowest-loss point. A difference measured on one run per design
+opposite sign. Variation between the two \emph{VanillaBERT} runs came close to the
+gap between designs at the lowest-loss point, but the \emph{LoopedBERT} runs
+barely differed. A difference measured on one run per design
 therefore mixes the design with the initialisation. Two runs remain few, so this
 result shows instability rather than an estimate of seed variance.
 
@@ -819,11 +829,12 @@ reuse once training progress is held level. Four encoders that differ only in
 block reuse were trained on identical text and compared at matched validation
 loss. At the most-trained matched point, two block-reusing encoders scored
 significantly lower on \emph{CrowS-Pairs}. That gap reversed at less-trained
-points and disappeared after adjustment for the remaining loss differences. The
+points and was no longer distinguishable from zero after adjustment for the
+remaining loss differences. The
 official scoring rule and a second training run did not reproduce it. Two runs
 of the same design differed nearly as much as the two designs. Zero-shot pronoun
-resolution was near chance for every model, while fine-tuning showed that all
-encoders process sentences. At this scale, block reuse therefore has no
+resolution was not significantly above chance for any of these encoders, while their fine-tuned
+sentiment accuracy was similar. At this scale, block reuse therefore has no
 demonstrated effect on stereotype association. Future comparisons can report
 several matched training levels, several training runs and the official scoring
 rule. Larger encoders and an India-centric benchmark would test whether the
